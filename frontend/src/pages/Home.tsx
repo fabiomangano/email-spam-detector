@@ -21,6 +21,15 @@ function Home() {
 console.log(textAreaValue)
   }, [textAreaValue])
 
+
+  useEffect(() => {
+  fetch('http://localhost:3000/hello')
+    .then(res => res.text())
+    .then(data => {
+      console.log('Risposta:', data);
+    });
+}, []);
+
   return (
     <Tabs variant="outline" defaultValue="gallery">
       <Tabs.List>
@@ -33,9 +42,9 @@ console.log(textAreaValue)
         >
           File
         </Tabs.Tab>
-        <Tabs.Tab value="settings" leftSection={<IconSettings size={12} />}>
+        {/* <Tabs.Tab value="settings" leftSection={<IconSettings size={12} />}>
           Data
-        </Tabs.Tab>
+        </Tabs.Tab> */}
       </Tabs.List>
 
       <Tabs.Panel value="gallery">
@@ -50,7 +59,7 @@ console.log(textAreaValue)
         <Button>Invia</Button>
       </Tabs.Panel>
 
-      <Tabs.Panel value="messages">
+      {/* <Tabs.Panel value="messages">
         <Dropzone
           onDrop={(files) => console.log("accepted files", files)}
           onReject={(files) => console.log("rejected files", files)}
@@ -96,7 +105,7 @@ console.log(textAreaValue)
             </div>
           </Group>
         </Dropzone>
-      </Tabs.Panel>
+      </Tabs.Panel> */}
 
       <Tabs.Panel value="settings">Settings tab content</Tabs.Panel>
     </Tabs>
