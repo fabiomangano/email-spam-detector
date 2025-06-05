@@ -16,19 +16,19 @@ function App() {
     <MantineProvider>
       <AppShell
         header={{ height: 60 }}
-        navbar={{
-          width: 300,
-          breakpoint: "sm",
-          collapsed: { mobile: !opened },
-        }}
-        padding="md"
+        // navbar={{
+        //   width: 300,
+        //   breakpoint: "sm",
+        //   collapsed: { mobile: !opened },
+        // }}
+        padding="xl"
       >
         <AppShell.Header>
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <div>Logo</div>
         </AppShell.Header>
 
-        <AppShell.Navbar p="md">
+        {/* <AppShell.Navbar p="md">
           <Anchor component={Link} to="/">
             Home
           </Anchor>
@@ -41,7 +41,7 @@ function App() {
            <Anchor component={Link} to="/guide">
             Guide
           </Anchor>
-        </AppShell.Navbar>
+        </AppShell.Navbar> */}
 
         <AppShell.Main>
           <Routes>

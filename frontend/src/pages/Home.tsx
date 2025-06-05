@@ -1,4 +1,4 @@
-import { Tabs } from "@mantine/core";
+import { Button, Tabs } from "@mantine/core";
 import {
   IconMessageCircle,
   IconSettings,
@@ -7,8 +7,20 @@ import { Textarea } from "@mantine/core";
 import { Group, Text } from "@mantine/core";
 import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
 import { Dropzone,  IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { useEffect, useState } from "react";
 
 function Home() {
+
+  const [textAreaValue, setTextAreaValue] = useState("")
+
+  const handleTextAreaValueChange= (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setTextAreaValue(event.target.value)
+  }
+
+  useEffect(() => {
+console.log(textAreaValue)
+  }, [textAreaValue])
+
   return (
     <Tabs variant="outline" defaultValue="gallery">
       <Tabs.List>
@@ -29,10 +41,13 @@ function Home() {
       <Tabs.Panel value="gallery">
         <Textarea
           label="Email text"
+          value={textAreaValue}
+          onChange={handleTextAreaValueChange}
           placeholder="Input placeholder"
           autosize
           minRows={25}
         />
+        <Button>Invia</Button>
       </Tabs.Panel>
 
       <Tabs.Panel value="messages">
