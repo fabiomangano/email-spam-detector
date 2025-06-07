@@ -36,12 +36,12 @@ console.log(textAreaValue)
         <Tabs.Tab value="gallery" leftSection={<IconPhoto size={12} />}>
           Text
         </Tabs.Tab>
-        <Tabs.Tab
+        {/* <Tabs.Tab
           value="messages"
           leftSection={<IconMessageCircle size={12} />}
         >
           File
-        </Tabs.Tab>
+        </Tabs.Tab> */}
         {/* <Tabs.Tab value="settings" leftSection={<IconSettings size={12} />}>
           Data
         </Tabs.Tab> */}
@@ -49,7 +49,7 @@ console.log(textAreaValue)
 
       <Tabs.Panel value="gallery">
         <Textarea
-          label="Email text"
+          label="Email"
           value={textAreaValue}
           onChange={handleTextAreaValueChange}
           placeholder="Input placeholder"
@@ -107,7 +107,7 @@ console.log(textAreaValue)
         </Dropzone>
       </Tabs.Panel> */}
 
-      <Tabs.Panel value="settings">Settings tab content</Tabs.Panel>
+      {/* <Tabs.Panel value="settings">Settings tab content</Tabs.Panel> */}
     </Tabs>
   );
 }

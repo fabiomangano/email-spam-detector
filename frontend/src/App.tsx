@@ -3,14 +3,14 @@ import '@mantine/dropzone/styles.css';
 
 import { MantineProvider } from "@mantine/core";
 import { Routes, Route } from "react-router";
-import { AppShell, Burger } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { Anchor } from "@mantine/core";
-import { Link } from "react-router";
+import { AppShell, /* Burger */} from "@mantine/core";
+// import { useDisclosure } from "@mantine/hooks";
+// import { Anchor } from "@mantine/core";
+// import { Link } from "react-router";
 import Home from "./pages/Home";
 
 function App() {
-  const [opened, { toggle }] = useDisclosure();
+ // const [opened, { toggle }] = useDisclosure();
 
   return (
     <MantineProvider>
@@ -23,10 +23,10 @@ function App() {
         // }}
         padding="xl"
       >
-        <AppShell.Header>
+        {/* <AppShell.Header>
           <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
           <div>Logo</div>
-        </AppShell.Header>
+        </AppShell.Header> */}
 
         {/* <AppShell.Navbar p="md">
           <Anchor component={Link} to="/">
