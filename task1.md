@@ -1,0 +1,6 @@
+- Creazione pagina Home (V)
+- Creazione tab con form upload email testuale (V)
+- Creazione pagina risultato 
+- Creazione tab con dati analisi
+- Creazione api upload txt
+- Creazione api getParsingResult
