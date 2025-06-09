@@ -43,6 +43,11 @@
 
 ## 🧠 Backend
 
+### Logging
+
+### App Exit
+- Rimozione email alla chiusura app
+
 ### 🔐 Login _(NTH)_
 - Sistema di login  
 - Sincronizzazione con provider email  
