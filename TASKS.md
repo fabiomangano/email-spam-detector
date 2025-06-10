@@ -43,9 +43,15 @@
 
 ## 🧠 Backend
 
+### CONFIG opzione per caricare nuovo dataset e per rilanciare il training
+
+### LLM/MCP/RAG
+
 ### Swagger
 
 ### Controller, Service, Repository, Dto, Entities
+
+### Exceptions and Error
 
 ### Logging
 

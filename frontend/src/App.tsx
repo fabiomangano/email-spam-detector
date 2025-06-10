@@ -26,7 +26,7 @@ function App() {
       <AppShell
         header={{ height: 60 }}
         navbar={{
-          width: 300,
+          width: 200,
           breakpoint: "md",
           collapsed: { mobile: !opened },
         }}
@@ -59,7 +59,7 @@ function App() {
               marginLeft: "10px",
             }}
           >
-            Email
+           Email
           </span>
           <NavLink
             component={Link}
@@ -134,7 +134,7 @@ function App() {
           />
         </AppShell.Navbar>
 
-        <AppShell.Main style={{ backgroundColor: "#f5f5f5" }}>
+        <AppShell.Main style={{ backgroundColor: "#f5f5f5", height: "100vh" }}>
           <Routes>
             <Route index element={<Home />} />
             <Route path="report" element={<>REPORT</>} />
