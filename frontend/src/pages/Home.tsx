@@ -149,12 +149,12 @@ function Home() {
             <Tabs.Tab value="messages" leftSection={<IconFile size={12} />}>
               File
             </Tabs.Tab>
-            <Tabs.Tab
+            {/* <Tabs.Tab
               value="settings"
               leftSection={<IconListDetails size={12} />}
             >
               Data
-            </Tabs.Tab>
+            </Tabs.Tab> */}
           </Tabs.List>
 
           <Tabs.Panel
