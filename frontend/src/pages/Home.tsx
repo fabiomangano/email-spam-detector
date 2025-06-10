@@ -7,6 +7,7 @@ import {
   Code,
   Divider,
   Flex,
+  Grid,
   Input,
   ScrollArea,
   Space,
@@ -29,6 +30,36 @@ import { Title } from "@mantine/core";
  * - empty states
  * - sotto la dropdonw nome file carricato
  */
+
+interface FieldRowProps {
+  label: string;
+  value?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+}
+
+function FieldRow({ label, value, onChange, placeholder }: FieldRowProps) {
+  return (
+    <Flex align="center" gap="sm" mb="sm">
+      <Text style={{ minWidth: 90 }}>{label}</Text>
+      <Input
+        style={{ flex: 1 }}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        size="sm"
+        disabled
+        styles={{
+          input: {
+            backgroundColor: "white",
+            color: "#000", // opzionale: testo nero anche da disabilitato
+            opacity: 1, // opzionale: evita il grigio "faded" di default
+          },
+        }}
+      />
+    </Flex>
+  );
+}
 
 function Home() {
   const [textAreaValue, setTextAreaValue] = useState("");
@@ -76,9 +107,13 @@ function Home() {
           <Title order={2} style={{ fontSize: "20px" }}>
             Email
           </Title>
+
           <Group gap="xs">
             <Button variant="outline" color="black" style={{ width: "100px" }}>
               Clear
+            </Button>
+            <Button variant="outline" color="black" style={{ width: "100px" }}>
+              Copy
             </Button>
             <Button
               variant="filled"
@@ -199,7 +234,7 @@ function Home() {
                 Trascina qui i file o clicca per selezionarlo
               </Text>
               <Text size="sm" c="dimmed" mt={7}>
-                Puoi allegare un file di  massimo 5 MB
+                Puoi allegare un file di massimo 5 MB
               </Text>
             </Dropzone>
           </Tabs.Panel>
@@ -217,14 +252,74 @@ function Home() {
           <Title order={2} style={{ fontSize: "20px" }}>
             Content
           </Title>
-          <Button variant="filled" color="black" style={{ width: "100px" }}>
-            Upload
-          </Button>
+          <Group gap="xs">
+            <Button variant="outline" color="black" style={{ width: "100px" }}>
+              Copy
+            </Button>
+            <Button
+              variant="filled"
+              color="black"
+              style={{ width: "100px" }}
+              disabled
+            >
+              Upload
+            </Button>
+          </Group>
         </Flex>
         <Space h="sm"></Space>
         <Divider></Divider>
+        <Space h="lg"></Space>
+        <Title order={5}>Headers</Title>
         <Space h="sm"></Space>
-       
+        <Divider></Divider>
+        <Space h="sm"></Space>
+
+        {/**
+         * ID messaggio
+         * Creato alle
+         * Da
+         * A
+         * Oggetto
+         * SPF
+         * DIM
+         * DMARC
+         */}
+
+        <FieldRow label="Message-ID" />
+        <FieldRow label="Date" />
+        <FieldRow label="From" />
+        <FieldRow label="To" />
+        <FieldRow label="Subject" />
+
+        <FieldRow label="Spf/Dim/Mar" />
+
+        <Space h="lg"></Space>
+        <Title order={5}>Body</Title>
+        <Space h="sm"></Space>
+        <Divider></Divider>
+        <Space h="sm"></Space>
+        <Textarea
+          minRows={10}
+          autosize={false}
+          h={"43%"}
+          disabled
+          styles={{
+            wrapper: { height: "100%" },
+            input: {
+              height: "100%",
+              backgroundColor: "white",
+              color: "#000", // opzionale: testo nero anche da disabilitato
+              opacity: 1, // opzionale: evita il grigio "faded" di default
+            },
+          }}
+        />
+        <Space h="lg"></Space>
+        {/**
+        *  <Title order={5}>Attachments</Title>
+        <Space h="sm"></Space>
+        <Divider></Divider>
+        <Space h="sm"></Space>
+        */}
       </Card>
     </div>
   );
