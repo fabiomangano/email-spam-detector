@@ -14,13 +14,25 @@ import { LlmModule } from './modules/llm/llm.module';
 import { ResultModule } from './modules/result/result.module';
 import { ResultController } from './modules/result/result.controller';
 import { ResultService } from './modules/result/result.service';
-import { ResultService } from './modules/result/result.service';
 import { BehaviorModule } from './modules/behavior/behavior.module';
-import { BehaviorController } from './modules/behavior/behavior.controller';
 
 @Module({
-  imports: [ParsingModule, TechnicalModule, NlpModule, BehaviorModule, ResultModule, LlmModule, ConfigModule],
-  controllers: [AppController, UploadController, BehaviorController, ResultController, PipelineController],
+  imports: [
+    ParsingModule,
+    TechnicalModule,
+    NlpModule,
+    BehaviorModule,
+    ResultModule,
+    LlmModule,
+    ConfigModule,
+  ],
+  controllers: [
+    AppController,
+    UploadController,
+    BehaviorController,
+    ResultController,
+    PipelineController,
+  ],
   providers: [AppService, ResultService, PipelineService, PipelineProcessor],
 })
 export class AppModule {}

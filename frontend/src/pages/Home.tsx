@@ -12,24 +12,20 @@ import {
   ScrollArea,
   Space,
   Tabs,
+  Textarea,
+  Group,
+  Text,
+  Title,
 } from "@mantine/core";
-import { IconFile, IconLetterCase, IconListDetails } from "@tabler/icons-react";
-import { Textarea } from "@mantine/core";
-import { Group, Text } from "@mantine/core";
-import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import {
+  IconFile,
+  IconLetterCase,
+  IconListDetails,
+  IconUpload,
+  IconX,
+} from "@tabler/icons-react";
+import { Dropzone } from "@mantine/dropzone";
 import { useEffect, useState } from "react";
-import { Title } from "@mantine/core";
-
-/**
- *
- *
- * todo: aggiungere
- * - spiegazioni
- * - bottoni per copiare
- * - empty states
- * - sotto la dropdonw nome file carricato
- */
 
 interface FieldRowProps {
   label: string;
@@ -52,8 +48,8 @@ function FieldRow({ label, value, onChange, placeholder }: FieldRowProps) {
         styles={{
           input: {
             backgroundColor: "white",
-            color: "#000", // opzionale: testo nero anche da disabilitato
-            opacity: 1, // opzionale: evita il grigio "faded" di default
+            color: "#000",
+            opacity: 1,
           },
         }}
       />
@@ -63,6 +59,11 @@ function FieldRow({ label, value, onChange, placeholder }: FieldRowProps) {
 
 function Home() {
   const [textAreaValue, setTextAreaValue] = useState("");
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadedFilename, setUploadedFilename] = useState<string | null>(null);
+  const [parsedData, setParsedData] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("gallery");
 
   const handleTextAreaValueChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
@@ -70,17 +71,67 @@ function Home() {
     setTextAreaValue(event.target.value);
   };
 
-  useEffect(() => {
-    console.log(textAreaValue);
-  }, [textAreaValue]);
+  const handleClear = () => {
+    setTextAreaValue(""); // Pulisce la textarea
+    setUploadedFile(null); // Rimuove il file
+    setUploadedFilename(null); // Resetta il nome file
+    setParsedData(null); // Cancella i dati parsati (header + body)
+  };
 
-  useEffect(() => {
-    fetch("http://localhost:3000/hello")
-      .then((res) => res.text())
-      .then((data) => {
-        console.log("Risposta:", data);
-      });
-  }, []);
+  const handleUpload = async () => {
+    setLoading(true);
+    try {
+      if (activeTab === "messages" && uploadedFile) {
+        const formData = new FormData();
+        formData.append("file", uploadedFile);
+
+        const response = await fetch("http://localhost:3000/upload/file", {
+          method: "POST",
+          body: formData,
+        });
+        const result = await response.json();
+        console.log("Upload file success:", result);
+        setUploadedFilename(result.filename);
+      } else if (activeTab === "gallery" && textAreaValue.trim() !== "") {
+        const response = await fetch("http://localhost:3000/upload/text", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: textAreaValue }),
+        });
+        const result = await response.json();
+        console.log("Upload text success:", result);
+        setUploadedFilename(result.filename);
+      } else {
+        alert("Nessun contenuto da caricare.");
+      }
+    } catch (err) {
+      console.error("Errore upload:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleParse = async () => {
+    if (!uploadedFilename) {
+      alert("Nessun file disponibile da analizzare.");
+      return;
+    }
+    try {
+      const res = await fetch(
+        `http://localhost:3000/parse/${encodeURIComponent(uploadedFilename)}`
+      );
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData?.error || "Errore nel parsing");
+      }
+      const data = await res.json();
+      console.log("Risultato parsing:", data);
+      setParsedData(data);
+    } catch (error) {
+      console.error("Errore durante il parsing:", error);
+      alert(`Errore: ${(error as Error).message}`);
+    }
+  };
 
   return (
     <div
@@ -95,9 +146,8 @@ function Home() {
         padding="lg"
         radius="sm"
         style={{
-      
           height: "100%",
-flex: 1,
+          flex: 1,
           minHeight: 0,
           display: "flex",
           flexDirection: "column",
@@ -107,31 +157,57 @@ flex: 1,
           <Title order={2} style={{ fontSize: "20px" }}>
             Email
           </Title>
-
           <Group gap="xs">
-            <Button variant="outline" color="black" style={{ width: "100px" }}>
+            <Button
+              variant="outline"
+              color="black"
+              style={{ width: "100px" }}
+              onClick={handleClear}
+              disabled={
+                (activeTab === "gallery" && textAreaValue.trim() === "") ||
+                (activeTab === "messages" && !uploadedFile)
+              }
+            >
               Clear
             </Button>
-            <Button variant="outline" color="black" style={{ width: "100px" }}>
+            <Button
+              variant="outline"
+              color="black"
+              style={{ width: "100px" }}
+              disabled
+            >
               Copy
             </Button>
             <Button
               variant="filled"
               color="black"
               style={{ width: "100px" }}
-              disabled
+              onClick={handleUpload}
+              disabled={
+                loading || (!uploadedFile && textAreaValue.trim() === "")
+              }
+            >
+              Upload
+            </Button>
+            <Button
+              variant="filled"
+              color="black"
+              style={{ width: "100px" }}
+              onClick={handleParse}
+              disabled={!uploadedFilename}
             >
               Parse
             </Button>
           </Group>
         </Flex>
-        <Space h="sm"></Space>
-        <Divider></Divider>
-        <Space h="sm"></Space>
-        <Space h="sm"></Space>
+        <Space h="sm" />
+        <Divider />
+        <Space h="sm" />
+        <Space h="sm" />
         <Tabs
           variant="outline"
-          defaultValue="gallery"
+          value={activeTab}
+          onChange={(value) => value && setActiveTab(value)}
           style={{
             flex: 1,
             minHeight: 0,
@@ -149,14 +225,7 @@ flex: 1,
             <Tabs.Tab value="messages" leftSection={<IconFile size={12} />}>
               File
             </Tabs.Tab>
-            {/* <Tabs.Tab
-              value="settings"
-              leftSection={<IconListDetails size={12} />}
-            >
-              Data
-            </Tabs.Tab> */}
           </Tabs.List>
-
           <Tabs.Panel
             value="gallery"
             style={{
@@ -166,7 +235,7 @@ flex: 1,
               flexDirection: "column",
             }}
           >
-            <Space h="sm"></Space>
+            <Space h="sm" />
             <Textarea
               label="Text"
               value={textAreaValue}
@@ -179,11 +248,10 @@ flex: 1,
               }}
             />
           </Tabs.Panel>
-
           <Tabs.Panel
             value="messages"
             style={{
-             width: "50%",
+              width: "50%",
               minHeight: 0,
               display: "flex",
               flexDirection: "column",
@@ -191,12 +259,15 @@ flex: 1,
           >
             <Space h="sm" />
             <Input.Label>Load a file</Input.Label>
-
             <Dropzone
-              onDrop={(files) => console.log("accepted files", files)}
-              onReject={(files) => console.log("rejected files", files)}
+              onDrop={(files) => setUploadedFile(files[0])}
+              onReject={(files) => console.warn("REJECTED:", files)}
               maxSize={5 * 1024 ** 2}
-              accept={IMAGE_MIME_TYPE}
+              accept={{
+                "text/*": [".txt"],
+                "application/octet-stream": [".eml", ".msg"],
+                "application/text": [".txt"],
+              }}
               style={{
                 flex: 1,
                 display: "flex",
@@ -208,52 +279,73 @@ flex: 1,
                 height: "100%",
               }}
             >
-              <Dropzone.Accept>
-                <IconUpload
-                  size={52}
-                  color="var(--mantine-color-blue-6)"
-                  stroke={1.5}
-                />
-              </Dropzone.Accept>
-              <Dropzone.Reject>
-                <IconX
-                  size={52}
-                  color="var(--mantine-color-red-6)"
-                  stroke={1.5}
-                />
-              </Dropzone.Reject>
-              <Dropzone.Idle>
-                <IconFile
-                  size={52}
-                  color="var(--mantine-color-dimmed)"
-                  stroke={1}
-                />
-              </Dropzone.Idle>
-
-              <Text size="xl" mt="md">
-                Trascina qui i file o clicca per selezionarlo
-              </Text>
-              <Text size="sm" c="dimmed" mt={7}>
-                Puoi allegare un file di massimo 5 MB
-              </Text>
+              {uploadedFile ? (
+                <>
+                  <IconFile
+                    size={52}
+                    color="var(--mantine-color-blue-6)"
+                    stroke={1.5}
+                  />
+                  <Text size="md" mt="md" fw={500}>
+                    {uploadedFile.name}
+                  </Text>
+                  <Text size="sm" c="dimmed" mt={5}>
+                    File pronto per l'upload
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Dropzone.Accept>
+                    <IconUpload
+                      size={52}
+                      color="var(--mantine-color-blue-6)"
+                      stroke={1.5}
+                    />
+                  </Dropzone.Accept>
+                  <Dropzone.Reject>
+                    <IconX
+                      size={52}
+                      color="var(--mantine-color-red-6)"
+                      stroke={1.5}
+                    />
+                  </Dropzone.Reject>
+                  <Dropzone.Idle>
+                    <IconFile
+                      size={52}
+                      color="var(--mantine-color-dimmed)"
+                      stroke={1}
+                    />
+                  </Dropzone.Idle>
+                  <Text size="xl" mt="md">
+                    Trascina qui i file o clicca per selezionarlo
+                  </Text>
+                  <Text size="sm" c="dimmed" mt={7}>
+                    Puoi allegare un file di massimo 5 MB
+                  </Text>
+                </>
+              )}
             </Dropzone>
+            {uploadedFile && (
+              <Text mt="xs" size="sm" c="dimmed" ta="center">
+                File selezionato: <strong>{uploadedFile.name}</strong>
+              </Text>
+            )}
           </Tabs.Panel>
-
-          <Tabs.Panel value="settings">Settings tab content</Tabs.Panel>
         </Tabs>
       </Card>
 
-      <Card
-        padding="lg"
-        radius="sm"
-        style={{  height: "100%",     flex: 1}}
-      >
+      <Card padding="lg" radius="sm" style={{ height: "100%", flex: 1 }}>
         <Flex justify="space-between">
           <Title order={2} style={{ fontSize: "20px" }}>
             Content
           </Title>
           <Group gap="xs">
-            <Button variant="outline" color="black" style={{ width: "100px" }}>
+            <Button
+              variant="outline"
+              color="black"
+              style={{ width: "100px" }}
+              disabled
+            >
               Copy
             </Button>
             <Button
@@ -262,64 +354,57 @@ flex: 1,
               style={{ width: "100px" }}
               disabled
             >
-              Upload
+              Analyze
             </Button>
           </Group>
         </Flex>
-        <Space h="sm"></Space>
-        <Divider></Divider>
-        <Space h="lg"></Space>
+        <Space h="sm" />
+        <Divider />
+        <Space h="lg" />
         <Title order={5}>Headers</Title>
-        <Space h="sm"></Space>
-        <Divider></Divider>
-        <Space h="sm"></Space>
-
-        {/**
-         * ID messaggio
-         * Creato alle
-         * Da
-         * A
-         * Oggetto
-         * SPF
-         * DIM
-         * DMARC
-         */}
-
-        <FieldRow label="Message-ID" />
-        <FieldRow label="Date" />
-        <FieldRow label="From" />
-        <FieldRow label="To" />
-        <FieldRow label="Subject" />
-
-        <FieldRow label="Spf/Dim/Mar" />
-
-        <Space h="lg"></Space>
+        <Space h="sm" />
+        <Divider />
+        <Space h="sm" />
+        <FieldRow
+          label="Message-ID"
+          value={parsedData?.parsed?.metadata?.messageId}
+        />
+        <FieldRow label="Date" value={parsedData?.parsed?.metadata?.date} />
+        <FieldRow label="From" value={parsedData?.parsed?.metadata?.from} />
+        <FieldRow label="To" value={parsedData?.parsed?.metadata?.to} />
+        <FieldRow
+          label="Subject"
+          value={parsedData?.parsed?.metadata?.subject}
+        />
+        <FieldRow
+          label="Spf/Dim/Mar"
+          value={`SPF=${parsedData?.metrics?.spfResult ?? "N/A"}, DKIM=${
+            parsedData?.metrics?.dkimResult ?? "N/A"
+          }, DMARC=${parsedData?.metrics?.dmarcResult ?? "N/A"}`}
+        />
+        <Space h="lg" />
         <Title order={5}>Body</Title>
-        <Space h="sm"></Space>
-        <Divider></Divider>
-        <Space h="sm"></Space>
+        <Space h="sm" />
+        <Divider />
+        <Space h="sm" />
         <Textarea
           minRows={10}
           autosize={false}
           h={"43%"}
           disabled
+          value={
+            parsedData?.parsed?.plainText || parsedData?.parsed?.htmlText || ""
+          }
           styles={{
             wrapper: { height: "100%" },
             input: {
               height: "100%",
               backgroundColor: "white",
-              color: "#000", // opzionale: testo nero anche da disabilitato
-              opacity: 1, // opzionale: evita il grigio "faded" di default
+              color: "#000",
+              opacity: 1,
             },
           }}
         />
-        <Space h="lg"></Space>
-        {/**
-        *  <Title order={5}>Attachments</Title>
-        <Space h="sm"></Space>
-        <Divider></Divider>
-        <Space h="sm"></Space>
-        */}
       </Card>
     </div>
   );
