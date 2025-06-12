@@ -95,9 +95,9 @@ function Home() {
         padding="lg"
         radius="sm"
         style={{
-          width: "50%",
+      
           height: "100%",
-          flex: 1,
+flex: 1,
           minHeight: 0,
           display: "flex",
           flexDirection: "column",
@@ -183,7 +183,7 @@ function Home() {
           <Tabs.Panel
             value="messages"
             style={{
-              flex: 1,
+             width: "50%",
               minHeight: 0,
               display: "flex",
               flexDirection: "column",
@@ -246,7 +246,7 @@ function Home() {
       <Card
         padding="lg"
         radius="sm"
-        style={{ width: "50%", height: "100%", flex: 1 }}
+        style={{  height: "100%",     flex: 1}}
       >
         <Flex justify="space-between">
           <Title order={2} style={{ fontSize: "20px" }}>

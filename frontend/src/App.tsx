@@ -67,12 +67,12 @@ function App() {
             label="Upload"
             leftSection={<IconUpload size={16} stroke={1.5} />}
           />
-          <NavLink
+          {/* <NavLink
             component={Link}
             to="/dashboard"
             label="Content"
             leftSection={<IconScan size={16} stroke={1.5} />}
-          />
+          /> */}
           <NavLink
             component={Link}
             to="/dashboard"
