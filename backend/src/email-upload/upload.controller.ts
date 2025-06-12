@@ -25,6 +25,9 @@ export class UploadController {
         if (allowed.includes(ext)) cb(null, true);
         else cb(new Error('Invalid file type'), false);
       },
+      limits: {
+        fileSize: 5 * 1024 * 1024
+}
     }),
   )
   uploadFile(@UploadedFile() file: any) {
