@@ -39,11 +39,11 @@ export function ContentPanel({
 
   return (
     <Card padding="lg" radius="sm" style={{ height: "100%", flex: 1 }}>
-      <Stack gap="md" h="100%">
+      <Stack gap="sm" h="100%">
         <Flex justify="space-between" align="center">
           <div>
             <Title order={2} size="h3">
-              Email Content
+              Content
             </Title>
             {parsedData && (
               <Badge color="green" variant="light" size="sm" mt="xs">
@@ -60,7 +60,7 @@ export function ContentPanel({
               disabled={!canParse}
               leftSection={<IconFileText size={16} />}
             >
-              Parse Content
+              Parse
             </Button>
             <Button
               variant="light"
