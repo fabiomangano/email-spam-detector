@@ -48,8 +48,16 @@ export function ContentPanel({
               Content
             </Title>
             {parsedData && (
-              <Badge color="green" variant="dot" size="sm">
-                Parsed
+              <Badge 
+                variant="outline" 
+                size="sm"
+                style={{
+                  borderColor: '#22c55e',
+                  color: '#22c55e',
+                  backgroundColor: 'transparent',
+                }}
+              >
+                ● Parsed
               </Badge>
             )}
           </Flex>

@@ -14,6 +14,8 @@ import {
   Stack,
   Code,
   ScrollArea,
+  Collapse,
+  Divider,
 } from "@mantine/core";
 import { 
   IconArrowLeft, 
@@ -21,12 +23,40 @@ import {
   IconBrain,
   IconFileText,
   IconCode,
+  IconChevronDown,
+  IconChevronRight,
 } from "@tabler/icons-react";
+import { useState } from "react";
 import { useAnalysis } from "../contexts/AnalysisContext";
 import { Link } from "react-router";
 
 function Report() {
   const { analysisResult } = useAnalysis();
+  const [showAdvancedHeaders, setShowAdvancedHeaders] = useState(false);
+
+  // Helper function to get header values
+  const getHeaderValue = (headerName: string) => {
+    const headers = analysisResult?.details?.parsing?.parsed?.headers;
+    if (!headers) return 'N/A';
+    
+    const value = headers[headerName];
+    if (!value) return 'N/A';
+    
+    // Handle different header formats
+    if (typeof value === 'string') return value;
+    if (typeof value === 'object' && value.text) return value.text;
+    if (typeof value === 'object' && value.value) return value.value;
+    if (Array.isArray(value)) return value.join(', ');
+    
+    return JSON.stringify(value).substring(0, 100);
+  };
+
+  // Get last received header (most recent hop)
+  const getLastReceived = () => {
+    const received = analysisResult?.details?.parsing?.parsed?.headers?.received;
+    if (!received || !Array.isArray(received)) return 'N/A';
+    return received[0] || 'N/A'; // First item is the most recent
+  };
 
   if (!analysisResult) {
     return (
@@ -65,29 +95,78 @@ function Report() {
             </Flex>
             <ScrollArea h={320}>
               <Stack gap="sm">
+                {/* Basic Email Headers */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Email Headers</Text>
-                  <Text size="xs" mb="xs">Subject: {analysisResult.details?.parsing?.parsed?.subject || 'N/A'}</Text>
-                  <Text size="xs" mb="xs">From: {analysisResult.details?.parsing?.parsed?.from || 'N/A'}</Text>
-                  <Text size="xs" mb="xs">To: {analysisResult.details?.parsing?.parsed?.to || 'N/A'}</Text>
-                  <Text size="xs" mb="sm">Date: {analysisResult.details?.parsing?.parsed?.date || 'N/A'}</Text>
+                  <Text size="sm" fw={600} mb="xs">Basic Headers</Text>
+                  <Text size="xs" mb="xs">Subject: {analysisResult.details?.parsing?.parsed?.metadata?.subject || 'N/A'}</Text>
+                  <Text size="xs" mb="xs">From: {analysisResult.details?.parsing?.parsed?.metadata?.from || 'N/A'}</Text>
+                  <Text size="xs" mb="xs">To: {analysisResult.details?.parsing?.parsed?.metadata?.to || 'N/A'}</Text>
+                  <Text size="xs" mb="sm">Date: {analysisResult.details?.parsing?.parsed?.metadata?.date || 'N/A'}</Text>
                 </div>
-                
+
+                <Divider size="xs" />
+
+                {/* Technical Headers */}
+                <div>
+                  <Text size="sm" fw={600} mb="xs">Technical Headers</Text>
+                  <Text size="xs" mb="xs">Message-ID: {getHeaderValue('message-id')}</Text>
+                  <Text size="xs" mb="xs">Reply-To: {getHeaderValue('reply-to')}</Text>
+                  <Text size="xs" mb="xs">Return-Path: {getHeaderValue('return-path')}</Text>
+                  <Text size="xs" mb="xs">Content-Type: {getHeaderValue('content-type')}</Text>
+                  <Text size="xs" mb="sm">Sender IP: {getHeaderValue('x-sender-ip')}</Text>
+                </div>
+
+                <Divider size="xs" />
+
+                {/* Authentication Results */}
+                <div>
+                  <Text size="sm" fw={600} mb="xs">Authentication</Text>
+                  <Text size="xs" mb="xs">Auth Results: {getHeaderValue('authentication-results')}</Text>
+                  <Text size="xs" mb="sm">Last Hop: {getLastReceived()}</Text>
+                </div>
+
+                <Divider size="xs" />
+
+                {/* Content Structure */}
                 <div>
                   <Text size="sm" fw={600} mb="xs">Content Structure</Text>
-                  <Text size="xs" mb="xs">Has HTML: {analysisResult.details?.parsing?.parsed?.html ? 'Yes' : 'No'}</Text>
-                  <Text size="xs" mb="xs">Has Plain Text: {analysisResult.details?.parsing?.parsed?.text ? 'Yes' : 'No'}</Text>
+                  <Text size="xs" mb="xs">Has HTML: {analysisResult.details?.parsing?.parsed?.htmlText ? 'Yes' : 'No'}</Text>
+                  <Text size="xs" mb="xs">Has Plain Text: {analysisResult.details?.parsing?.parsed?.plainText ? 'Yes' : 'No'}</Text>
                   <Text size="xs" mb="sm">Attachments: {analysisResult.details?.parsing?.parsed?.attachments?.length || 0}</Text>
                 </div>
 
-                {analysisResult.details?.parsing?.parsed?.text && (
-                  <div>
-                    <Text size="sm" fw={600} mb="xs">Text Content Preview</Text>
-                    <Code block style={{ maxHeight: '100px', overflow: 'auto' }}>
-                      {analysisResult.details.parsing.parsed.text.substring(0, 200)}...
-                    </Code>
-                  </div>
-                )}
+                {/* Advanced Headers - Collapsible */}
+                <div>
+                  <Button
+                    variant="subtle"
+                    size="xs"
+                    leftSection={showAdvancedHeaders ? <IconChevronDown size={14} /> : <IconChevronRight size={14} />}
+                    onClick={() => setShowAdvancedHeaders(!showAdvancedHeaders)}
+                    style={{ padding: '4px 8px', height: 'auto' }}
+                  >
+                    <Text size="sm" fw={600}>Advanced Headers</Text>
+                  </Button>
+                  
+                  <Collapse in={showAdvancedHeaders}>
+                    <Stack gap="xs" mt="xs">
+                      <Text size="xs" mb="xs">Received-SPF: {getHeaderValue('received-spf')}</Text>
+                      <Text size="xs" mb="xs">DKIM-Signature: {getHeaderValue('dkim-signature')}</Text>
+                      <Text size="xs" mb="xs">Feedback-ID: {getHeaderValue('feedback-id')}</Text>
+                      <Text size="xs" mb="xs">Auto-Submitted: {getHeaderValue('auto-submitted')}</Text>
+                      <Text size="xs" mb="xs">X-Mailer: {getHeaderValue('x-mailer')}</Text>
+                      <Text size="xs" mb="xs">X-Abuse: {getHeaderValue('x-abuse')}</Text>
+                      <Text size="xs" mb="xs">X-CSA-Complaints: {getHeaderValue('x-csa-complaints')}</Text>
+                      
+                      {/* Microsoft Exchange Headers */}
+                      <Text size="xs" fw={500} mt="xs" mb="xs">Microsoft Exchange:</Text>
+                      <Text size="xs" mb="xs">Organization ID: {getHeaderValue('x-ms-exchange-organization-network-message-id')}</Text>
+                      <Text size="xs" mb="xs">Antispam: {getHeaderValue('x-microsoft-antispam')}</Text>
+                      <Text size="xs" mb="xs">Message Info: {getHeaderValue('x-microsoft-antispam-message-info')}</Text>
+                      <Text size="xs" mb="xs">Cross-Tenant: {getHeaderValue('x-ms-exchange-crosstenant-id')}</Text>
+                    </Stack>
+                  </Collapse>
+                </div>
+
               </Stack>
             </ScrollArea>
           </Card>

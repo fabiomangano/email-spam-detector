@@ -93,7 +93,17 @@ function Upload() {
 
         {/* Alert per errori */}
         {error && (
-          <Alert color="red" title="Error" withCloseButton onClose={() => {}}>
+          <Alert 
+            variant="outline" 
+            title="Error" 
+            withCloseButton 
+            onClose={() => {}}
+            style={{
+              borderColor: '#ef4444',
+              color: '#ef4444',
+              backgroundColor: 'transparent',
+            }}
+          >
             {error}
           </Alert>
         )}
@@ -111,8 +121,8 @@ function Upload() {
                   onClick={handleFullClear}
                   styles={{
                     root: {
-                      borderColor: '#262626',
-                      color: '#262626',
+                      borderColor: '#ef4444',
+                      color: '#ef4444',
                       backgroundColor: '#ffffff',
                       '&:disabled': {
                         backgroundColor: '#ffffff !important',
