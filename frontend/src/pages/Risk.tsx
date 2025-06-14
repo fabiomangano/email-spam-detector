@@ -102,120 +102,79 @@ function Risk() {
           </Card>
         </Grid.Col>
 
-        {analysisResult.recommendations.length > 0 && (
-          <Grid.Col span={12}>
-            <Card padding="lg" radius="md" mb="md">
-              <Title order={4} size="h4" mb="md">🔒 Security Recommendations</Title>
-              <List
-                spacing="sm"
-                size="sm"
-                icon={<Text>"</Text>}
-              >
-                {analysisResult.recommendations.map((rec, index) => (
-                  <List.Item key={index}>
-                    <Text fw={500}>{rec}</Text>
-                  </List.Item>
-                ))}
-              </List>
-            </Card>
-          </Grid.Col>
-        )}
-
-        <Grid.Col span={4}>
-          <Card padding="lg" radius="md" h="100%">
+        {/* Analysis Summary & Recommendations Card */}
+        <Grid.Col span={12}>
+          <Card padding="lg" radius="md">
             <Flex align="center" gap="xs" mb="md">
               <IconSettings size={20} />
-              <Title order={5} size="h5">Technical Metrics</Title>
-            </Flex>
-            <Space h="sm" />
-            
-            <Text size="sm" fw={600} mb="xs">Content Analysis</Text>
-            <Text size="xs" mb="xs">Body Length: {analysisResult.details.technical.bodyLength}</Text>
-            <Text size="xs" mb="xs">Links: {analysisResult.details.technical.numLinks} (Ratio: {analysisResult.details.technical.linkRatio})</Text>
-            <Text size="xs" mb="xs">Images: {analysisResult.details.technical.numImages}</Text>
-            <Text size="xs" mb="sm">Domains: {analysisResult.details.technical.numDomains}</Text>
-            
-            <Text size="sm" fw={600} mb="xs">Security Indicators</Text>
-            <Flex gap="xs" mb="sm" wrap="wrap">
-              <Badge color={analysisResult.details.technical.hasTrackingPixel ? 'red' : 'green'} size="sm">
-                {analysisResult.details.technical.hasTrackingPixel ? 'Tracking Pixel' : 'No Tracking'}
-              </Badge>
-              <Badge color={analysisResult.details.technical.isHtmlOnly ? 'yellow' : 'green'} size="sm">
-                {analysisResult.details.technical.isHtmlOnly ? 'HTML Only' : 'Text+HTML'}
-              </Badge>
-              <Badge color={analysisResult.details.technical.replyToDiffersFromFrom ? 'red' : 'green'} size="sm">
-                {analysisResult.details.technical.replyToDiffersFromFrom ? 'Reply-To Spoofed' : 'Reply-To OK'}
-              </Badge>
+              <Title order={4} size="h4">Analysis Summary & Recommendations</Title>
             </Flex>
             
-            {analysisResult.details.technical.hasAttachments && (
-              <>
-                <Text size="sm" fw={600} mb="xs">Attachments</Text>
-                <Text size="xs" mb="xs">Count: {analysisResult.details.technical.numAttachments}</Text>
-                <Text size="xs" c="dimmed">
-                  Types: {analysisResult.details.technical.attachmentTypes.join(', ')}
+            <Grid>
+              <Grid.Col span={6}>
+                <Text size="sm" fw={600} mb="xs">Overall Assessment</Text>
+                <Text size="sm" mb="md" c="dimmed">
+                  {analysisResult.summary}
                 </Text>
-              </>
-            )}
+                
+                <Text size="sm" fw={600} mb="xs">Risk Breakdown</Text>
+                <Stack gap="xs">
+                  <div>
+                    <Flex justify="space-between" align="center" mb="xs">
+                      <Text size="xs">Technical Risk</Text>
+                      <Text size="xs" fw={500}>
+                        {Math.round((analysisResult.details.technical.linkRatio + 
+                          (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
+                          (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100)}%
+                      </Text>
+                    </Flex>
+                    <Progress size="xs" color="blue" value={
+                      (analysisResult.details.technical.linkRatio + 
+                       (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
+                       (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100
+                    } />
+                  </div>
+                  
+                  <div>
+                    <Flex justify="space-between" align="center" mb="xs">
+                      <Text size="xs">Behavioral Risk</Text>
+                      <Text size="xs" fw={500}>
+                        {Math.round(((analysisResult.details.behavior.urgency.score + analysisResult.details.behavior.socialEngineering.score) / 2) * 100)}%
+                      </Text>
+                    </Flex>
+                    <Progress size="xs" color="orange" value={
+                      ((analysisResult.details.behavior.urgency.score + analysisResult.details.behavior.socialEngineering.score) / 2) * 100
+                    } />
+                  </div>
+                  
+                  <div>
+                    <Flex justify="space-between" align="center" mb="xs">
+                      <Text size="xs">Content Risk</Text>
+                      <Text size="xs" fw={500}>{Math.round(analysisResult.details.nlp.toxicity.score * 100)}%</Text>
+                    </Flex>
+                    <Progress size="xs" color="red" value={analysisResult.details.nlp.toxicity.score * 100} />
+                  </div>
+                </Stack>
+              </Grid.Col>
+              
+              <Grid.Col span={6}>
+                {analysisResult.recommendations.length > 0 && (
+                  <div>
+                    <Text size="sm" fw={600} mb="md">🔒 Security Recommendations</Text>
+                    <List spacing="sm" size="sm">
+                      {analysisResult.recommendations.map((rec, index) => (
+                        <List.Item key={index}>
+                          <Text size="sm">{rec}</Text>
+                        </List.Item>
+                      ))}
+                    </List>
+                  </div>
+                )}
+              </Grid.Col>
+            </Grid>
           </Card>
         </Grid.Col>
 
-        <Grid.Col span={4}>
-          <Card padding="lg" radius="md" h="100%">
-            <Flex align="center" gap="xs" mb="md">
-              <IconBrain size={20} />
-              <Title order={5} size="h5">Behavioral Analysis</Title>
-            </Flex>
-            <Space h="sm" />
-            
-            <Text size="sm" fw={600} mb="xs">Urgency Score</Text>
-            <Progress 
-              value={analysisResult.details.behavior.urgency.score * 100} 
-              color="orange" 
-              size="sm" 
-              mb="sm"
-            />
-            
-            <Text size="sm" fw={600} mb="xs">Social Engineering Score</Text>
-            <Progress 
-              value={analysisResult.details.behavior.socialEngineering.score * 100} 
-              color="red" 
-              size="sm" 
-              mb="sm"
-            />
-            
-            <Text size="xs" c="dimmed">
-              {analysisResult.details.behavior.patterns.analysis}
-            </Text>
-          </Card>
-        </Grid.Col>
-
-        <Grid.Col span={4}>
-          <Card padding="lg" radius="md" h="100%">
-            <Flex align="center" gap="xs" mb="md">
-              <IconFileText size={20} />
-              <Title order={5} size="h5">Content Analysis</Title>
-            </Flex>
-            <Space h="sm" />
-            
-            <Text size="sm" fw={600} mb="xs">Sentiment</Text>
-            <Badge color={analysisResult.details.nlp.sentiment.label === 'positive' ? 'green' : analysisResult.details.nlp.sentiment.label === 'negative' ? 'red' : 'gray'} mb="sm">
-              {analysisResult.details.nlp.sentiment.label}
-            </Badge>
-            
-            <Text size="sm" fw={600} mb="xs">Language</Text>
-            <Text size="sm" mb="sm">
-              {analysisResult.details.nlp.language.detected} ({Math.round(analysisResult.details.nlp.language.confidence * 100)}%)
-            </Text>
-            
-            <Text size="sm" fw={600} mb="xs">Toxicity Score</Text>
-            <Progress 
-              value={analysisResult.details.nlp.toxicity.score * 100} 
-              color="red" 
-              size="sm"
-            />
-          </Card>
-        </Grid.Col>
       </Grid>
     </div>
   );

@@ -17,6 +17,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Link } from "react-router";
 import Upload from "./pages/Upload";
 import Risk from "./pages/Risk";
+import Report from "./pages/Report";
 import { AnalysisProvider } from "./contexts/AnalysisContext";
 import { theme } from "./theme/theme";
 
@@ -96,7 +97,7 @@ function App() {
               />
               <NavLink
                 component={Link}
-                to="/dashboard"
+                to="/report"
                 label="Report"
                 leftSection={<IconChartBar size={16} stroke={1.5} />}
                 style={{
@@ -206,7 +207,7 @@ function App() {
             <Route index element={<Upload />} />
             <Route path="upload" element={<Upload />} />
             <Route path="risk" element={<Risk />} />
-            <Route path="report" element={<>REPORT</>} />
+            <Route path="report" element={<Report />} />
           </Routes>
         </AppShell.Main>
 

@@ -137,8 +137,8 @@ export function useEmailUpload() {
         setParsedData(data.details.parsing);
       }
       
-      // Naviga alla pagina Risk per mostrare i risultati
-      navigate('/risk');
+      // Naviga alla pagina Report per mostrare i risultati
+      navigate('/report');
       
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Errore sconosciuto durante l'analisi";
