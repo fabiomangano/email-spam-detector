@@ -155,8 +155,7 @@ export function EmailInputPanel({
               wrapper: { height: "100%" },
               input: { 
                 height: "100%",
-                fontFamily: "monospace",
-                fontSize: "14px",
+                fontFamily: "Inter",
               },
             }}
           />

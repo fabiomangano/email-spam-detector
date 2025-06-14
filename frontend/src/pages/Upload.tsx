@@ -79,7 +79,7 @@ function Upload() {
         
         {/* Layout principale responsive */}
         <Grid h="100%" style={{ flex: 1 }}>
-          <Grid.Col span={{ base: 12, lg: 6 }} h="100%">
+          <Grid.Col span={{ base: 12, lg: 6 }} h="60vh">
             <EmailInputPanel
               textAreaValue={textAreaValue}
               uploadedFile={uploadedFile}
@@ -95,7 +95,7 @@ function Upload() {
             />
           </Grid.Col>
           
-          <Grid.Col span={{ base: 12, lg: 6 }} h="100%">
+          <Grid.Col span={{ base: 12, lg: 6 }} h="60vh">
             <ContentPanel 
               parsedData={parsedData}
               onAnalyze={handleAnalyze}
