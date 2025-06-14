@@ -68,6 +68,11 @@ export function ContentPanel({
               size="sm"
               leftSection={<IconCopy size={16} />}
               disabled={!bodyText}
+              onClick={() => {
+                if (bodyText) {
+                  navigator.clipboard.writeText(bodyText);
+                }
+              }}
             >
               Copy
             </Button>

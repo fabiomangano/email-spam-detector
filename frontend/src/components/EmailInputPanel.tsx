@@ -79,7 +79,12 @@ export function EmailInputPanel({
               color="gray"
               size="sm"
               leftSection={<IconCopy size={16} />}
-              disabled={true}
+              disabled={activeTab === "gallery" ? !textAreaValue.trim() : !uploadedFile}
+              onClick={() => {
+                if (activeTab === "gallery" && textAreaValue.trim()) {
+                  navigator.clipboard.writeText(textAreaValue);
+                }
+              }}
             >
               Copy
             </Button>

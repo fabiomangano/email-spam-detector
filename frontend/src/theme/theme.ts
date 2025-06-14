@@ -1,5 +1,4 @@
 import { createTheme, rem } from '@mantine/core';
-import { tokens } from './tokens';
 
 export const theme = createTheme({
   // Font Family - Modern dashboard fonts

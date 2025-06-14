@@ -1,6 +1,6 @@
 import "@mantine/core/styles.css";
 import "@mantine/dropzone/styles.css";
-import { Divider, NavLink, Space, Title, Flex, Text } from "@mantine/core";
+import { Divider, NavLink, Title, Flex, Text } from "@mantine/core";
 import {
   IconChartBar,
   IconCheckupList,
