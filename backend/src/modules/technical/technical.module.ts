@@ -5,5 +5,6 @@ import { TechnicalService } from './technical.service';
 @Module({
   controllers: [TechnicalController],
   providers: [TechnicalService],
+  exports: [TechnicalService],
 })
 export class TechnicalModule {}

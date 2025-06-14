@@ -3,7 +3,8 @@ import { NlpService } from './nlp.service';
 import { NlpController } from './nlp.controller';
 
 @Module({
+  controllers: [NlpController],
   providers: [NlpService],
-  controllers: [NlpController]
+  exports: [NlpService],
 })
 export class NlpModule {}
