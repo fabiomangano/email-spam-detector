@@ -56,100 +56,149 @@ function App() {
           </Flex>
         </AppShell.Header>
 
-        <AppShell.Navbar p="md">
-          <Space h="sm" />
-          <Title 
-            order={6} 
-            c="gray.7" 
-            mb="xs" 
-            px="md"
-            style={{ 
-              fontWeight: 600,
-              letterSpacing: '0.025em',
-              textTransform: 'uppercase',
-              fontSize: '0.75rem'
-            }}
-          >
-            Email Analysis
-          </Title>
-          <NavLink
-            component={Link}
-            to="/upload"
-            label="Upload"
-            leftSection={<IconUpload size={16} stroke={1.5} />}
-          />
-          {/* <NavLink
-            component={Link}
-            to="/dashboard"
-            label="Content"
-            leftSection={<IconScan size={16} stroke={1.5} />}
-          /> */}
-          <NavLink
-            component={Link}
-            to="/dashboard"
-            label="Report"
-            leftSection={<IconChartBar size={16} stroke={1.5} />}
-          />
-          <NavLink
-            component={Link}
-            to="/risk"
-            label="Risk"
-            leftSection={<IconCheckupList size={16} stroke={1.5} />}
-          />
-          <Space h="md" />
-          <Divider />
-          <Space h="md" />
-          
-          <Title 
-            order={6} 
-            c="gray.7" 
-            mb="xs" 
-            px="md"
-            style={{ 
-              fontWeight: 600,
-              letterSpacing: '0.025em',
-              textTransform: 'uppercase',
-              fontSize: '0.75rem'
-            }}
-          >
-            Configuration
-          </Title>
-          <NavLink
-            component={Link}
-            to="/dashboard"
-            label="Config"
-            leftSection={<IconSettings size={16} stroke={1.5} />}
-          />
-          <Space h="md" />
-          <Divider />
-          <Space h="md" />
-          
-          <Title 
-            order={6} 
-            c="gray.7" 
-            mb="xs" 
-            px="md"
-            style={{ 
-              fontWeight: 600,
-              letterSpacing: '0.025em',
-              textTransform: 'uppercase',
-              fontSize: '0.75rem'
-            }}
-          >
-            Help & Info
-          </Title>
-          <NavLink
-            component={Link}
-            to="/dashboard"
-            label="Guide"
-            leftSection={<IconUserQuestion size={16} stroke={1.5} />}
-          />
-          <NavLink
-            component={Link}
-            to="/dashboard"
-            label="About"
-            leftSection={<IconInfoHexagon size={16} stroke={1.5} />}
-          />
+        <AppShell.Navbar 
+          p={0}
+          style={{ 
+            backgroundColor: '#ffffff',
+            borderRight: '1px solid #e5e5e5',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
+          }}
+        >
+          <div style={{ padding: '1.5rem 1rem 1rem 1rem' }}>
+            <Title 
+              order={6} 
+              c="gray.7" 
+              mb="md" 
+              px="sm"
+              style={{ 
+                fontWeight: 600,
+                letterSpacing: '0.025em',
+                textTransform: 'uppercase',
+                fontSize: '0.7rem'
+              }}
+            >
+              Email Analysis
+            </Title>
+            
+            <div style={{ marginBottom: '1.5rem' }}>
+              <NavLink
+                component={Link}
+                to="/upload"
+                label="Upload"
+                leftSection={<IconUpload size={16} stroke={1.5} />}
+                style={{
+                  borderRadius: '0.5rem',
+                  marginBottom: '0.25rem',
+                  padding: '0.625rem 0.75rem',
+                  fontWeight: 500,
+                  fontSize: '0.875rem'
+                }}
+              />
+              <NavLink
+                component={Link}
+                to="/dashboard"
+                label="Report"
+                leftSection={<IconChartBar size={16} stroke={1.5} />}
+                style={{
+                  borderRadius: '0.5rem',
+                  marginBottom: '0.25rem',
+                  padding: '0.625rem 0.75rem',
+                  fontWeight: 500,
+                  fontSize: '0.875rem'
+                }}
+              />
+              <NavLink
+                component={Link}
+                to="/risk"
+                label="Risk"
+                leftSection={<IconCheckupList size={16} stroke={1.5} />}
+                style={{
+                  borderRadius: '0.5rem',
+                  marginBottom: '0.25rem',
+                  padding: '0.625rem 0.75rem',
+                  fontWeight: 500,
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
+            
+            <Divider color="gray.2" />
+            
+            <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+              <Title 
+                order={6} 
+                c="gray.7" 
+                mb="md" 
+                px="sm"
+                style={{ 
+                  fontWeight: 600,
+                  letterSpacing: '0.025em',
+                  textTransform: 'uppercase',
+                  fontSize: '0.7rem'
+                }}
+              >
+                Configuration
+              </Title>
+              <NavLink
+                component={Link}
+                to="/dashboard"
+                label="Config"
+                leftSection={<IconSettings size={16} stroke={1.5} />}
+                style={{
+                  borderRadius: '0.5rem',
+                  marginBottom: '0.25rem',
+                  padding: '0.625rem 0.75rem',
+                  fontWeight: 500,
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
+            
+            <Divider color="gray.2" />
+            
+            <div style={{ marginTop: '1.5rem' }}>
+              <Title 
+                order={6} 
+                c="gray.7" 
+                mb="md" 
+                px="sm"
+                style={{ 
+                  fontWeight: 600,
+                  letterSpacing: '0.025em',
+                  textTransform: 'uppercase',
+                  fontSize: '0.7rem'
+                }}
+              >
+                Help & Info
+              </Title>
+              <NavLink
+                component={Link}
+                to="/dashboard"
+                label="Guide"
+                leftSection={<IconUserQuestion size={16} stroke={1.5} />}
+                style={{
+                  borderRadius: '0.5rem',
+                  marginBottom: '0.25rem',
+                  padding: '0.625rem 0.75rem',
+                  fontWeight: 500,
+                  fontSize: '0.875rem'
+                }}
+              />
+              <NavLink
+                component={Link}
+                to="/dashboard"
+                label="About"
+                leftSection={<IconInfoHexagon size={16} stroke={1.5} />}
+                style={{
+                  borderRadius: '0.5rem',
+                  marginBottom: '0.25rem',
+                  padding: '0.625rem 0.75rem',
+                  fontWeight: 500,
+                  fontSize: '0.875rem'
+                }}
+              />
+            </div>
+          </div>
         </AppShell.Navbar>
 
         <AppShell.Main style={{ backgroundColor: "#f5f5f5", height: "100vh" }}>
