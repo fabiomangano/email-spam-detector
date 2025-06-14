@@ -10,6 +10,7 @@ import { ResultModule } from './modules/result/result.module';
 import { LlmModule } from './modules/llm/llm.module';
 import { ConfigModule } from './config/config.module';
 import { PipelineModule } from './pipeline/pipeline.module';
+import { ModelModule } from './model/model.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { PipelineModule } from './pipeline/pipeline.module';
     LlmModule,
     ConfigModule,
     PipelineModule,
+    ModelModule,
   ],
   controllers: [AppController, UploadController],
   providers: [AppService],
