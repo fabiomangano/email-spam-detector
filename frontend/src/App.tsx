@@ -5,7 +5,6 @@ import {
   IconChartBar,
   IconCheckupList,
   IconInfoHexagon,
-  IconScan,
   IconSettings,
   IconUpload,
   IconUserQuestion,
