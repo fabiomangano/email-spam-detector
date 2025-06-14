@@ -2,6 +2,13 @@ import { EmailTechnicalMetrics } from './email-metrics';
 import { BehaviorAnalysisResult } from './behavior.util';
 import { NlpAnalysisResult } from './nlp.util';
 
+interface DecisionMetrics {
+  techScore: number;
+  nlpScore: number;
+  finalScore: number;
+  finalPrediction: string;
+}
+
 export interface SpamAnalysisResult {
   overallScore: number;
   riskLevel: 'low' | 'medium' | 'high';
@@ -19,12 +26,14 @@ export function generateResult(
   behaviorResult: BehaviorAnalysisResult,
   nlpResult: NlpAnalysisResult,
 ): Promise<SpamAnalysisResult> {
-  // Calcola il punteggio complessivo basato sui risultati dei moduli
-  const technicalScore = calculateTechnicalScore(technicalResult);
+  // Usa il nuovo sistema di calcolo
+  const decisionMetrics = calculateResult(technicalResult, nlpResult);
+  
+  // Calcola il behavior score separatamente (per compatibilità)
   const behaviorScore = calculateBehaviorScore(behaviorResult);
-  const nlpScore = calculateNlpScore(nlpResult);
-
-  const overallScore = (technicalScore + behaviorScore + nlpScore) / 3;
+  
+  // Il punteggio finale combina decision metrics e behavior
+  const overallScore = Math.min((decisionMetrics.finalScore / 10) * 0.7 + behaviorScore * 0.3, 1);
 
   return Promise.resolve({
     overallScore,
@@ -39,24 +48,24 @@ export function generateResult(
   });
 }
 
-function calculateTechnicalScore(technical: EmailTechnicalMetrics): number {
+function calculateTechnicalScore(metrics: EmailTechnicalMetrics): number {
   let score = 0;
 
-  // Authentication checks
-  if (technical.spfResult && technical.spfResult !== 'pass') score += 0.2;
-  if (technical.dkimResult && technical.dkimResult !== 'pass') score += 0.2;
-  if (technical.dmarcResult && technical.dmarcResult !== 'pass') score += 0.2;
+  // Penalizzazioni per caratteristiche tecniche
+  if (metrics.linkRatio > 0.01) score += 2;
+  if (metrics.numLinks > 5) score += 3;
+  if (metrics.numDomains > 3) score += 2;
+  if (metrics.hasTrackingPixel) score += 2;
+  if (metrics.replyToDiffersFromFrom) score += 1;
+  if (metrics.isHtmlOnly) score += 1;
+  if (metrics.hasAttachments) score += 2;
 
-  // Suspicious indicators
-  if (technical.hasTrackingPixel) score += 0.1;
-  if (technical.replyToDiffersFromFrom) score += 0.1;
-  if (technical.isHtmlOnly) score += 0.05;
+  // Considera SPF, DKIM e DMARC
+  if (metrics.spfResult === 'fail') score += 3;
+  if (metrics.dkimResult === 'fail') score += 3;
+  if (metrics.dmarcResult === 'fail') score += 3;
 
-  // Link analysis
-  if (technical.linkRatio > 0.1) score += 0.1;
-  if (technical.numDomains > 5) score += 0.05;
-
-  return Math.min(score, 1);
+  return score;
 }
 
 function calculateBehaviorScore(behavior: BehaviorAnalysisResult): number {
@@ -66,21 +75,51 @@ function calculateBehaviorScore(behavior: BehaviorAnalysisResult): number {
   );
 }
 
-function calculateNlpScore(nlp: NlpAnalysisResult): number {
-  // Use prediction and spam metrics for scoring
-  let score = nlp.toxicity.score;
-  
-  // Add penalty based on prediction
-  if (nlp.prediction === 'spam') {
-    score += 0.3;
-  }
-  
-  // Add penalty based on spam word ratio
-  if (nlp.nlpMetrics.spamWordRatio > 0.1) {
-    score += nlp.nlpMetrics.spamWordRatio * 0.2;
-  }
-  
-  return Math.min(score, 1);
+function calculateNlpScore(nlpMetrics: any): number {
+  let score = 0;
+
+  // Penalizzazioni per parole spam
+  if (nlpMetrics?.spamWordRatio > 0.05) score += 3;
+  if (nlpMetrics?.numSpammyWords > 3) score += 2;
+
+  // Penalizzazioni per uso di maiuscole o esclamazioni
+  if (nlpMetrics?.allCapsCount > 5) score += 2;
+  if (nlpMetrics?.exclamationCount > 3) score += 2;
+
+  return score;
+}
+
+function calculateResult(
+  technicalMetrics: EmailTechnicalMetrics,
+  nlpOutput: any,
+): DecisionMetrics {
+  console.log('### STEP 5 - Decision Layer Started ###');
+
+  // Calcola i punteggi
+  const techScore = calculateTechnicalScore(technicalMetrics);
+  const nlpScore = calculateNlpScore(nlpOutput?.nlpMetrics || {});
+
+  // Ponderazione: 60% tecniche, 40% NLP
+  const finalScore = techScore * 0.6 + nlpScore * 0.4;
+
+  // Soglia di decisione
+  const isSpam = finalScore > 5 || nlpOutput?.prediction === 'spam';
+
+  const finalPrediction = isSpam ? 'spam' : 'ham';
+
+  console.log('📦 Technical Score:', techScore);
+  console.log('🧠 NLP Score:', nlpScore);
+  console.log('📊 Final Score:', finalScore);
+  console.log('📌 Final Prediction:', finalPrediction);
+
+  console.log('### STEP 5 - Decision Layer Ended ###');
+
+  return {
+    techScore,
+    nlpScore,
+    finalScore,
+    finalPrediction,
+  };
 }
 
 function determineRiskLevel(score: number): 'low' | 'medium' | 'high' {
