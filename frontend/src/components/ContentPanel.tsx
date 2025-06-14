@@ -43,14 +43,16 @@ export function ContentPanel({
     <Card padding="lg" radius="sm" style={{ height: "100%", flex: 1 }}>
       <Stack gap="sm" h="100%">
         <Flex justify="space-between" align="center">
-          <Title order={2} size="h3">
-            Content
+          <Flex align="center" gap="sm">
+            <Title order={2} size="h3">
+              Content
+            </Title>
             {parsedData && (
-              <Badge color="green" variant="dot" size="sm" ml="sm">
+              <Badge color="green" variant="dot" size="sm">
                 Parsed
               </Badge>
             )}
-          </Title>
+          </Flex>
           <Group gap="sm">
             <Button
               variant="outline"
@@ -116,9 +118,9 @@ export function ContentPanel({
         ) : (
           <Stack gap="sm" style={{ flex: 1 }}>
             <div>
-              <Title order={5} size="h6" mb="xs" fw={500} c="gray.7">
+              <Text size="sm" fw={600} c="gray.9" mb="xs">
                 Email Headers
-              </Title>
+              </Text>
               <Stack gap={4}>
                 <FieldRow
                   label="From"
@@ -144,9 +146,9 @@ export function ContentPanel({
             </div>
 
             <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-              <Title order={5} size="h6" mb="xs" fw={500} c="gray.7">
+              <Text size="sm" fw={600} c="gray.9" mb="xs">
                 Email Body
-              </Title>
+              </Text>
               <Textarea
                 placeholder="Email content will appear here after parsing..."
                 value={bodyText}
