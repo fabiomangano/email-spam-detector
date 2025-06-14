@@ -11,7 +11,14 @@ import {
   Title,
   Alert,
 } from "@mantine/core";
-import { IconArrowLeft, IconShield, IconAlertTriangle } from "@tabler/icons-react";
+import { 
+  IconArrowLeft, 
+  IconShield, 
+  IconAlertTriangle,
+  IconSettings,
+  IconBrain,
+  IconFileText
+} from "@tabler/icons-react";
 import { useAnalysis } from "../contexts/AnalysisContext";
 import { Link } from "react-router";
 
@@ -116,7 +123,10 @@ function Risk() {
 
         <Grid.Col span={4}>
           <Card padding="lg" radius="md" h="100%">
-            <Title order={5} size="h5" mb="md">⚙️ Technical Metrics</Title>
+            <Flex align="center" gap="xs" mb="md">
+              <IconSettings size={20} />
+              <Title order={5} size="h5">Technical Metrics</Title>
+            </Flex>
             <Space h="sm" />
             
             <Text size="sm" fw={600} mb="xs">Content Analysis</Text>
@@ -152,7 +162,10 @@ function Risk() {
 
         <Grid.Col span={4}>
           <Card padding="lg" radius="md" h="100%">
-            <Title order={5} size="h5" mb="md">🧠 Behavioral Analysis</Title>
+            <Flex align="center" gap="xs" mb="md">
+              <IconBrain size={20} />
+              <Title order={5} size="h5">Behavioral Analysis</Title>
+            </Flex>
             <Space h="sm" />
             
             <Text size="sm" fw={600} mb="xs">Urgency Score</Text>
@@ -179,7 +192,10 @@ function Risk() {
 
         <Grid.Col span={4}>
           <Card padding="lg" radius="md" h="100%">
-            <Title order={5} size="h5" mb="md">📝 Content Analysis</Title>
+            <Flex align="center" gap="xs" mb="md">
+              <IconFileText size={20} />
+              <Title order={5} size="h5">Content Analysis</Title>
+            </Flex>
             <Space h="sm" />
             
             <Text size="sm" fw={600} mb="xs">Sentiment</Text>
