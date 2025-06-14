@@ -10,8 +10,6 @@ export class ParsingService {
   }> {
     const filePath = path.join(process.cwd(), 'storage', filename);
 
-    console.log('Looking for file:', filePath);
-
     if (!fs.existsSync(filePath)) {
       throw new Error(`File not found: ${filename}`);
     }

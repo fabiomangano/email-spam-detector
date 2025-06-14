@@ -12,7 +12,6 @@ export class PipelineController {
       const result = await this.pipelineService.runFullPipeline(filename);
       return res.json(result);
     } catch (error) {
-      console.error('Pipeline error:', error);
       return res.status(400).json({
         error: (error as Error).message,
         pipeline: 'failed',
