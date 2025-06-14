@@ -29,10 +29,12 @@ export function ContentPanel({
   canParse,
 }: ContentPanelProps) {
   const spfDmarcString = parsedData?.metrics
-    ? `SPF=${parsedData.metrics.spfResult ?? "N/A"}, DKIM=${
-        parsedData.metrics.dkimResult ?? "N/A"
-      }, DMARC=${parsedData.metrics.dmarcResult ?? "N/A"}`
-    : "N/A";
+    ? [
+        parsedData.metrics.spfResult && `SPF=${parsedData.metrics.spfResult}`,
+        parsedData.metrics.dkimResult && `DKIM=${parsedData.metrics.dkimResult}`,
+        parsedData.metrics.dmarcResult && `DMARC=${parsedData.metrics.dmarcResult}`
+      ].filter(Boolean).join(", ") || "—"
+    : "—";
 
   const bodyText =
     parsedData?.parsed?.plainText || parsedData?.parsed?.htmlText || "";
@@ -41,16 +43,14 @@ export function ContentPanel({
     <Card padding="lg" radius="sm" style={{ height: "100%", flex: 1 }}>
       <Stack gap="sm" h="100%">
         <Flex justify="space-between" align="center">
-          <div>
-            <Title order={2} size="h3">
-              Content
-            </Title>
+          <Title order={2} size="h3">
+            Content
             {parsedData && (
-              <Badge color="green" variant="light" size="sm" mt="xs">
-                Parsed Successfully
+              <Badge color="green" variant="dot" size="sm" ml="sm">
+                Parsed
               </Badge>
             )}
-          </div>
+          </Title>
           <Group gap="sm">
             <Button
               variant="light"
@@ -88,12 +88,12 @@ export function ContentPanel({
             </Text>
           </Stack>
         ) : (
-          <Stack gap="md" style={{ flex: 1 }}>
+          <Stack gap="sm" style={{ flex: 1 }}>
             <div>
-              <Title order={4} size="h5" mb="sm">
-                📧 Email Headers
+              <Title order={5} size="h6" mb="xs" fw={500} c="gray.7">
+                Email Headers
               </Title>
-              <Stack gap="xs">
+              <Stack gap={4}>
                 <FieldRow
                   label="From"
                   value={parsedData?.parsed?.metadata?.from}
@@ -107,12 +107,18 @@ export function ContentPanel({
                   label="Date"
                   value={parsedData?.parsed?.metadata?.date}
                 />
-                <FieldRow label="Security" value={spfDmarcString} />
+                {parsedData?.metrics && (
+                  parsedData.metrics.spfResult || 
+                  parsedData.metrics.dkimResult || 
+                  parsedData.metrics.dmarcResult
+                ) && (
+                  <FieldRow label="Security" value={spfDmarcString} />
+                )}
               </Stack>
             </div>
 
             <div style={{ flex: 1, minHeight: 0 }}>
-              <Title order={4} size="h5" mb="sm">
+              <Title order={5} size="h6" mb="xs" fw={500} c="gray.7">
                 Email Body
               </Title>
               <Textarea
@@ -120,13 +126,15 @@ export function ContentPanel({
                 value={bodyText}
                 readOnly
                 autosize
-                minRows={8}
-                maxRows={15}
+                minRows={10}
+                maxRows={20}
                 styles={{
                   input: {
-                    backgroundColor: "#f8fafc",
-                    border: "1px solid #e2e8f0",
+                    backgroundColor: "var(--mantine-color-gray-0)",
+                    border: "1px solid var(--mantine-color-gray-3)",
                     fontFamily: "Inter",
+                    fontSize: "var(--mantine-font-size-xs)",
+                    lineHeight: 1.4,
                   },
                 }}
               />

@@ -1,5 +1,4 @@
 import { Flex, Input, Text } from "@mantine/core";
-import { tokens } from "../theme/tokens";
 
 interface FieldRowProps {
   label: string;
@@ -8,13 +7,13 @@ interface FieldRowProps {
 
 export function FieldRow({ label, value }: FieldRowProps) {
   return (
-    <Flex align="center" gap="md" mb="md">
+    <Flex align="center" gap="xs" mb={4}>
       <Text 
-        size="sm" 
+        size="xs" 
         fw={500} 
-        c="gray.7"
+        c="gray.6"
         style={{ 
-          minWidth: 100,
+          minWidth: 60,
           flexShrink: 0,
         }}
       >
@@ -23,18 +22,19 @@ export function FieldRow({ label, value }: FieldRowProps) {
       <Input
         style={{ flex: 1 }}
         value={value || "—"}
-        size="sm"
+        size="xs"
         readOnly
         styles={{
           input: {
-            backgroundColor: tokens.colors.gray[50],
-            border: `1px solid ${tokens.colors.gray[200]}`,
-            color: tokens.colors.gray[800],
-            fontSize: tokens.typography.fontSize.sm,
-            fontFamily: value ? tokens.typography.fontFamily.mono.join(', ') : 'inherit',
-            cursor: 'default',
-            '&:focus': {
-              borderColor: tokens.colors.gray[300],
+            backgroundColor: "var(--mantine-color-gray-0)",
+            border: "1px solid var(--mantine-color-gray-2)",
+            color: "var(--mantine-color-gray-8)",
+            fontSize: "var(--mantine-font-size-xs)",
+            fontFamily: value ? "var(--mantine-font-family-monospace)" : "inherit",
+            cursor: "default",
+            height: "24px",
+            "&:focus": {
+              borderColor: "var(--mantine-color-gray-3)",
             }
           },
         }}
