@@ -117,7 +117,7 @@ export function ContentPanel({
               </Stack>
             </div>
 
-            <div style={{ flex: 1, minHeight: 0 }}>
+            <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
               <Title order={5} size="h6" mb="xs" fw={500} c="gray.7">
                 Email Body
               </Title>
@@ -125,16 +125,20 @@ export function ContentPanel({
                 placeholder="Email content will appear here after parsing..."
                 value={bodyText}
                 readOnly
-                autosize
-                minRows={10}
-                maxRows={20}
+                style={{ flex: 1 }}
                 styles={{
+                  wrapper: { 
+                    height: "100%", 
+                    flex: 1
+                  },
                   input: {
+                    height: "100%",
                     backgroundColor: "var(--mantine-color-gray-0)",
                     border: "1px solid var(--mantine-color-gray-3)",
                     fontFamily: "Inter",
                     fontSize: "var(--mantine-font-size-xs)",
                     lineHeight: 1.4,
+                    resize: "none",
                   },
                 }}
               />

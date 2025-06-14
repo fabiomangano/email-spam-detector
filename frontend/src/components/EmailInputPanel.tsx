@@ -131,7 +131,7 @@ export function EmailInputPanel({
             value={textAreaValue}
             onChange={(e) => onTextChange(e.target.value)}
             placeholder="Paste your email content here (headers + body)...&#10;&#10;Example:&#10;From: sender@example.com&#10;To: recipient@example.com&#10;Subject: Test Email&#10;&#10;Email body content..."
-            h={"92%"}
+            h={"95%"}
             styles={{
               wrapper: { height: "100%" },
               input: {
