@@ -119,6 +119,8 @@ export function useEmailUpload() {
       const response = await fetch(
         `${API_BASE_URL}/pipeline/${encodeURIComponent(uploadedFilename)}`
       );
+
+      console.log('response', response)
       
       if (!response.ok) {
         const errorData = await response.json();

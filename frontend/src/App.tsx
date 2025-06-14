@@ -1,6 +1,6 @@
 import "@mantine/core/styles.css";
 import "@mantine/dropzone/styles.css";
-import { Divider, NavLink, Space } from "@mantine/core";
+import { Divider, NavLink, Space, Title, Flex, Text } from "@mantine/core";
 import {
   IconChartBar,
   IconCheckupList,
@@ -18,12 +18,13 @@ import { Link } from "react-router";
 import Upload from "./pages/Upload";
 import Risk from "./pages/Risk";
 import { AnalysisProvider } from "./contexts/AnalysisContext";
+import { theme } from "./theme/theme";
 
 function App() {
   const [opened, { toggle }] = useDisclosure();
 
   return (
-    <MantineProvider>
+    <MantineProvider theme={theme}>
       <AnalysisProvider>
         <AppShell
         header={{ height: 60 }}
@@ -35,34 +36,42 @@ function App() {
         padding={"lg"}
         footer={{ height: 60 }}
       >
-        <AppShell.Header p="sm" >
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <span
-            style={{
-              fontWeight: 900,
-              fontSize: "20px",
-              color: "#000",
-              letterSpacing: "-0.5px",
-              paddingLeft: "20px"
-            }}
-          >
-            SpamShield
-          </span>
+        <AppShell.Header p="md">
+          <Flex align="center" gap="md" h="100%">
+            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+            <Title 
+              order={1} 
+              size="h3" 
+              style={{ 
+                background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                fontWeight: 800,
+                letterSpacing: '-0.025em'
+              }}
+            >
+              🛡️ SpamShield
+            </Title>
+          </Flex>
         </AppShell.Header>
 
         <AppShell.Navbar p="md">
-         <Space h="sm"></Space>
-          <span
-            style={{
-              fontWeight: 700,
-              fontSize: "16px",
-              color: "#000",
-              letterSpacing: "-0.5px",
-              marginLeft: "10px",
+          <Space h="sm" />
+          <Title 
+            order={6} 
+            c="gray.7" 
+            mb="xs" 
+            px="md"
+            style={{ 
+              fontWeight: 600,
+              letterSpacing: '0.025em',
+              textTransform: 'uppercase',
+              fontSize: '0.75rem'
             }}
           >
-           Email
-          </span>
+            Email Analysis
+          </Title>
           <NavLink
             component={Link}
             to="/upload"
@@ -87,41 +96,48 @@ function App() {
             label="Risk"
             leftSection={<IconCheckupList size={16} stroke={1.5} />}
           />
-          <br></br>
-
-          <Divider></Divider>
-          <br></br>
-          <span
-            style={{
-              fontWeight: 700,
-              fontSize: "16px",
-              color: "#000",
-              letterSpacing: "-0.5px",
-              marginLeft: "10px",
+          <Space h="md" />
+          <Divider />
+          <Space h="md" />
+          
+          <Title 
+            order={6} 
+            c="gray.7" 
+            mb="xs" 
+            px="md"
+            style={{ 
+              fontWeight: 600,
+              letterSpacing: '0.025em',
+              textTransform: 'uppercase',
+              fontSize: '0.75rem'
             }}
           >
-            Settings
-          </span>
+            Configuration
+          </Title>
           <NavLink
             component={Link}
             to="/dashboard"
             label="Config"
             leftSection={<IconSettings size={16} stroke={1.5} />}
           />
-          <br></br>
-          <Divider></Divider>
-          <br></br>
-          <span
-            style={{
-              fontWeight: 700,
-              fontSize: "16px",
-              color: "#000",
-              letterSpacing: "-0.5px",
-              marginLeft: "10px",
+          <Space h="md" />
+          <Divider />
+          <Space h="md" />
+          
+          <Title 
+            order={6} 
+            c="gray.7" 
+            mb="xs" 
+            px="md"
+            style={{ 
+              fontWeight: 600,
+              letterSpacing: '0.025em',
+              textTransform: 'uppercase',
+              fontSize: '0.75rem'
             }}
           >
-            Misc
-          </span>
+            Help & Info
+          </Title>
           <NavLink
             component={Link}
             to="/dashboard"
@@ -145,7 +161,13 @@ function App() {
           </Routes>
         </AppShell.Main>
 
-        <AppShell.Footer p="sm"></AppShell.Footer>
+        <AppShell.Footer p="md">
+          <Flex align="center" justify="center" h="100%">
+            <Text size="sm" c="gray.6">
+              © 2024 SpamShield - Email Security Analysis
+            </Text>
+          </Flex>
+        </AppShell.Footer>
       </AppShell>
       </AnalysisProvider>
     </MantineProvider>

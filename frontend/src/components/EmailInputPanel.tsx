@@ -67,8 +67,8 @@ export function EmailInputPanel({
       }}
     >
       <Flex justify="space-between" gap="10px">
-        <Title order={2} style={{ fontSize: "20px" }}>
-          Email
+        <Title order={2} size="h3">
+          Email Input
         </Title>
         <Group gap="sm" justify="flex-end">
           <Button
