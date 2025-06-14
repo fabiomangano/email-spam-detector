@@ -28,6 +28,7 @@ function Upload() {
     setUploadedFile,
     setActiveTab,
     handleClear,
+    handleFullClear,
     handleUpload,
     handleParse,
     handleAnalyze,
@@ -108,6 +109,16 @@ function Upload() {
               >
                 Clear
               </Button>
+              {parsedData && (
+                <Button
+                  variant="subtle"
+                  color="red"
+                  size="sm"
+                  onClick={handleFullClear}
+                >
+                  New Analysis
+                </Button>
+              )}
               <Button
                 variant="gradient"
                 gradient={{ from: "red", to: "orange" }}

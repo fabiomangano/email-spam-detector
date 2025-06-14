@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { useNavigate } from "react-router";
-import type { ParsedData, TabType, PipelineResult } from "../types/email";
+import type { PipelineResult, ParsedData } from "../types/email";
 import { useAnalysis } from "../contexts/AnalysisContext";
 
 interface UploadResponse {
@@ -12,24 +11,44 @@ const API_BASE_URL = "http://localhost:3000";
 
 export function useEmailUpload() {
   const navigate = useNavigate();
-  const { setAnalysisResult } = useAnalysis();
-  
-  const [textAreaValue, setTextAreaValue] = useState("");
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [uploadedFilename, setUploadedFilename] = useState<string | null>(null);
-  const [parsedData, setParsedData] = useState<ParsedData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [analyzing, setAnalyzing] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabType>("gallery");
-  const [error, setError] = useState<string | null>(null);
+  const { 
+    analysisResult,
+    setAnalysisResult,
+    textAreaValue,
+    setTextAreaValue,
+    uploadedFile,
+    setUploadedFile,
+    uploadedFilename,
+    setUploadedFilename,
+    parsedData,
+    setParsedData,
+    activeTab,
+    setActiveTab,
+    error,
+    setError,
+    loading,
+    setLoading,
+    analyzing,
+    setAnalyzing
+  } = useAnalysis();
 
   const handleClear = () => {
     setTextAreaValue("");
     setUploadedFile(null);
     setUploadedFilename(null);
     setParsedData(null);
+    setError(null);
+  };
+
+  const handleFullClear = () => {
+    setTextAreaValue("");
+    setUploadedFile(null);
+    setUploadedFilename(null);
+    setParsedData(null);
     setAnalysisResult(null);
     setError(null);
+    setLoading(false);
+    setAnalyzing(false);
   };
 
   const handleUpload = async () => {
@@ -165,12 +184,13 @@ export function useEmailUpload() {
     setUploadedFile,
     setActiveTab,
     handleClear,
+    handleFullClear,
     handleUpload,
     handleParse,
     handleAnalyze,
     
     // Computed
     canParse: Boolean(uploadedFilename),
-    canAnalyze: Boolean(uploadedFilename),
+    canAnalyze: Boolean(parsedData && !error),
   };
 }
