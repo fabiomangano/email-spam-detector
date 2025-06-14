@@ -48,10 +48,6 @@ function Upload() {
     return 0;
   };
 
-  const canClear =
-    (activeTab === "gallery" && textAreaValue.trim() !== "") ||
-    (activeTab === "messages" && uploadedFile !== null);
-
   return (
     <div style={{ padding: "40px", height: "100%" }}>
       <Stack gap="lg">
@@ -93,15 +89,15 @@ function Upload() {
 
         {/* Alert per errori */}
         {error && (
-          <Alert 
-            variant="outline" 
-            title="Error" 
-            withCloseButton 
+          <Alert
+            variant="outline"
+            title="Error"
+            withCloseButton
             onClose={() => {}}
             style={{
-              borderColor: '#ef4444',
-              color: '#ef4444',
-              backgroundColor: 'transparent',
+              borderColor: "#ef4444",
+              color: "#ef4444",
+              backgroundColor: "transparent",
             }}
           >
             {error}
@@ -121,18 +117,18 @@ function Upload() {
                   onClick={handleFullClear}
                   styles={{
                     root: {
-                      borderColor: '#ef4444',
-                      color: '#ef4444',
-                      backgroundColor: '#ffffff',
-                      '&:disabled': {
-                        backgroundColor: '#ffffff !important',
-                        borderColor: '#e5e5e5 !important',
-                        color: '#a3a3a3 !important',
+                      borderColor: "#ef4444",
+                      color: "#ef4444",
+                      backgroundColor: "#ffffff",
+                      "&:disabled": {
+                        backgroundColor: "#ffffff !important",
+                        borderColor: "#e5e5e5 !important",
+                        color: "#a3a3a3 !important",
                       },
-                      '&[data-disabled]': {
-                        backgroundColor: '#ffffff !important',
-                        borderColor: '#e5e5e5 !important',
-                        color: '#a3a3a3 !important',
+                      "&[data-disabled]": {
+                        backgroundColor: "#ffffff !important",
+                        borderColor: "#e5e5e5 !important",
+                        color: "#a3a3a3 !important",
                       },
                     },
                   }}
@@ -149,12 +145,12 @@ function Upload() {
                 leftSection={<IconShield size={16} />}
                 styles={{
                   root: {
-                    backgroundColor: '#262626',
-                    color: '#ffffff',
-                    '&:disabled': {
-                      backgroundColor: '#f5f5f5 !important',
-                      borderColor: '#e5e5e5 !important',
-                      color: '#a3a3a3 !important',
+                    backgroundColor: "#262626",
+                    color: "#ffffff",
+                    "&:disabled": {
+                      backgroundColor: "#f5f5f5 !important",
+                      borderColor: "#e5e5e5 !important",
+                      color: "#a3a3a3 !important",
                     },
                   },
                 }}
