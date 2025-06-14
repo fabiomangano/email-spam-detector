@@ -6,18 +6,16 @@ import {
   Grid,
   List,
   Progress,
-  Space,
   Text,
   Title,
   Alert,
+  Stack,
 } from "@mantine/core";
 import { 
   IconArrowLeft, 
   IconShield, 
   IconAlertTriangle,
   IconSettings,
-  IconBrain,
-  IconFileText
 } from "@tabler/icons-react";
 import { useAnalysis } from "../contexts/AnalysisContext";
 import { Link } from "react-router";
