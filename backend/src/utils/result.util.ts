@@ -67,7 +67,20 @@ function calculateBehaviorScore(behavior: BehaviorAnalysisResult): number {
 }
 
 function calculateNlpScore(nlp: NlpAnalysisResult): number {
-  return Math.min(nlp.toxicity.score, 1);
+  // Use prediction and spam metrics for scoring
+  let score = nlp.toxicity.score;
+  
+  // Add penalty based on prediction
+  if (nlp.prediction === 'spam') {
+    score += 0.3;
+  }
+  
+  // Add penalty based on spam word ratio
+  if (nlp.nlpMetrics.spamWordRatio > 0.1) {
+    score += nlp.nlpMetrics.spamWordRatio * 0.2;
+  }
+  
+  return Math.min(score, 1);
 }
 
 function determineRiskLevel(score: number): 'low' | 'medium' | 'high' {

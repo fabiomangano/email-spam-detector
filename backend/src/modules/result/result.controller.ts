@@ -34,10 +34,20 @@ export class ResultController {
           patterns: { suspicious: [], analysis: 'test' },
         },
         {
+          tokens: ['test', 'email', 'content'],
+          tfidfVector: [0.1, 0.2, 0.1],
+          nlpMetrics: {
+            numSpammyWords: 0,
+            spamWordRatio: 0,
+            allCapsCount: 0,
+            exclamationCount: 0,
+            tokens: ['test', 'email', 'content'],
+          },
+          prediction: 'ham',
           sentiment: { score: 0, label: 'neutral' },
-          keywords: [],
-          topics: [],
-          language: { detected: 'it', confidence: 0.9 },
+          keywords: ['test', 'email', 'content'],
+          topics: ['legitimate'],
+          language: { detected: 'en', confidence: 0.9 },
           toxicity: { score: 0.1, categories: [] },
         },
       );
