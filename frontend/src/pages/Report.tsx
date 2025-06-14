@@ -45,7 +45,7 @@ function Report() {
     <div style={{ padding: "20px", height: "100%" }}>
       <Flex align="center" gap="md" mb="xl">
         <Button 
-          variant="subtle" 
+          variant="outline" 
           component={Link} 
           to="/upload"
           leftSection={<IconArrowLeft size={16} />}

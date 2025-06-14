@@ -43,15 +43,12 @@ function AppContent() {
             order={1} 
             size="h3" 
             style={{ 
-              background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
+              color: '#262626',
               fontWeight: 800,
               letterSpacing: '-0.025em'
             }}
           >
-            🛡️ SpamShield
+            SpamShield
           </Title>
         </Flex>
       </AppShell.Header>
@@ -95,7 +92,7 @@ function AppContent() {
               }}
             />
             <NavLink
-              component={analysisResult ? Link : 'div'}
+              component={analysisResult ? Link : undefined}
               to={analysisResult ? "/report" : "#"}
               label="Report"
               leftSection={<IconChartBar size={16} stroke={1.5} />}
@@ -117,7 +114,7 @@ function AppContent() {
               }}
             />
             <NavLink
-              component={analysisResult ? Link : 'div'}
+              component={analysisResult ? Link : undefined}
               to={analysisResult ? "/risk" : "#"}
               label="Risk"
               leftSection={<IconCheckupList size={16} stroke={1.5} />}
@@ -219,7 +216,7 @@ function AppContent() {
         </div>
       </AppShell.Navbar>
 
-      <AppShell.Main style={{ backgroundColor: "#f5f5f5", height: "100vh" }}>
+      <AppShell.Main style={{ backgroundColor: "#fafafa", height: "100vh" }}>
         <Routes>
           <Route index element={<Upload />} />
           <Route path="upload" element={<Upload />} />

@@ -64,8 +64,7 @@ export function EmailInputPanel({
         </Title>
         <Group gap="sm" justify="flex-end">
           <Button
-            variant="gradient"
-            gradient={{ from: "blue", to: "cyan" }}
+            variant="outline"
             size="sm"
             onClick={onUpload}
             disabled={!canUpload}
@@ -106,12 +105,47 @@ export function EmailInputPanel({
           display: "flex",
           flexDirection: "column",
         }}
+        styles={{
+          tab: {
+            backgroundColor: '#ffffff !important',
+            color: '#525252 !important',
+            border: '1px solid #d4d4d4 !important',
+            fontWeight: '500',
+            '&:hover': {
+              backgroundColor: '#f5f5f5 !important',
+            },
+            '&[data-active="true"]': {
+              backgroundColor: '#262626 !important',
+              color: '#ffffff !important',
+              border: '1px solid #262626 !important',
+              fontWeight: '600',
+            },
+          },
+        }}
       >
         <Tabs.List grow>
-          <Tabs.Tab value="gallery" leftSection={<IconLetterCase size={16} />}>
+          <Tabs.Tab 
+            value="gallery" 
+            leftSection={<IconLetterCase size={16} />}
+            style={{
+              backgroundColor: activeTab === 'gallery' ? '#262626' : '#ffffff',
+              color: activeTab === 'gallery' ? '#ffffff' : '#525252',
+              border: `1px solid ${activeTab === 'gallery' ? '#262626' : '#d4d4d4'}`,
+              fontWeight: activeTab === 'gallery' ? '600' : '500',
+            }}
+          >
             Text Input
           </Tabs.Tab>
-          <Tabs.Tab value="messages" leftSection={<IconFile size={16} />}>
+          <Tabs.Tab 
+            value="messages" 
+            leftSection={<IconFile size={16} />}
+            style={{
+              backgroundColor: activeTab === 'messages' ? '#262626' : '#ffffff',
+              color: activeTab === 'messages' ? '#ffffff' : '#525252',
+              border: `1px solid ${activeTab === 'messages' ? '#262626' : '#d4d4d4'}`,
+              fontWeight: activeTab === 'messages' ? '600' : '500',
+            }}
+          >
             File Upload
           </Tabs.Tab>
         </Tabs.List>

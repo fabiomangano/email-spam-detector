@@ -10,12 +10,15 @@ import {
   Group,
   Button,
 } from "@mantine/core";
+import "../stepper.css";
 import { IconUpload, IconEye, IconShield } from "@tabler/icons-react";
 import { useEmailUpload } from "../hooks/useEmailUpload";
 import { EmailInputPanel } from "../components/EmailInputPanel";
 import { ContentPanel } from "../components/ContentPanel";
+import { useAnalysis } from "../contexts/AnalysisContext";
 
 function Upload() {
+  const { analysisResult } = useAnalysis();
   const {
     textAreaValue,
     uploadedFile,
@@ -39,6 +42,7 @@ function Upload() {
   // Determina lo step attuale del workflow
   const getCurrentStep = () => {
     if (analyzing) return 2;
+    if (analysisResult) return 2; // Se l'analisi è completata, mostra step 2 completato
     if (parsedData) return 1;
     if (textAreaValue.trim() || uploadedFile) return 0;
     return 0;
@@ -101,8 +105,7 @@ function Upload() {
             </Title>
             <Group gap="sm">
               <Button
-                variant="subtle"
-                color="gray"
+                variant="outline"
                 size="sm"
                 onClick={handleClear}
                 disabled={!canClear}
@@ -111,8 +114,7 @@ function Upload() {
               </Button>
               {parsedData && (
                 <Button
-                  variant="subtle"
-                  color="red"
+                  variant="outline"
                   size="sm"
                   onClick={handleFullClear}
                 >
@@ -120,8 +122,7 @@ function Upload() {
                 </Button>
               )}
               <Button
-                variant="gradient"
-                gradient={{ from: "red", to: "orange" }}
+                variant="outline"
                 size="sm"
                 onClick={handleAnalyze}
                 disabled={!canAnalyze}
