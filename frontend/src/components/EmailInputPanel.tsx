@@ -16,6 +16,7 @@ import {
   IconLetterCase,
   IconUpload,
   IconX,
+  IconFileText,
 } from "@tabler/icons-react";
 import { Dropzone } from "@mantine/dropzone";
 import type { TabType } from "../types/email";
@@ -69,42 +70,36 @@ export function EmailInputPanel({
         <Title order={2} style={{ fontSize: "20px" }}>
           Email
         </Title>
-        <Group gap="xs">
+        <Group gap="sm" justify="flex-end">
           <Button
-            variant="outline"
-            color="black"
-            style={{ width: "100px" }}
+            variant="subtle"
+            color="gray"
+            size="sm"
             onClick={onClear}
             disabled={!canClear}
           >
             Clear
           </Button>
           <Button
-            variant="outline"
-            color="black"
-            style={{ width: "100px" }}
-            disabled
-          >
-            Copy
-          </Button>
-          <Button
-            variant="filled"
-            color="black"
-            style={{ width: "100px" }}
+            variant="gradient"
+            gradient={{ from: 'blue', to: 'cyan' }}
+            size="sm"
             onClick={onUpload}
             disabled={!canUpload}
             loading={loading}
+            leftSection={<IconUpload size={16} />}
           >
-            Upload
+            Upload Email
           </Button>
           <Button
-            variant="filled"
-            color="black"
-            style={{ width: "100px" }}
+            variant="light"
+            color="blue"
+            size="sm"
             onClick={onParse}
             disabled={!canParse}
+            leftSection={<IconFileText size={16} />}
           >
-            Parse
+            Parse Content
           </Button>
         </Group>
       </Flex>
@@ -115,7 +110,7 @@ export function EmailInputPanel({
       <Space h="sm" />
       
       <Tabs
-        variant="outline"
+        variant="pills"
         value={activeTab}
         onChange={(value) => value && onTabChange(value as TabType)}
         style={{
@@ -125,15 +120,18 @@ export function EmailInputPanel({
           flexDirection: "column",
         }}
       >
-        <Tabs.List>
+        <Tabs.List grow>
           <Tabs.Tab
             value="gallery"
-            leftSection={<IconLetterCase size={14} />}
+            leftSection={<IconLetterCase size={16} />}
           >
-            Text
+            Text Input
           </Tabs.Tab>
-          <Tabs.Tab value="messages" leftSection={<IconFile size={12} />}>
-            File
+          <Tabs.Tab 
+            value="messages" 
+            leftSection={<IconFile size={16} />}
+          >
+            File Upload
           </Tabs.Tab>
         </Tabs.List>
         
@@ -148,14 +146,18 @@ export function EmailInputPanel({
         >
           <Space h="sm" />
           <Textarea
-            label="Text"
+            label="Email Content"
             value={textAreaValue}
             onChange={(e) => onTextChange(e.target.value)}
-            placeholder="Inserisci il testo dell'email qui..."
+            placeholder="Paste your email content here (headers + body)...&#10;&#10;Example:&#10;From: sender@example.com&#10;To: recipient@example.com&#10;Subject: Test Email&#10;&#10;Email body content..."
             h={"92%"}
             styles={{
               wrapper: { height: "100%" },
-              input: { height: "100%" },
+              input: { 
+                height: "100%",
+                fontFamily: "monospace",
+                fontSize: "14px",
+              },
             }}
           />
         </Tabs.Panel>
@@ -186,9 +188,12 @@ export function EmailInputPanel({
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "column",
-              border: "1px dashed gray",
-              borderRadius: "8px",
+              border: uploadedFile ? "2px dashed #3b82f6" : "2px dashed #e0e7ff",
+              borderRadius: "12px",
               height: "100%",
+              backgroundColor: uploadedFile ? "#f0f9ff" : "#fafbfc",
+              transition: "all 0.2s ease",
+              cursor: "pointer",
             }}
           >
             {uploadedFile ? (
