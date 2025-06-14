@@ -12,7 +12,7 @@ export class ParsingController {
       const result = await this.parsingService.parseEmailFile(filename);
       return res.json(result);
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: (error as Error).message });
     }
   }
 }

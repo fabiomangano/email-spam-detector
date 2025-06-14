@@ -1,4 +1,10 @@
-import { Controller, Post, UploadedFile, Body, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UploadedFile,
+  Body,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
@@ -26,8 +32,8 @@ export class UploadController {
         else cb(new Error('Invalid file type'), false);
       },
       limits: {
-        fileSize: 5 * 1024 * 1024
-}
+        fileSize: 5 * 1024 * 1024,
+      },
     }),
   )
   uploadFile(@UploadedFile() file: any) {

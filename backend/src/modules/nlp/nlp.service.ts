@@ -19,23 +19,23 @@ export interface NlpAnalysisResult {
 
 @Injectable()
 export class NlpService {
-  async analyzeNlp(parsedData: any): Promise<NlpAnalysisResult> {
+  analyzeNlp(_parsedData: any): Promise<NlpAnalysisResult> {
     // Analisi NLP del contenuto dell'email
-    return {
+    return Promise.resolve({
       sentiment: {
         score: 0.0,
-        label: 'neutral'
+        label: 'neutral',
       },
       keywords: ['email', 'content'],
       topics: ['general'],
       language: {
         detected: 'it',
-        confidence: 0.95
+        confidence: 0.95,
       },
       toxicity: {
         score: 0.1,
-        categories: []
-      }
-    };
+        categories: [],
+      },
+    });
   }
 }

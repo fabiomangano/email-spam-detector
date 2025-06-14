@@ -12,7 +12,7 @@ export class NlpController {
       const result = await this.nlpService.analyzeNlp({});
       return res.json(result);
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      return res.status(400).json({ error: (error as Error).message });
     }
   }
 }

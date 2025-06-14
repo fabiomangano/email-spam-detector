@@ -13,9 +13,9 @@ export class PipelineController {
       return res.json(result);
     } catch (error) {
       console.error('Pipeline error:', error);
-      return res.status(400).json({ 
-        error: error.message,
-        pipeline: 'failed'
+      return res.status(400).json({
+        error: (error as Error).message,
+        pipeline: 'failed',
       });
     }
   }

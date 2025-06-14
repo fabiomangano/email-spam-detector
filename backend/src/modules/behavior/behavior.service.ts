@@ -17,21 +17,21 @@ export interface BehaviorAnalysisResult {
 
 @Injectable()
 export class BehaviorService {
-  async analyzeBehavior(parsedData: any): Promise<BehaviorAnalysisResult> {
+  analyzeBehavior(_parsedData: any): Promise<BehaviorAnalysisResult> {
     // Analisi comportamentale dell'email (urgenza, social engineering, pattern)
-    return {
+    return Promise.resolve({
       urgency: {
         score: 0.2,
-        indicators: []
+        indicators: [],
       },
       socialEngineering: {
         score: 0.1,
-        techniques: []
+        techniques: [],
       },
       patterns: {
         suspicious: [],
-        analysis: 'No suspicious behavioral patterns detected'
-      }
-    };
+        analysis: 'No suspicious behavioral patterns detected',
+      },
+    });
   }
 }

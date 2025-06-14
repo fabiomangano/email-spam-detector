@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { computeEmailMetrics, EmailTechnicalMetrics } from '../../utils/email-metrics';
+import {
+  computeEmailMetrics,
+  EmailTechnicalMetrics,
+} from '../../utils/email-metrics';
 
 @Injectable()
 export class TechnicalService {
-  async analyzeTechnical(parsedData: any): Promise<EmailTechnicalMetrics> {
+  analyzeTechnical(parsedData: any): Promise<EmailTechnicalMetrics> {
     const metrics = computeEmailMetrics(parsedData);
-    return metrics;
+    return Promise.resolve(metrics);
   }
 }

@@ -26,8 +26,6 @@ export class PipelineService {
       console.log('Step 1: Parsing email...');
       const parsedData = await this.parsingService.parseEmailFile(filename);
 
-      console.log("qui", parsedData)
-
       // Step 2: Technical Analysis
       console.log('Step 2: Running technical analysis...');
       const technicalResult =
@@ -57,7 +55,7 @@ export class PipelineService {
           ...finalResult.details,
           parsing: parsedData, // Include parsing data in details
         },
-      } as any;
+      } as SpamAnalysisResult;
     } catch (error) {
       console.error('Pipeline failed:', error);
       throw error;

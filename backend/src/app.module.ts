@@ -22,10 +22,7 @@ import { PipelineModule } from './pipeline/pipeline.module';
     ConfigModule,
     PipelineModule,
   ],
-  controllers: [
-    AppController,
-    UploadController,
-  ],
+  controllers: [AppController, UploadController],
   providers: [AppService],
 })
 export class AppModule {}

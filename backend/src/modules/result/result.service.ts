@@ -17,53 +17,56 @@ export interface SpamAnalysisResult {
 
 @Injectable()
 export class ResultService {
-  async generateResult(
+  generateResult(
     technicalResult: EmailTechnicalMetrics,
     behaviorResult: BehaviorAnalysisResult,
-    nlpResult: NlpAnalysisResult
+    nlpResult: NlpAnalysisResult,
   ): Promise<SpamAnalysisResult> {
     // Calcola il punteggio complessivo basato sui risultati dei moduli
     const technicalScore = this.calculateTechnicalScore(technicalResult);
     const behaviorScore = this.calculateBehaviorScore(behaviorResult);
     const nlpScore = this.calculateNlpScore(nlpResult);
-    
+
     const overallScore = (technicalScore + behaviorScore + nlpScore) / 3;
-    
-    return {
+
+    return Promise.resolve({
       overallScore,
       riskLevel: this.determineRiskLevel(overallScore),
       summary: this.generateSummary(overallScore),
       details: {
         technical: technicalResult,
         behavior: behaviorResult,
-        nlp: nlpResult
+        nlp: nlpResult,
       },
-      recommendations: this.generateRecommendations(overallScore)
-    };
+      recommendations: this.generateRecommendations(overallScore),
+    });
   }
 
   private calculateTechnicalScore(technical: EmailTechnicalMetrics): number {
     let score = 0;
-    
+
     // Authentication checks
     if (technical.spfResult && technical.spfResult !== 'pass') score += 0.2;
     if (technical.dkimResult && technical.dkimResult !== 'pass') score += 0.2;
     if (technical.dmarcResult && technical.dmarcResult !== 'pass') score += 0.2;
-    
+
     // Suspicious indicators
     if (technical.hasTrackingPixel) score += 0.1;
     if (technical.replyToDiffersFromFrom) score += 0.1;
     if (technical.isHtmlOnly) score += 0.05;
-    
+
     // Link analysis
     if (technical.linkRatio > 0.1) score += 0.1;
     if (technical.numDomains > 5) score += 0.05;
-    
+
     return Math.min(score, 1);
   }
 
   private calculateBehaviorScore(behavior: BehaviorAnalysisResult): number {
-    return Math.min((behavior.urgency.score + behavior.socialEngineering.score) / 2, 1);
+    return Math.min(
+      (behavior.urgency.score + behavior.socialEngineering.score) / 2,
+      1,
+    );
   }
 
   private calculateNlpScore(nlp: NlpAnalysisResult): number {
@@ -77,8 +80,10 @@ export class ResultService {
   }
 
   private generateSummary(score: number): string {
-    if (score < 0.3) return 'Email appears to be legitimate with low spam indicators';
-    if (score < 0.7) return 'Email shows some suspicious characteristics, exercise caution';
+    if (score < 0.3)
+      return 'Email appears to be legitimate with low spam indicators';
+    if (score < 0.7)
+      return 'Email shows some suspicious characteristics, exercise caution';
     return 'Email has high spam/phishing indicators, handle with extreme caution';
   }
 
