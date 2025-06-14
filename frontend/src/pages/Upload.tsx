@@ -1,6 +1,5 @@
 import {
   Alert,
-  Container,
   Grid,
   Stack,
   Title,
@@ -49,7 +48,7 @@ function Upload() {
     (activeTab === "messages" && uploadedFile !== null);
 
   return (
-    <Container size="xl" h="100%" py="md">
+    <div style={{ padding: "20px", height: "100%" }}>
       <Stack gap="lg" h="100%">
         {/* Header con titolo e stepper */}
         <Stack gap="md">
@@ -152,7 +151,7 @@ function Upload() {
           </Grid.Col>
         </Grid>
       </Stack>
-    </Container>
+    </div>
   );
 }
 
