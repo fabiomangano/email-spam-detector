@@ -57,7 +57,7 @@ function FieldRow({ label, value, onChange, placeholder }: FieldRowProps) {
   );
 }
 
-function Home() {
+function Upload() {
   const [textAreaValue, setTextAreaValue] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadedFilename, setUploadedFilename] = useState<string | null>(null);
@@ -410,4 +410,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default Upload;

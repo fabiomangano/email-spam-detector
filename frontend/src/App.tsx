@@ -16,7 +16,7 @@ import { Routes, Route } from "react-router";
 import { AppShell /* Burger */ } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Link } from "react-router";
-import Home from "./pages/Home";
+import Upload from "./pages/Upload";
 
 function App() {
   const [opened, { toggle }] = useDisclosure();
@@ -63,7 +63,7 @@ function App() {
           </span>
           <NavLink
             component={Link}
-            to="/dashboard"
+            to="/upload"
             label="Upload"
             leftSection={<IconUpload size={16} stroke={1.5} />}
           />
@@ -136,7 +136,8 @@ function App() {
 
         <AppShell.Main style={{ backgroundColor: "#f5f5f5", height: "100vh" }}>
           <Routes>
-            <Route index element={<Home />} />
+            <Route index element={<Upload />} />
+            <Route path="upload" element={<Upload />} />
             <Route path="report" element={<>REPORT</>} />
           </Routes>
         </AppShell.Main>
