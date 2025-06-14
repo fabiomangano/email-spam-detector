@@ -1,0 +1,30 @@
+/* Stepper custom styles */
+.mantine-Stepper-step[data-progress] .mantine-Stepper-stepIcon,
+.mantine-Stepper-step[data-completed] .mantine-Stepper-stepIcon {
+  background-color: #ffffff !important;
+  border-color: #262626 !important;
+  color: #262626 !important;
+}
+
+.mantine-Stepper-step[data-progress] .mantine-Stepper-stepIcon svg,
+.mantine-Stepper-step[data-completed] .mantine-Stepper-stepIcon svg {
+  color: #262626 !important;
+}
+
+.mantine-Stepper-separator[data-active] {
+  background-color: #262626 !important;
+}
+
+.mantine-Stepper-stepIcon {
+  background-color: #ffffff !important;
+  border-color: #d4d4d4 !important;
+  color: #a3a3a3 !important;
+}
+
+.mantine-Stepper-stepIcon svg {
+  color: #a3a3a3 !important;
+}
+
+.mantine-Stepper-separator {
+  background-color: #e5e5e5 !important;
+}
