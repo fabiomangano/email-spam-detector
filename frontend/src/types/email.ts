@@ -24,22 +24,21 @@ export interface ParsedData {
 }
 
 export interface TechnicalAnalysisResult {
-  spf: {
-    status: string;
-    details: string;
-  };
-  dkim: {
-    status: string;
-    details: string;
-  };
-  dmarc: {
-    status: string;
-    details: string;
-  };
-  headers: {
-    suspicious: string[];
-    analysis: string;
-  };
+  bodyLength: number;
+  numLinks: number;
+  linkRatio: number;
+  numImages: number;
+  hasTrackingPixel: boolean;
+  hasAttachments: boolean;
+  numAttachments: number;
+  attachmentTypes: string[];
+  spfResult?: string;
+  dkimResult?: string;
+  dmarcResult?: string;
+  ipSender?: string;
+  isHtmlOnly: boolean;
+  numDomains: number;
+  replyToDiffersFromFrom: boolean;
 }
 
 export interface BehaviorAnalysisResult {

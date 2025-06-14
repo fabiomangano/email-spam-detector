@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TechnicalAnalysisResult } from '../technical/technical.service';
+import { EmailTechnicalMetrics } from '../../utils/email-metrics';
 import { BehaviorAnalysisResult } from '../behavior/behavior.service';
 import { NlpAnalysisResult } from '../nlp/nlp.service';
 
@@ -8,7 +8,7 @@ export interface SpamAnalysisResult {
   riskLevel: 'low' | 'medium' | 'high';
   summary: string;
   details: {
-    technical: TechnicalAnalysisResult;
+    technical: EmailTechnicalMetrics;
     behavior: BehaviorAnalysisResult;
     nlp: NlpAnalysisResult;
   };
@@ -18,7 +18,7 @@ export interface SpamAnalysisResult {
 @Injectable()
 export class ResultService {
   async generateResult(
-    technicalResult: TechnicalAnalysisResult,
+    technicalResult: EmailTechnicalMetrics,
     behaviorResult: BehaviorAnalysisResult,
     nlpResult: NlpAnalysisResult
   ): Promise<SpamAnalysisResult> {
@@ -42,12 +42,23 @@ export class ResultService {
     };
   }
 
-  private calculateTechnicalScore(technical: TechnicalAnalysisResult): number {
+  private calculateTechnicalScore(technical: EmailTechnicalMetrics): number {
     let score = 0;
-    if (technical.spf.status !== 'pass') score += 0.3;
-    if (technical.dkim.status !== 'pass') score += 0.3;
-    if (technical.dmarc.status !== 'pass') score += 0.3;
-    if (technical.headers.suspicious.length > 0) score += 0.1;
+    
+    // Authentication checks
+    if (technical.spfResult && technical.spfResult !== 'pass') score += 0.2;
+    if (technical.dkimResult && technical.dkimResult !== 'pass') score += 0.2;
+    if (technical.dmarcResult && technical.dmarcResult !== 'pass') score += 0.2;
+    
+    // Suspicious indicators
+    if (technical.hasTrackingPixel) score += 0.1;
+    if (technical.replyToDiffersFromFrom) score += 0.1;
+    if (technical.isHtmlOnly) score += 0.05;
+    
+    // Link analysis
+    if (technical.linkRatio > 0.1) score += 0.1;
+    if (technical.numDomains > 5) score += 0.05;
+    
     return Math.min(score, 1);
   }
 

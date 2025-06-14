@@ -59,7 +59,7 @@ function Risk() {
         >
           Back to Upload
         </Button>
-        <Title order={2}>Security Risk Analysis</Title>
+        <Title order={1} size="h2">Security Risk Analysis</Title>
       </Flex>
 
       <Grid>
@@ -98,7 +98,7 @@ function Risk() {
         {analysisResult.recommendations.length > 0 && (
           <Grid.Col span={12}>
             <Card padding="lg" radius="md" mb="md">
-              <Title order={4} mb="md">= Security Recommendations</Title>
+              <Title order={4} size="h4" mb="md">🔒 Security Recommendations</Title>
               <List
                 spacing="sm"
                 size="sm"
@@ -116,32 +116,43 @@ function Risk() {
 
         <Grid.Col span={4}>
           <Card padding="lg" radius="md" h="100%">
-            <Title order={5} mb="md">=� Technical Analysis</Title>
+            <Title order={5} size="h5" mb="md">⚙️ Technical Metrics</Title>
             <Space h="sm" />
             
-            <Text size="sm" fw={600} mb="xs">Authentication</Text>
-            <Flex gap="xs" mb="sm">
-              <Badge color={analysisResult.details.technical.spf.status === 'pass' ? 'green' : 'red'} size="sm">
-                SPF: {analysisResult.details.technical.spf.status}
+            <Text size="sm" fw={600} mb="xs">Content Analysis</Text>
+            <Text size="xs" mb="xs">Body Length: {analysisResult.details.technical.bodyLength}</Text>
+            <Text size="xs" mb="xs">Links: {analysisResult.details.technical.numLinks} (Ratio: {analysisResult.details.technical.linkRatio})</Text>
+            <Text size="xs" mb="xs">Images: {analysisResult.details.technical.numImages}</Text>
+            <Text size="xs" mb="sm">Domains: {analysisResult.details.technical.numDomains}</Text>
+            
+            <Text size="sm" fw={600} mb="xs">Security Indicators</Text>
+            <Flex gap="xs" mb="sm" wrap="wrap">
+              <Badge color={analysisResult.details.technical.hasTrackingPixel ? 'red' : 'green'} size="sm">
+                {analysisResult.details.technical.hasTrackingPixel ? 'Tracking Pixel' : 'No Tracking'}
               </Badge>
-              <Badge color={analysisResult.details.technical.dkim.status === 'pass' ? 'green' : 'red'} size="sm">
-                DKIM: {analysisResult.details.technical.dkim.status}
+              <Badge color={analysisResult.details.technical.isHtmlOnly ? 'yellow' : 'green'} size="sm">
+                {analysisResult.details.technical.isHtmlOnly ? 'HTML Only' : 'Text+HTML'}
               </Badge>
-              <Badge color={analysisResult.details.technical.dmarc.status === 'pass' ? 'green' : 'red'} size="sm">
-                DMARC: {analysisResult.details.technical.dmarc.status}
+              <Badge color={analysisResult.details.technical.replyToDiffersFromFrom ? 'red' : 'green'} size="sm">
+                {analysisResult.details.technical.replyToDiffersFromFrom ? 'Reply-To Spoofed' : 'Reply-To OK'}
               </Badge>
             </Flex>
             
-            <Text size="sm" fw={600} mb="xs">Header Analysis</Text>
-            <Text size="xs" c="dimmed">
-              {analysisResult.details.technical.headers.analysis}
-            </Text>
+            {analysisResult.details.technical.hasAttachments && (
+              <>
+                <Text size="sm" fw={600} mb="xs">Attachments</Text>
+                <Text size="xs" mb="xs">Count: {analysisResult.details.technical.numAttachments}</Text>
+                <Text size="xs" c="dimmed">
+                  Types: {analysisResult.details.technical.attachmentTypes.join(', ')}
+                </Text>
+              </>
+            )}
           </Card>
         </Grid.Col>
 
         <Grid.Col span={4}>
           <Card padding="lg" radius="md" h="100%">
-            <Title order={5} mb="md">🧠 Behavioral Analysis</Title>
+            <Title order={5} size="h5" mb="md">🧠 Behavioral Analysis</Title>
             <Space h="sm" />
             
             <Text size="sm" fw={600} mb="xs">Urgency Score</Text>
@@ -168,7 +179,7 @@ function Risk() {
 
         <Grid.Col span={4}>
           <Card padding="lg" radius="md" h="100%">
-            <Title order={5} mb="md">=� Content Analysis</Title>
+            <Title order={5} size="h5" mb="md">📝 Content Analysis</Title>
             <Space h="sm" />
             
             <Text size="sm" fw={600} mb="xs">Sentiment</Text>
