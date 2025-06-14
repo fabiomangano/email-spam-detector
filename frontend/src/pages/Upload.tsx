@@ -48,8 +48,8 @@ function Upload() {
     (activeTab === "messages" && uploadedFile !== null);
 
   return (
-    <div style={{ padding: "20px", height: "100%" }}>
-      <Stack gap="lg" h="100%">
+    <div style={{ padding: "40px", height: "100%" }}>
+      <Stack gap="lg">
         {/* Header con titolo e stepper */}
         <Stack gap="md">
           <div>
