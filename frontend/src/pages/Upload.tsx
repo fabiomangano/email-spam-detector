@@ -10,6 +10,7 @@ function Upload() {
     uploadedFile,
     parsedData,
     loading,
+    analyzing,
     activeTab,
     error,
     setTextAreaValue,
@@ -18,7 +19,9 @@ function Upload() {
     handleClear,
     handleUpload,
     handleParse,
+    handleAnalyze,
     canParse,
+    canAnalyze,
   } = useEmailUpload();
 
   return (
@@ -59,7 +62,12 @@ function Upload() {
           canParse={canParse}
         />
         
-        <ContentPanel parsedData={parsedData} />
+        <ContentPanel 
+          parsedData={parsedData}
+          onAnalyze={handleAnalyze}
+          analyzing={analyzing}
+          canAnalyze={canAnalyze}
+        />
       </div>
     </div>
   );

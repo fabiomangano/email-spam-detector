@@ -13,9 +13,17 @@ import type { ParsedData } from "../types/email";
 
 interface ContentPanelProps {
   parsedData: ParsedData | null;
+  onAnalyze: () => void;
+  analyzing: boolean;
+  canAnalyze: boolean;
 }
 
-export function ContentPanel({ parsedData }: ContentPanelProps) {
+export function ContentPanel({ 
+  parsedData, 
+  onAnalyze, 
+  analyzing, 
+  canAnalyze 
+}: ContentPanelProps) {
   const spfDmarcString = parsedData?.metrics
     ? `SPF=${parsedData.metrics.spfResult ?? "N/A"}, DKIM=${
         parsedData.metrics.dkimResult ?? "N/A"
@@ -43,7 +51,9 @@ export function ContentPanel({ parsedData }: ContentPanelProps) {
             variant="filled"
             color="black"
             style={{ width: "100px" }}
-            disabled
+            onClick={onAnalyze}
+            disabled={!canAnalyze}
+            loading={analyzing}
           >
             Analyze
           </Button>

@@ -1,5 +1,7 @@
 import { useState } from "react";
-import type { ParsedData, TabType } from "../types/email";
+import { useNavigate } from "react-router";
+import type { ParsedData, TabType, PipelineResult } from "../types/email";
+import { useAnalysis } from "../contexts/AnalysisContext";
 
 interface UploadResponse {
   filename: string;
@@ -9,11 +11,15 @@ interface UploadResponse {
 const API_BASE_URL = "http://localhost:3000";
 
 export function useEmailUpload() {
+  const navigate = useNavigate();
+  const { setAnalysisResult } = useAnalysis();
+  
   const [textAreaValue, setTextAreaValue] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadedFilename, setUploadedFilename] = useState<string | null>(null);
   const [parsedData, setParsedData] = useState<ParsedData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("gallery");
   const [error, setError] = useState<string | null>(null);
 
@@ -22,6 +28,7 @@ export function useEmailUpload() {
     setUploadedFile(null);
     setUploadedFilename(null);
     setParsedData(null);
+    setAnalysisResult(null);
     setError(null);
   };
 
@@ -99,6 +106,47 @@ export function useEmailUpload() {
     }
   };
 
+  const handleAnalyze = async () => {
+    if (!uploadedFilename) {
+      setError("Nessun file disponibile da analizzare.");
+      return;
+    }
+
+    setAnalyzing(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/pipeline/${encodeURIComponent(uploadedFilename)}`
+      );
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.error || "Errore nell'analisi");
+      }
+      
+      const data: PipelineResult = await response.json();
+      
+      // Salva i risultati nel context globale
+      setAnalysisResult(data);
+      
+      // Imposta anche i dati di parsing se presenti
+      if (data.details?.parsing) {
+        setParsedData(data.details.parsing);
+      }
+      
+      // Naviga alla pagina Risk per mostrare i risultati
+      navigate('/risk');
+      
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Errore sconosciuto durante l'analisi";
+      setError(errorMessage);
+      console.error("Errore durante l'analisi:", err);
+    } finally {
+      setAnalyzing(false);
+    }
+  };
+
   return {
     // State
     textAreaValue,
@@ -106,6 +154,7 @@ export function useEmailUpload() {
     uploadedFilename,
     parsedData,
     loading,
+    analyzing,
     activeTab,
     error,
     
@@ -116,8 +165,10 @@ export function useEmailUpload() {
     handleClear,
     handleUpload,
     handleParse,
+    handleAnalyze,
     
     // Computed
     canParse: Boolean(uploadedFilename),
+    canAnalyze: Boolean(uploadedFilename),
   };
 }

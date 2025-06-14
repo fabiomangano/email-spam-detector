@@ -16,13 +16,16 @@ import { AppShell /* Burger */ } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Link } from "react-router";
 import Upload from "./pages/Upload";
+import Risk from "./pages/Risk";
+import { AnalysisProvider } from "./contexts/AnalysisContext";
 
 function App() {
   const [opened, { toggle }] = useDisclosure();
 
   return (
     <MantineProvider>
-      <AppShell
+      <AnalysisProvider>
+        <AppShell
         header={{ height: 60 }}
         navbar={{
           width: 200,
@@ -80,7 +83,7 @@ function App() {
           />
           <NavLink
             component={Link}
-            to="/dashboard"
+            to="/risk"
             label="Risk"
             leftSection={<IconCheckupList size={16} stroke={1.5} />}
           />
@@ -137,12 +140,14 @@ function App() {
           <Routes>
             <Route index element={<Upload />} />
             <Route path="upload" element={<Upload />} />
+            <Route path="risk" element={<Risk />} />
             <Route path="report" element={<>REPORT</>} />
           </Routes>
         </AppShell.Main>
 
         <AppShell.Footer p="sm"></AppShell.Footer>
       </AppShell>
+      </AnalysisProvider>
     </MantineProvider>
   );
 }
