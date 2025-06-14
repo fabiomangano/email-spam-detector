@@ -64,7 +64,7 @@ function AppContent() {
         <div style={{ padding: '1.5rem 1rem 1rem 1rem' }}>
           <Title 
             order={6} 
-            c="gray.7" 
+            c="gray.9" 
             mb="md" 
             px="sm"
             style={{ 
@@ -142,7 +142,7 @@ function AppContent() {
           <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
             <Title 
               order={6} 
-              c="gray.7" 
+              c="gray.9" 
               mb="md" 
               px="sm"
               style={{ 
@@ -174,7 +174,7 @@ function AppContent() {
           <div style={{ marginTop: '1.5rem' }}>
             <Title 
               order={6} 
-              c="gray.7" 
+              c="gray.9" 
               mb="md" 
               px="sm"
               style={{ 

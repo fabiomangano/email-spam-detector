@@ -53,18 +53,7 @@ export function ContentPanel({
           </Title>
           <Group gap="sm">
             <Button
-              variant="light"
-              color="blue"
-              size="sm"
-              onClick={onParse}
-              disabled={!canParse}
-              leftSection={<IconFileText size={16} />}
-            >
-              Parse
-            </Button>
-            <Button
-              variant="light"
-              color="gray"
+              variant="outline"
               size="sm"
               leftSection={<IconCopy size={16} />}
               disabled={!bodyText}
@@ -73,8 +62,45 @@ export function ContentPanel({
                   navigator.clipboard.writeText(bodyText);
                 }
               }}
+              styles={{
+                root: {
+                  borderColor: '#262626',
+                  color: '#262626',
+                  backgroundColor: '#ffffff',
+                  '&:disabled': {
+                    backgroundColor: '#ffffff !important',
+                    borderColor: '#e5e5e5 !important',
+                    color: '#a3a3a3 !important',
+                  },
+                  '&[data-disabled]': {
+                    backgroundColor: '#ffffff !important',
+                    borderColor: '#e5e5e5 !important',
+                    color: '#a3a3a3 !important',
+                  },
+                },
+              }}
             >
               Copy
+            </Button>
+            <Button
+              variant="filled"
+              size="sm"
+              onClick={onParse}
+              disabled={!canParse}
+              leftSection={<IconFileText size={16} />}
+              styles={{
+                root: {
+                  backgroundColor: '#262626',
+                  color: '#ffffff',
+                  '&:disabled': {
+                    backgroundColor: '#f5f5f5 !important',
+                    borderColor: '#e5e5e5 !important',
+                    color: '#a3a3a3 !important',
+                  },
+                },
+              }}
+            >
+              Parse
             </Button>
           </Group>
         </Flex>

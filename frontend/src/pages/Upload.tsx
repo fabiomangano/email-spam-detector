@@ -104,30 +104,50 @@ function Upload() {
               Email
             </Title>
             <Group gap="sm">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleClear}
-                disabled={!canClear}
-              >
-                Clear
-              </Button>
               {parsedData && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleFullClear}
+                  styles={{
+                    root: {
+                      borderColor: '#262626',
+                      color: '#262626',
+                      backgroundColor: '#ffffff',
+                      '&:disabled': {
+                        backgroundColor: '#ffffff !important',
+                        borderColor: '#e5e5e5 !important',
+                        color: '#a3a3a3 !important',
+                      },
+                      '&[data-disabled]': {
+                        backgroundColor: '#ffffff !important',
+                        borderColor: '#e5e5e5 !important',
+                        color: '#a3a3a3 !important',
+                      },
+                    },
+                  }}
                 >
                   New Analysis
                 </Button>
               )}
               <Button
-                variant="outline"
+                variant="filled"
                 size="sm"
                 onClick={handleAnalyze}
                 disabled={!canAnalyze}
                 loading={analyzing}
                 leftSection={<IconShield size={16} />}
+                styles={{
+                  root: {
+                    backgroundColor: '#262626',
+                    color: '#ffffff',
+                    '&:disabled': {
+                      backgroundColor: '#f5f5f5 !important',
+                      borderColor: '#e5e5e5 !important',
+                      color: '#a3a3a3 !important',
+                    },
+                  },
+                }}
               >
                 {analyzing ? "Analyzing..." : "Analyze"}
               </Button>

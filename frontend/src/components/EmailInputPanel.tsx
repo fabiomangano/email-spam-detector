@@ -66,27 +66,56 @@ export function EmailInputPanel({
           <Button
             variant="outline"
             size="sm"
+            leftSection={<IconCopy size={16} />}
+            disabled={
+              activeTab === "gallery" ? !textAreaValue.trim() : !uploadedFile
+            }
+            onClick={() => {
+              if (activeTab === "gallery" && textAreaValue.trim()) {
+                navigator.clipboard.writeText(textAreaValue);
+              }
+            }}
+            styles={{
+              root: {
+                borderColor: "#262626",
+                color: "#262626",
+                backgroundColor: "#ffffff",
+                "&:disabled": {
+                  backgroundColor: "#ffffff !important",
+                  borderColor: "#e5e5e5 !important",
+                  color: "#a3a3a3 !important",
+                },
+                "&[data-disabled]": {
+                  backgroundColor: "#ffffff !important",
+                  borderColor: "#e5e5e5 !important",
+                  color: "#a3a3a3 !important",
+                },
+              },
+            }}
+          >
+            Copy
+          </Button>
+          <Button
+            variant="filled"
+            size="sm"
             onClick={onUpload}
             disabled={!canUpload}
             loading={loading}
             leftSection={<IconUpload size={16} />}
+            styles={{
+              root: {
+                backgroundColor: "#262626",
+                color: "#ffffff",
+                "&:disabled": {
+                  backgroundColor: "#f5f5f5 !important",
+                  borderColor: "#e5e5e5 !important",
+                  color: "#a3a3a3 !important",
+                },
+              },
+            }}
           >
             Upload
           </Button>
-            <Button
-              variant="light"
-              color="gray"
-              size="sm"
-              leftSection={<IconCopy size={16} />}
-              disabled={activeTab === "gallery" ? !textAreaValue.trim() : !uploadedFile}
-              onClick={() => {
-                if (activeTab === "gallery" && textAreaValue.trim()) {
-                  navigator.clipboard.writeText(textAreaValue);
-                }
-              }}
-            >
-              Copy
-            </Button>
         </Group>
       </Flex>
 
@@ -107,43 +136,47 @@ export function EmailInputPanel({
         }}
         styles={{
           tab: {
-            backgroundColor: '#ffffff !important',
-            color: '#525252 !important',
-            border: '1px solid #d4d4d4 !important',
-            fontWeight: '500',
-            '&:hover': {
-              backgroundColor: '#f5f5f5 !important',
+            backgroundColor: "#ffffff !important",
+            color: "#525252 !important",
+            border: "1px solid #d4d4d4 !important",
+            fontWeight: "500",
+            "&:hover": {
+              backgroundColor: "#f5f5f5 !important",
             },
             '&[data-active="true"]': {
-              backgroundColor: '#262626 !important',
-              color: '#ffffff !important',
-              border: '1px solid #262626 !important',
-              fontWeight: '600',
+              backgroundColor: "#262626 !important",
+              color: "#ffffff !important",
+              border: "1px solid #262626 !important",
+              fontWeight: "600",
             },
           },
         }}
       >
         <Tabs.List grow>
-          <Tabs.Tab 
-            value="gallery" 
+          <Tabs.Tab
+            value="gallery"
             leftSection={<IconLetterCase size={16} />}
             style={{
-              backgroundColor: activeTab === 'gallery' ? '#262626' : '#ffffff',
-              color: activeTab === 'gallery' ? '#ffffff' : '#525252',
-              border: `1px solid ${activeTab === 'gallery' ? '#262626' : '#d4d4d4'}`,
-              fontWeight: activeTab === 'gallery' ? '600' : '500',
+              backgroundColor: activeTab === "gallery" ? "#262626" : "#ffffff",
+              color: activeTab === "gallery" ? "#ffffff" : "#525252",
+              border: `1px solid ${
+                activeTab === "gallery" ? "#262626" : "#d4d4d4"
+              }`,
+              fontWeight: activeTab === "gallery" ? "600" : "500",
             }}
           >
             Text Input
           </Tabs.Tab>
-          <Tabs.Tab 
-            value="messages" 
+          <Tabs.Tab
+            value="messages"
             leftSection={<IconFile size={16} />}
             style={{
-              backgroundColor: activeTab === 'messages' ? '#262626' : '#ffffff',
-              color: activeTab === 'messages' ? '#ffffff' : '#525252',
-              border: `1px solid ${activeTab === 'messages' ? '#262626' : '#d4d4d4'}`,
-              fontWeight: activeTab === 'messages' ? '600' : '500',
+              backgroundColor: activeTab === "messages" ? "#262626" : "#ffffff",
+              color: activeTab === "messages" ? "#ffffff" : "#525252",
+              border: `1px solid ${
+                activeTab === "messages" ? "#262626" : "#d4d4d4"
+              }`,
+              fontWeight: activeTab === "messages" ? "600" : "500",
             }}
           >
             File Upload
@@ -160,8 +193,10 @@ export function EmailInputPanel({
           }}
         >
           <Space h="sm" />
+          <Input.Label size="sm" fw={500} c="gray.9" mb="xs">
+            Insert text
+          </Input.Label>
           <Textarea
-            label="Email Content"
             value={textAreaValue}
             onChange={(e) => onTextChange(e.target.value)}
             placeholder="Paste your email content here (headers + body)...&#10;&#10;Example:&#10;From: sender@example.com&#10;To: recipient@example.com&#10;Subject: Test Email&#10;&#10;Email body content..."
@@ -186,7 +221,9 @@ export function EmailInputPanel({
           }}
         >
           <Space h="sm" />
-          <Input.Label size="sm" fw={500} c="gray.7" mb="xs">Upload File</Input.Label>
+          <Input.Label size="sm" fw={500} c="gray.9" mb="xs">
+            Upload file
+          </Input.Label>
           <Dropzone
             onDrop={(files) => onFileUpload(files[0])}
             onReject={(files) => console.warn("File rejected:", files)}
@@ -207,8 +244,8 @@ export function EmailInputPanel({
                 : "2px dashed var(--mantine-color-gray-3)",
               borderRadius: "var(--mantine-radius-md)",
               height: "100%",
-              backgroundColor: uploadedFile 
-                ? "var(--mantine-color-blue-0)" 
+              backgroundColor: uploadedFile
+                ? "var(--mantine-color-blue-0)"
                 : "var(--mantine-color-gray-0)",
               transition: "all 0.15s ease-in-out",
               cursor: "pointer",
