@@ -10,7 +10,7 @@ import {
   Badge,
   Stack,
 } from "@mantine/core";
-import { IconShield, IconCopy } from "@tabler/icons-react";
+import { IconCopy, IconFileText } from "@tabler/icons-react";
 import { FieldRow } from "./FieldRow";
 import type { ParsedData } from "../types/email";
 
@@ -19,13 +19,14 @@ interface ContentPanelProps {
   onAnalyze: () => void;
   analyzing: boolean;
   canAnalyze: boolean;
+  onParse: () => void;
+  canParse: boolean;
 }
 
-export function ContentPanel({ 
-  parsedData, 
-  onAnalyze, 
-  analyzing, 
-  canAnalyze 
+export function ContentPanel({
+  parsedData,
+  onParse,
+  canParse,
 }: ContentPanelProps) {
   const spfDmarcString = parsedData?.metrics
     ? `SPF=${parsedData.metrics.spfResult ?? "N/A"}, DKIM=${
@@ -33,7 +34,8 @@ export function ContentPanel({
       }, DMARC=${parsedData.metrics.dmarcResult ?? "N/A"}`
     : "N/A";
 
-  const bodyText = parsedData?.parsed?.plainText || parsedData?.parsed?.htmlText || "";
+  const bodyText =
+    parsedData?.parsed?.plainText || parsedData?.parsed?.htmlText || "";
 
   return (
     <Card padding="lg" radius="sm" style={{ height: "100%", flex: 1 }}>
@@ -52,6 +54,16 @@ export function ContentPanel({
           <Group gap="sm">
             <Button
               variant="light"
+              color="blue"
+              size="sm"
+              onClick={onParse}
+              disabled={!canParse}
+              leftSection={<IconFileText size={16} />}
+            >
+              Parse Content
+            </Button>
+            <Button
+              variant="light"
               color="gray"
               size="sm"
               leftSection={<IconCopy size={16} />}
@@ -59,22 +71,11 @@ export function ContentPanel({
             >
               Copy
             </Button>
-            <Button
-              variant="gradient"
-              gradient={{ from: 'red', to: 'orange' }}
-              size="sm"
-              onClick={onAnalyze}
-              disabled={!canAnalyze}
-              loading={analyzing}
-              leftSection={<IconShield size={16} />}
-            >
-              {analyzing ? 'Analyzing...' : 'Analyze Security'}
-            </Button>
           </Group>
         </Flex>
-      
+
         <Divider />
-        
+
         {!parsedData ? (
           <Stack align="center" justify="center" style={{ flex: 1 }}>
             <Text c="dimmed" ta="center" size="sm">
@@ -92,28 +93,22 @@ export function ContentPanel({
                   label="From"
                   value={parsedData?.parsed?.metadata?.from}
                 />
-                <FieldRow 
-                  label="To" 
-                  value={parsedData?.parsed?.metadata?.to} 
-                />
+                <FieldRow label="To" value={parsedData?.parsed?.metadata?.to} />
                 <FieldRow
                   label="Subject"
                   value={parsedData?.parsed?.metadata?.subject}
                 />
-                <FieldRow 
-                  label="Date" 
-                  value={parsedData?.parsed?.metadata?.date} 
-                />
                 <FieldRow
-                  label="Security"
-                  value={spfDmarcString}
+                  label="Date"
+                  value={parsedData?.parsed?.metadata?.date}
                 />
+                <FieldRow label="Security" value={spfDmarcString} />
               </Stack>
             </div>
-            
+
             <div style={{ flex: 1, minHeight: 0 }}>
               <Title order={4} size="h5" mb="sm">
-                📄 Email Body
+                Email Body
               </Title>
               <Textarea
                 placeholder="Email content will appear here after parsing..."
@@ -126,8 +121,7 @@ export function ContentPanel({
                   input: {
                     backgroundColor: "#f8fafc",
                     border: "1px solid #e2e8f0",
-                    fontSize: "14px",
-                    fontFamily: "monospace",
+                    fontFamily: "Inter",
                   },
                 }}
               />

@@ -1,4 +1,16 @@
-import { Alert, Container, Grid, Stack, Title, Text, Stepper } from "@mantine/core";
+import {
+  Alert,
+  Container,
+  Grid,
+  Stack,
+  Title,
+  Text,
+  Stepper,
+  Card,
+  Flex,
+  Group,
+  Button,
+} from "@mantine/core";
 import { IconUpload, IconEye, IconShield } from "@tabler/icons-react";
 import { useEmailUpload } from "../hooks/useEmailUpload";
 import { EmailInputPanel } from "../components/EmailInputPanel";
@@ -32,6 +44,10 @@ function Upload() {
     return 0;
   };
 
+  const canClear =
+    (activeTab === "gallery" && textAreaValue.trim() !== "") ||
+    (activeTab === "messages" && uploadedFile !== null);
+
   return (
     <Container size="xl" h="100%" py="md">
       <Stack gap="lg" h="100%">
@@ -42,29 +58,30 @@ function Upload() {
               Email Security Analysis
             </Title>
             <Text c="dimmed" size="sm">
-              Upload an email to analyze its security and detect potential threats
+              Upload an email to analyze its security and detect potential
+              threats
             </Text>
           </div>
 
-          <Stepper 
-            active={getCurrentStep()} 
+          <Stepper
+            active={getCurrentStep()}
             size="sm"
             iconSize={32}
             completedIcon={<IconUpload size={18} />}
           >
-            <Stepper.Step 
+            <Stepper.Step
               icon={<IconUpload size={18} />}
-              label="Upload" 
+              label="Upload"
               description="Provide email content"
             />
-            <Stepper.Step 
+            <Stepper.Step
               icon={<IconEye size={18} />}
-              label="Parse" 
+              label="Parse"
               description="Extract email data"
             />
-            <Stepper.Step 
+            <Stepper.Step
               icon={<IconShield size={18} />}
-              label="Analyze" 
+              label="Analyze"
               description="Security assessment"
             />
           </Stepper>
@@ -76,7 +93,37 @@ function Upload() {
             {error}
           </Alert>
         )}
-        
+
+        <Card py="sm">
+          <Flex justify="space-between" align="center">
+            <Title order={2} size="h3">
+              Email
+            </Title>
+            <Group gap="sm">
+              <Button
+                variant="subtle"
+                color="gray"
+                size="sm"
+                onClick={handleClear}
+                disabled={!canClear}
+              >
+                Clear
+              </Button>
+              <Button
+                variant="gradient"
+                gradient={{ from: "red", to: "orange" }}
+                size="sm"
+                onClick={handleAnalyze}
+                disabled={!canAnalyze}
+                loading={analyzing}
+                leftSection={<IconShield size={16} />}
+              >
+                {analyzing ? "Analyzing..." : "Analyze"}
+              </Button>
+            </Group>
+          </Flex>
+        </Card>
+
         {/* Layout principale responsive */}
         <Grid h="100%" style={{ flex: 1 }}>
           <Grid.Col span={{ base: 12, lg: 6 }} h="60vh">
@@ -90,17 +137,17 @@ function Upload() {
               onTabChange={setActiveTab}
               onClear={handleClear}
               onUpload={handleUpload}
-              onParse={handleParse}
-              canParse={canParse}
             />
           </Grid.Col>
-          
+
           <Grid.Col span={{ base: 12, lg: 6 }} h="60vh">
-            <ContentPanel 
+            <ContentPanel
               parsedData={parsedData}
               onAnalyze={handleAnalyze}
               analyzing={analyzing}
               canAnalyze={canAnalyze}
+              onParse={handleParse}
+              canParse={canParse}
             />
           </Grid.Col>
         </Grid>

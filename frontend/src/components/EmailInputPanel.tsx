@@ -12,11 +12,11 @@ import {
   Title,
 } from "@mantine/core";
 import {
+  IconCopy,
   IconFile,
   IconLetterCase,
   IconUpload,
   IconX,
-  IconFileText,
 } from "@tabler/icons-react";
 import { Dropzone } from "@mantine/dropzone";
 import type { TabType } from "../types/email";
@@ -31,8 +31,6 @@ interface EmailInputPanelProps {
   onTabChange: (tab: TabType) => void;
   onClear: () => void;
   onUpload: () => void;
-  onParse: () => void;
-  canParse: boolean;
 }
 
 export function EmailInputPanel({
@@ -43,16 +41,10 @@ export function EmailInputPanel({
   onTextChange,
   onFileUpload,
   onTabChange,
-  onClear,
   onUpload,
-  onParse,
-  canParse,
 }: EmailInputPanelProps) {
-  const canClear = 
-    (activeTab === "gallery" && textAreaValue.trim() !== "") ||
-    (activeTab === "messages" && uploadedFile !== null);
-
-  const canUpload = !loading && (uploadedFile !== null || textAreaValue.trim() !== "");
+  const canUpload =
+    !loading && (uploadedFile !== null || textAreaValue.trim() !== "");
 
   return (
     <Card
@@ -66,49 +58,39 @@ export function EmailInputPanel({
         flexDirection: "column",
       }}
     >
-      <Flex justify="space-between" gap="10px">
+      <Flex justify="space-between" align="center">
         <Title order={2} size="h3">
-          Email Input
+          Input
         </Title>
         <Group gap="sm" justify="flex-end">
           <Button
-            variant="subtle"
-            color="gray"
-            size="sm"
-            onClick={onClear}
-            disabled={!canClear}
-          >
-            Clear
-          </Button>
-          <Button
             variant="gradient"
-            gradient={{ from: 'blue', to: 'cyan' }}
+            gradient={{ from: "blue", to: "cyan" }}
             size="sm"
             onClick={onUpload}
             disabled={!canUpload}
             loading={loading}
             leftSection={<IconUpload size={16} />}
           >
-            Upload Email
+            Upload
           </Button>
-          <Button
-            variant="light"
-            color="blue"
-            size="sm"
-            onClick={onParse}
-            disabled={!canParse}
-            leftSection={<IconFileText size={16} />}
-          >
-            Parse Content
-          </Button>
+            <Button
+              variant="light"
+              color="gray"
+              size="sm"
+              leftSection={<IconCopy size={16} />}
+              disabled={true}
+            >
+              Copy
+            </Button>
         </Group>
       </Flex>
-      
+
       <Space h="sm" />
       <Divider />
       <Space h="sm" />
       <Space h="sm" />
-      
+
       <Tabs
         variant="pills"
         value={activeTab}
@@ -121,20 +103,14 @@ export function EmailInputPanel({
         }}
       >
         <Tabs.List grow>
-          <Tabs.Tab
-            value="gallery"
-            leftSection={<IconLetterCase size={16} />}
-          >
+          <Tabs.Tab value="gallery" leftSection={<IconLetterCase size={16} />}>
             Text Input
           </Tabs.Tab>
-          <Tabs.Tab 
-            value="messages" 
-            leftSection={<IconFile size={16} />}
-          >
+          <Tabs.Tab value="messages" leftSection={<IconFile size={16} />}>
             File Upload
           </Tabs.Tab>
         </Tabs.List>
-        
+
         <Tabs.Panel
           value="gallery"
           style={{
@@ -153,14 +129,14 @@ export function EmailInputPanel({
             h={"92%"}
             styles={{
               wrapper: { height: "100%" },
-              input: { 
+              input: {
                 height: "100%",
                 fontFamily: "Inter",
               },
             }}
           />
         </Tabs.Panel>
-        
+
         <Tabs.Panel
           value="messages"
           style={{
@@ -187,7 +163,9 @@ export function EmailInputPanel({
               alignItems: "center",
               justifyContent: "center",
               flexDirection: "column",
-              border: uploadedFile ? "2px dashed #3b82f6" : "2px dashed #e0e7ff",
+              border: uploadedFile
+                ? "2px dashed #3b82f6"
+                : "2px dashed #e0e7ff",
               borderRadius: "12px",
               height: "100%",
               backgroundColor: uploadedFile ? "#f0f9ff" : "#fafbfc",
