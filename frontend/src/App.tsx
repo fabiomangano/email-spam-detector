@@ -137,7 +137,7 @@ function AppContent() {
             />
           </div>
           
-          <Divider color="gray.2" />
+          <Divider color="gray.3" />
           
           <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
             <Title 
@@ -169,7 +169,7 @@ function AppContent() {
             />
           </div>
           
-          <Divider color="gray.2" />
+          <Divider color="gray.3" />
           
           <div style={{ marginTop: '1.5rem' }}>
             <Title 
