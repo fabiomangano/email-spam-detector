@@ -145,17 +145,17 @@ export function EmailInputPanel({
         <Tabs.Panel
           value="messages"
           style={{
-            width: "50%",
+            flex: 1,
             minHeight: 0,
             display: "flex",
             flexDirection: "column",
           }}
         >
           <Space h="sm" />
-          <Input.Label>Load a file</Input.Label>
+          <Input.Label size="sm" fw={500} c="gray.7" mb="xs">Upload File</Input.Label>
           <Dropzone
             onDrop={(files) => onFileUpload(files[0])}
-            onReject={(files) => console.warn("File rifiutato:", files)}
+            onReject={(files) => console.warn("File rejected:", files)}
             maxSize={5 * 1024 ** 2}
             accept={{
               "text/*": [".txt"],
@@ -169,64 +169,66 @@ export function EmailInputPanel({
               justifyContent: "center",
               flexDirection: "column",
               border: uploadedFile
-                ? "2px dashed #3b82f6"
-                : "2px dashed #e0e7ff",
-              borderRadius: "12px",
+                ? "2px dashed var(--mantine-color-blue-5)"
+                : "2px dashed var(--mantine-color-gray-3)",
+              borderRadius: "var(--mantine-radius-md)",
               height: "100%",
-              backgroundColor: uploadedFile ? "#f0f9ff" : "#fafbfc",
-              transition: "all 0.2s ease",
+              backgroundColor: uploadedFile 
+                ? "var(--mantine-color-blue-0)" 
+                : "var(--mantine-color-gray-0)",
+              transition: "all 0.15s ease-in-out",
               cursor: "pointer",
             }}
           >
             {uploadedFile ? (
               <>
                 <IconFile
-                  size={52}
+                  size={48}
                   color="var(--mantine-color-blue-6)"
                   stroke={1.5}
                 />
-                <Text size="md" mt="md" fw={500}>
+                <Text size="sm" mt="sm" fw={500} ta="center" c="gray.8">
                   {uploadedFile.name}
                 </Text>
-                <Text size="sm" c="dimmed" mt={5}>
-                  File pronto per l'upload
+                <Text size="xs" c="dimmed" mt={4} ta="center">
+                  Ready to upload
                 </Text>
               </>
             ) : (
               <>
                 <Dropzone.Accept>
                   <IconUpload
-                    size={52}
+                    size={48}
                     color="var(--mantine-color-blue-6)"
                     stroke={1.5}
                   />
                 </Dropzone.Accept>
                 <Dropzone.Reject>
                   <IconX
-                    size={52}
+                    size={48}
                     color="var(--mantine-color-red-6)"
                     stroke={1.5}
                   />
                 </Dropzone.Reject>
                 <Dropzone.Idle>
                   <IconFile
-                    size={52}
-                    color="var(--mantine-color-dimmed)"
-                    stroke={1}
+                    size={48}
+                    color="var(--mantine-color-gray-5)"
+                    stroke={1.2}
                   />
                 </Dropzone.Idle>
-                <Text size="xl" mt="md">
-                  Trascina qui i file o clicca per selezionarlo
+                <Text size="md" mt="sm" fw={500} ta="center" c="gray.8">
+                  Drop files here or click to browse
                 </Text>
-                <Text size="sm" c="dimmed" mt={7}>
-                  Puoi allegare un file di massimo 5 MB
+                <Text size="xs" c="dimmed" mt={4} ta="center">
+                  Attach files up to 5 MB (.txt, .eml, .msg)
                 </Text>
               </>
             )}
           </Dropzone>
           {uploadedFile && (
-            <Text mt="xs" size="sm" c="dimmed" ta="center">
-              File selezionato: <strong>{uploadedFile.name}</strong>
+            <Text mt="xs" size="xs" c="dimmed" ta="center">
+              Selected: <strong>{uploadedFile.name}</strong>
             </Text>
           )}
         </Tabs.Panel>
