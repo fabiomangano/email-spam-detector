@@ -28,14 +28,6 @@ export function ContentPanel({
   onParse,
   canParse,
 }: ContentPanelProps) {
-  const spfDmarcString = parsedData?.metrics
-    ? [
-        parsedData.metrics.spfResult && `SPF=${parsedData.metrics.spfResult}`,
-        parsedData.metrics.dkimResult && `DKIM=${parsedData.metrics.dkimResult}`,
-        parsedData.metrics.dmarcResult && `DMARC=${parsedData.metrics.dmarcResult}`
-      ].filter(Boolean).join(", ") || "—"
-    : "—";
-
   const bodyText =
     parsedData?.parsed?.plainText || parsedData?.parsed?.htmlText || "";
 
@@ -139,13 +131,6 @@ export function ContentPanel({
                   label="Subject"
                   value={parsedData?.parsed?.metadata?.subject}
                 />
-                {parsedData?.metrics && (
-                  parsedData.metrics.spfResult || 
-                  parsedData.metrics.dkimResult || 
-                  parsedData.metrics.dmarcResult
-                ) && (
-                  <FieldRow label="Security" value={spfDmarcString} />
-                )}
               </Stack>
             </div>
 

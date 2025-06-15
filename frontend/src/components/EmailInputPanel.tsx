@@ -206,6 +206,8 @@ export function EmailInputPanel({
               input: {
                 height: "100%",
                 fontFamily: "Inter",
+                fontSize: "var(--mantine-font-size-xs)",
+                lineHeight: 1.4,
               },
             }}
           />

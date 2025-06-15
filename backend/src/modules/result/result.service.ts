@@ -1,15 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { EmailTechnicalMetrics, NlpAnalysisResult, SpamAnalysisResult, DecisionMetrics } from '../../utils/types';
+import {
+  EmailTechnicalMetrics,
+  NlpAnalysisResult,
+  SpamAnalysisResult,
+  DecisionMetrics,
+} from '../../utils/types';
 
 @Injectable()
 export class ResultService {
-  async generateResult(
+  generateResult(
     technicalResult: EmailTechnicalMetrics,
     nlpResult: NlpAnalysisResult,
-  ): Promise<SpamAnalysisResult> {
+  ): SpamAnalysisResult {
     // Usa il nuovo sistema di calcolo
     const decisionMetrics = this.calculateResult(technicalResult, nlpResult);
-    
+
     // Il punteggio finale è basato solo su technical e NLP
     const overallScore = Math.min(decisionMetrics.finalScore / 10, 1);
 
