@@ -6,7 +6,6 @@ import { ParsingModule } from './modules/parsing/parsing.module';
 import { TechnicalModule } from './modules/technical/technical.module';
 import { NlpModule } from './modules/nlp/nlp.module';
 import { ResultModule } from './modules/result/result.module';
-import { LlmModule } from './modules/llm/llm.module';
 import { ConfigModule } from './config/config.module';
 import { PipelineModule } from './pipeline/pipeline.module';
 import { ModelModule } from './model/model.module';
@@ -17,7 +16,6 @@ import { ModelModule } from './model/model.module';
     TechnicalModule,
     NlpModule,
     ResultModule,
-    LlmModule,
     ConfigModule,
     PipelineModule,
     ModelModule,
