@@ -127,7 +127,7 @@ export function ContentPanel({
           <Stack gap="sm" style={{ flex: 1 }}>
             <div>
               <Text size="sm" fw={600} c="gray.9" mb="xs">
-                Email Headers
+                Headers
               </Text>
               <Stack gap={4}>
                 <FieldRow
@@ -138,10 +138,6 @@ export function ContentPanel({
                 <FieldRow
                   label="Subject"
                   value={parsedData?.parsed?.metadata?.subject}
-                />
-                <FieldRow
-                  label="Date"
-                  value={parsedData?.parsed?.metadata?.date}
                 />
                 {parsedData?.metrics && (
                   parsedData.metrics.spfResult || 
@@ -155,7 +151,7 @@ export function ContentPanel({
 
             <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
               <Text size="sm" fw={600} c="gray.9" mb="xs">
-                Email Body
+                Body
               </Text>
               <Textarea
                 placeholder="Email content will appear here after parsing..."
