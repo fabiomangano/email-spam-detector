@@ -3,6 +3,31 @@
 import { Injectable } from '@nestjs/common';
 import { EmailTechnicalMetrics, ParsedEmail } from '../../utils/types';
 
+// Disposable email domains
+const DISPOSABLE_DOMAINS = [
+  'mailinator.com', '10minutemail.com', 'tempmail.org', 'guerrillamail.com', 
+  'mailnesia.com', 'trashmail.com', 'maildrop.cc', 'throwaway.email',
+  'temp-mail.org', 'fakeinbox.com', 'yopmail.com', 'mohmal.com'
+];
+
+// Urgency words (Italian)
+const URGENCY_WORDS = [
+  'urgente', 'obbligatorio', 'immediato', 'scadenza', 'entro', 'subito',
+  'ora', 'adesso', 'scade', 'termina', 'ultimo', 'finale', 'critico'
+];
+
+// Election-related terms (Italian)  
+const ELECTION_TERMS = [
+  'cabina', 'voto', 'delegati', 'elezioni', 'elettorale', 'commissione',
+  'candidati', 'assemblea', 'rappresentanza', 'mandato', 'ballottaggio'
+];
+
+// URL shorteners
+const URL_SHORTENERS = [
+  'bit.ly', 't.co', 'goo.gl', 'tinyurl.com', 'short.link', 'ow.ly',
+  'is.gd', 'buff.ly', 'tiny.cc', 'rb.gy', 'cutt.ly'
+];
+
 @Injectable()
 export class TechnicalService {
   analyzeTechnical(parsedData: ParsedEmail): EmailTechnicalMetrics {
@@ -85,6 +110,130 @@ export class TechnicalService {
       !replyTo.text.includes(from)
     );
 
+    // === NUOVE METRICHE ===
+    
+    // Metriche basate sugli header
+    // Numero di header "Received" - troppi hop possono mascherare la provenienza
+    const numReceivedHeaders = Array.isArray(parsedData.headers?.received) 
+      ? parsedData.headers.received.length 
+      : parsedData.headers?.received ? 1 : 0;
+      
+    // Verifica presenza server Outlook nella catena SMTP - aiuta a distinguere flussi legittimi
+    const hasOutlookReceivedPattern = Array.isArray(parsedData.headers?.received)
+      ? parsedData.headers.received.some(h => /outlook\.com/i.test(h))
+      : parsedData.headers?.received ? /outlook\.com/i.test(parsedData.headers.received) : false;
+      
+    // Valore di X-Mailer o User-Agent - identifica software noto per spam
+    const xMailerBrand = parsedData.headers?.['x-mailer'] || 
+                        parsedData.headers?.['user-agent'] || 
+                        parsedData.headers?.['x-mailer'];
+                        
+    // Verifica assenza o anomalia header Date - email malformate sono sospette
+    const missingDateHeader = !parsedData.headers?.date;
+
+    // Metriche basate sul mittente
+    const fromName = parsedData.headers?.from?.value?.[0]?.name || '';
+    // Nome mittente sospetto (tutto maiuscolo o generico) - maschera l'identità reale
+    const fromNameSuspicious = /^[A-Z\s]+$/.test(fromName) && fromName.length > 10;
+    
+    const fromAddress = parsedData.headers?.from?.value?.[0]?.address || '';
+    const fromDomain = fromAddress.split('@')[1] || '';
+    // Dominio del mittente è noto come temporaneo - email usa mittenti temporanei
+    const fromDomainIsDisposable = DISPOSABLE_DOMAINS.includes(fromDomain.toLowerCase());
+    
+    // Email inviata a più destinatari visibili - non è una comunicazione personale
+    const sentToMultiple = parsedData.headers?.to?.value?.length > 1 ||
+                          (parsedData.headers?.cc?.value?.length || 0) > 0;
+
+    // Metriche di campagna e mailing list
+    const campaignHeaders = ['x-rpcampaign', 'list-help', 'feedback-id', 'list-unsubscribe'];
+    // Presenza header di campagna - indica mailing list, newsletter o campagne massive
+    const campaignIdentifierPresent = campaignHeaders.some(header => 
+      parsedData.headers?.[header] !== undefined
+    );
+    
+    const feedbackHeaders = ['x-csa-complaints', 'cfbl-address', 'feedback-id', 'x-abuse'];
+    // Header per loop FBL - email commerciale da provider autoregolamentato
+    const containsFeedbackLoopHeader = feedbackHeaders.some(header => 
+      parsedData.headers?.[header] !== undefined
+    );
+
+    // Metriche semantiche e testuali
+    const plainTextLower = (parsedData.plainText || '').toLowerCase();
+    const totalChars = parsedData.plainText?.length || 0;
+    const upperCaseChars = (parsedData.plainText?.match(/[A-Z]/g) || []).length;
+    // Percentuale di testo in MAIUSCOLO - comunicazione aggressiva tipica dello spam
+    const uppercaseRatio = totalChars > 0 ? upperCaseChars / totalChars : 0;
+    
+    // Molti punti esclamativi consecutivi - tecnica classica per attirare attenzione
+    const excessiveExclamations = /!{3,}/.test(allText);
+    
+    // Parole di urgenza ("urgente", "immediato") - linguaggio pressante tipico di phishing/scam
+    const containsUrgencyWords = URGENCY_WORDS.some(word => 
+      plainTextLower.includes(word.toLowerCase())
+    );
+    
+    // Parole chiave elettorali ("voto", "delegati") - campagne massive o phishing tematico
+    const containsElectionTerms = ELECTION_TERMS.some(word => 
+      plainTextLower.includes(word.toLowerCase())
+    );
+
+    // Metriche di offuscamento e link
+    // Caratteri Unicode, simboli rari, HTML offuscato - usato per evadere filtri
+    const containsObfuscatedText = 
+      /\\u[0-9A-Fa-f]{4}/.test(allText) || // Escape Unicode
+      /%[0-9A-Fa-f]{2}/.test(allText) || // Encoding percentuale
+      /[\u200B\u200C\u200D\uFEFF]/.test(allText); // Caratteri a larghezza zero
+      
+    const links = [...allText.matchAll(/https?:\/\/[^\s"'<>]+/g)].map(m => m[0]);
+    const externalDomains = new Set();
+    
+    links.forEach(link => {
+      try {
+        const url = new URL(link);
+        externalDomains.add(url.hostname.toLowerCase());
+      } catch (e) {
+        // URL invalido, ignora
+      }
+    });
+    
+    // Conta domini esterni nei link - molti domini probabilmente redirect o phishing
+    const numExternalDomains = externalDomains.size;
+    
+    // Link testuale diverso da URL reale - tecnica di inganno
+    const linkDisplayMismatch = /<a[^>]+href="([^"]*)"[^>]*>([^<]*)<\/a>/gi.test(parsedData.htmlText || '') &&
+      [...(parsedData.htmlText || '').matchAll(/<a[^>]+href="([^"]*)"[^>]*>([^<]*)<\/a>/gi)]
+        .some(match => match[1] !== match[2] && !match[2].includes('...'));
+    
+    // Usa accorciatori di URL (bit.ly, t.co) - maschera reale destinazione
+    const containsShortenedUrls = URL_SHORTENERS.some(shortener => 
+      allText.toLowerCase().includes(shortener)
+    );
+    
+    // URL con encoding percentuale - può mascherare redirect o link fraudolenti
+    const usesEncodedUrls = links.some(link => /%[0-9A-Fa-f]{2}/.test(link));
+    
+    // Rapporto link/immagini - troppi link rispetto a contenuti visivi
+    const linkToImageRatio = numImages > 0 ? numLinks / numImages : numLinks;
+
+    // Metriche MIME e struttura
+    const contentType = parsedData.headers?.['content-type']?.value || '';
+    // Email ha tipi MIME misti - struttura complessa può nascondere contenuti
+    const hasMixedContentTypes = /multipart\/mixed/i.test(contentType);
+    
+    // MIME annidati (multipart dentro multipart) - può mascherare allegati o codice
+    const hasNestedMultipart = /multipart/i.test(contentType) && 
+      (parsedData.htmlText || '').includes('multipart');
+      
+    const boundary = parsedData.headers?.['content-type']?.params?.boundary || '';
+    // Boundary MIME troppo lunghi o casuali - segnale di generazione automatica
+    const boundaryAnomaly = boundary.length > 50 || 
+      /[^a-zA-Z0-9\-_=]/.test(boundary.replace(/[=_-]/g, ''));
+      
+    // MIME alternative ma manca il text/plain - finge compatibilità ma nasconde contenuti
+    const hasFakeMultipartAlternative = /multipart\/alternative/i.test(contentType) && 
+      (!parsedData.plainText || parsedData.plainText.trim().length === 0);
+
     return {
       bodyLength,
       numLinks,
@@ -101,6 +250,35 @@ export class TechnicalService {
       isHtmlOnly,
       numDomains,
       replyToDiffersFromFrom,
+      // New header-based metrics
+      numReceivedHeaders,
+      hasOutlookReceivedPattern,
+      xMailerBrand,
+      missingDateHeader,
+      // New from-based metrics
+      fromNameSuspicious,
+      fromDomainIsDisposable,
+      sentToMultiple,
+      // New campaign metrics
+      campaignIdentifierPresent,
+      containsFeedbackLoopHeader,
+      // New text-based metrics
+      uppercaseRatio,
+      excessiveExclamations,
+      containsUrgencyWords,
+      containsElectionTerms,
+      // New obfuscation and link metrics
+      containsObfuscatedText,
+      numExternalDomains,
+      linkDisplayMismatch,
+      containsShortenedUrls,
+      usesEncodedUrls,
+      linkToImageRatio,
+      // New MIME metrics
+      hasMixedContentTypes,
+      hasNestedMultipart,
+      boundaryAnomaly,
+      hasFakeMultipartAlternative,
     };
   }
 
