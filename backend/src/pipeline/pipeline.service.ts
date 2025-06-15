@@ -19,10 +19,14 @@ export class PipelineService {
     const parsedData = await this.parsingService.parseEmailFile(filename);
 
     // Step 2: Technical Analysis
-    const technicalResult = this.technicalService.analyzeTechnical(parsedData);
+    const technicalResult = this.technicalService.analyzeTechnical(
+      parsedData.parsed,
+    );
+
+    console.log(technicalResult, "techincal result")
 
     // Step 3: NLP Analysis
-    const nlpResult = await this.nlpService.analyzeNlp(parsedData);
+    const nlpResult = await this.nlpService.analyzeNlp(parsedData.parsed);
 
     // Step 4: Generate Final Result
     const finalResult = await this.resultService.generateResult(
@@ -34,7 +38,14 @@ export class PipelineService {
       ...finalResult,
       details: {
         ...finalResult.details,
-        parsing: parsedData, // Include parsing data in details
+        parsing: {
+          parsed: parsedData.parsed,
+          metrics: {
+            spfResult: technicalResult.spfResult,
+            dkimResult: technicalResult.dkimResult,
+            dmarcResult: technicalResult.dmarcResult,
+          },
+        },
       },
     } as SpamAnalysisResult;
   }

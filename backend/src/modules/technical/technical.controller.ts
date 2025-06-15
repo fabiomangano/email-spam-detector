@@ -1,20 +1,19 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res } from '@nestjs/common';
 import { TechnicalService } from './technical.service';
 import { Response } from 'express';
+import { ParsedEmail } from '../../utils/types';
 
 @Controller('technical')
 export class TechnicalController {
   constructor(private readonly technicalService: TechnicalService) {}
 
-  @Get(':filename')
-  async analyzeTechnical(
-    @Param('filename') filename: string,
+  @Post('analyze')
+  analyzeTechnical(
+    @Body() parsedEmail: ParsedEmail,
     @Res() res: Response,
   ) {
     try {
-      // Per ora assumiamo che i dati parsati vengano passati,
-      // ma in un caso reale dovremmo prima fare il parsing
-      const result = await this.technicalService.analyzeTechnical({});
+      const result = this.technicalService.analyzeTechnical(parsedEmail);
       return res.json(result);
     } catch (error) {
       return res.status(400).json({ error: (error as Error).message });

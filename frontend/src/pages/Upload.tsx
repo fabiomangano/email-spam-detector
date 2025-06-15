@@ -10,6 +10,7 @@ import {
   Group,
   Button,
 } from "@mantine/core";
+import { useEffect } from "react";
 import "../stepper.css";
 import { IconUpload, IconEye, IconShield } from "@tabler/icons-react";
 import { useEmailUpload } from "../hooks/useEmailUpload";
@@ -30,6 +31,8 @@ function Upload() {
     setTextAreaValue,
     setUploadedFile,
     setActiveTab,
+    setError,
+    setParsedData,
     handleClear,
     handleFullClear,
     handleUpload,
@@ -38,6 +41,13 @@ function Upload() {
     canParse,
     canAnalyze,
   } = useEmailUpload();
+
+  // Ripristina parsedData se esiste analysisResult ma parsedData è null
+  useEffect(() => {
+    if (analysisResult?.details?.parsing && !parsedData) {
+      setParsedData(analysisResult.details.parsing);
+    }
+  }, [analysisResult, parsedData, setParsedData]);
 
   // Determina lo step attuale del workflow
   const getCurrentStep = () => {
@@ -93,11 +103,24 @@ function Upload() {
             variant="outline"
             title="Error"
             withCloseButton
-            onClose={() => {}}
-            style={{
-              borderColor: "#ef4444",
-              color: "#ef4444",
-              backgroundColor: "transparent",
+            onClose={() => setError(null)}
+            styles={{
+              root: {
+                borderColor: "#ef4444",
+                backgroundColor: "transparent",
+              },
+              title: {
+                color: "#ef4444",
+              },
+              body: {
+                color: "#ef4444",
+              },
+              closeButton: {
+                color: "#ef4444",
+                '&:hover': {
+                  backgroundColor: "#fef2f2",
+                },
+              },
             }}
           >
             {error}

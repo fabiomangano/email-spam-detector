@@ -10,7 +10,7 @@ export class NlpService {
   private readonly tokenizer = new WordTokenizer();
   private readonly tfidf = new TfIdf();
   private classifier: BayesClassifier | null = null;
-  private readonly modelPath = path.join(__dirname, MODEL_PATH);
+  private readonly modelPath = path.join(process.cwd(), MODEL_PATH);
 
   async analyzeNlp(parsedData: any): Promise<NlpAnalysisResult> {
     const plainText = parsedData.parsed?.plainText || '';

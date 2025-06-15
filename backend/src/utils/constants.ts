@@ -11,4 +11,4 @@ export const SPAM_WORDS = [
 ];
 
 // Model path for NLP classifier
-export const MODEL_PATH = '../../model/classifier.json';
+export const MODEL_PATH = 'model/classifier.json';

@@ -182,6 +182,8 @@ export function useEmailUpload() {
     setTextAreaValue,
     setUploadedFile,
     setActiveTab,
+    setError,
+    setParsedData,
     handleClear,
     handleFullClear,
     handleUpload,
