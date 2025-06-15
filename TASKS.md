@@ -13,6 +13,8 @@
 ## 🖥️ Frontend  
 > _NTH = Nice to Have_
 
+// sistema feedback utente
+
 ### 🧱 App Shell
 - Implementare logo  
 - Implementare menù di navigazione
