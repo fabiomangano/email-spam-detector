@@ -4,15 +4,12 @@ import {
   Card,
   Flex,
   Grid,
-  List,
   Progress,
-  Space,
   Text,
   Title,
   Alert,
   Group,
   Stack,
-  Code,
   ScrollArea,
   Collapse,
   Divider,
@@ -21,7 +18,6 @@ import {
   IconArrowLeft, 
   IconSettings,
   IconBrain,
-  IconFileText,
   IconCode,
   IconChevronDown,
   IconChevronRight,
@@ -299,80 +295,6 @@ function Report() {
           </Card>
         </Grid.Col>
 
-        {/* Behavioral Analysis Card */}
-        <Grid.Col span={6}>
-          <Card padding="lg" radius="md" h="400px">
-            <Flex align="center" gap="xs" mb="md">
-              <IconFileText size={20} />
-              <Title order={5} size="h5">Behavioral Analysis</Title>
-            </Flex>
-            <ScrollArea h={320}>
-              <Stack gap="sm">
-                <div>
-                  <Text size="sm" fw={600} mb="xs">Urgency Score</Text>
-                  <Progress 
-                    value={analysisResult.details.behavior.urgency.score * 100} 
-                    color="orange" 
-                    size="lg" 
-                    mb="xs"
-                  />
-                  <Text size="xs" c="dimmed">{Math.round(analysisResult.details.behavior.urgency.score * 100)}%</Text>
-                  
-                  {analysisResult.details.behavior.urgency.indicators.length > 0 && (
-                    <div style={{ marginTop: '8px' }}>
-                      <Text size="xs" fw={500} mb="xs">Indicators:</Text>
-                      <List size="xs">
-                        {analysisResult.details.behavior.urgency.indicators.map((indicator, index) => (
-                          <List.Item key={index}>{indicator}</List.Item>
-                        ))}
-                      </List>
-                    </div>
-                  )}
-                </div>
-                
-                <div>
-                  <Text size="sm" fw={600} mb="xs">Social Engineering Score</Text>
-                  <Progress 
-                    value={analysisResult.details.behavior.socialEngineering.score * 100} 
-                    color="red" 
-                    size="lg" 
-                    mb="xs"
-                  />
-                  <Text size="xs" c="dimmed">{Math.round(analysisResult.details.behavior.socialEngineering.score * 100)}%</Text>
-                  
-                  {analysisResult.details.behavior.socialEngineering.techniques.length > 0 && (
-                    <div style={{ marginTop: '8px' }}>
-                      <Text size="xs" fw={500} mb="xs">Techniques:</Text>
-                      <List size="xs">
-                        {analysisResult.details.behavior.socialEngineering.techniques.map((technique, index) => (
-                          <List.Item key={index}>{technique}</List.Item>
-                        ))}
-                      </List>
-                    </div>
-                  )}
-                </div>
-                
-                <div>
-                  <Text size="sm" fw={600} mb="xs">Pattern Analysis</Text>
-                  <Text size="xs" c="dimmed" mb="xs">
-                    {analysisResult.details.behavior.patterns.analysis}
-                  </Text>
-                  
-                  {analysisResult.details.behavior.patterns.suspicious.length > 0 && (
-                    <div>
-                      <Text size="xs" fw={500} mb="xs">Suspicious Patterns:</Text>
-                      <List size="xs">
-                        {analysisResult.details.behavior.patterns.suspicious.map((pattern, index) => (
-                          <List.Item key={index}>{pattern}</List.Item>
-                        ))}
-                      </List>
-                    </div>
-                  )}
-                </div>
-              </Stack>
-            </ScrollArea>
-          </Card>
-        </Grid.Col>
       </Grid>
     </div>
   );

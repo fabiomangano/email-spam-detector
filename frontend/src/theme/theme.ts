@@ -159,51 +159,51 @@ export const theme = createTheme({
           border: '1px solid transparent',
         },
       },
-      variants: {
-        filled: () => ({
-          root: {
-            backgroundColor: '#262626',
-            color: '#ffffff',
-            border: '1px solid #262626',
-            '&:hover': {
-              backgroundColor: '#404040',
-              border: '1px solid #404040',
-            },
-          },
-        }),
-        outline: () => ({
-          root: {
-            backgroundColor: 'transparent',
-            color: '#262626',
-            border: '1px solid #d4d4d4',
-            '&:hover': {
-              backgroundColor: '#f5f5f5',
-              border: '1px solid #a3a3a3',
-            },
-          },
-        }),
-        subtle: () => ({
-          root: {
-            backgroundColor: '#f5f5f5',
-            color: '#525252',
-            border: '1px solid transparent',
-            '&:hover': {
-              backgroundColor: '#e5e5e5',
-            },
-          },
-        }),
-        gradient: () => ({
-          root: {
-            backgroundColor: '#262626',
-            color: '#ffffff',
-            border: '1px solid #262626',
-            background: 'linear-gradient(135deg, #404040 0%, #262626 100%)',
-            '&:hover': {
-              background: 'linear-gradient(135deg, #525252 0%, #404040 100%)',
-            },
-          },
-        }),
-      },
+      // variants: {
+      //   filled: () => ({
+      //     root: {
+      //       backgroundColor: '#262626',
+      //       color: '#ffffff',
+      //       border: '1px solid #262626',
+      //       '&:hover': {
+      //         backgroundColor: '#404040',
+      //         border: '1px solid #404040',
+      //       },
+      //     },
+      //   }),
+      //   outline: () => ({
+      //     root: {
+      //       backgroundColor: 'transparent',
+      //       color: '#262626',
+      //       border: '1px solid #d4d4d4',
+      //       '&:hover': {
+      //         backgroundColor: '#f5f5f5',
+      //         border: '1px solid #a3a3a3',
+      //       },
+      //     },
+      //   }),
+      //   subtle: () => ({
+      //     root: {
+      //       backgroundColor: '#f5f5f5',
+      //       color: '#525252',
+      //       border: '1px solid transparent',
+      //       '&:hover': {
+      //         backgroundColor: '#e5e5e5',
+      //       },
+      //     },
+      //   }),
+      //   gradient: () => ({
+      //     root: {
+      //       backgroundColor: '#262626',
+      //       color: '#ffffff',
+      //       border: '1px solid #262626',
+      //       background: 'linear-gradient(135deg, #404040 0%, #262626 100%)',
+      //       '&:hover': {
+      //         background: 'linear-gradient(135deg, #525252 0%, #404040 100%)',
+      //       },
+      //     },
+      //   }),
+      // },
     },
 
     Card: {
@@ -258,28 +258,28 @@ export const theme = createTheme({
           fontWeight: '500',
         },
       },
-      variants: {
-        light: () => ({
-          root: {
-            backgroundColor: '#f5f5f5',
-            color: '#525252',
-            border: '1px solid #e5e5e5',
-          },
-        }),
-        filled: () => ({
-          root: {
-            backgroundColor: '#262626',
-            color: '#ffffff',
-          },
-        }),
-        outline: () => ({
-          root: {
-            backgroundColor: 'transparent',
-            color: '#525252',
-            border: '1px solid #d4d4d4',
-          },
-        }),
-      },
+      // variants: {
+      //   light: () => ({
+      //     root: {
+      //       backgroundColor: '#f5f5f5',
+      //       color: '#525252',
+      //       border: '1px solid #e5e5e5',
+      //     },
+      //   }),
+      //   filled: () => ({
+      //     root: {
+      //       backgroundColor: '#262626',
+      //       color: '#ffffff',
+      //     },
+      //   }),
+      //   outline: () => ({
+      //     root: {
+      //       backgroundColor: 'transparent',
+      //       color: '#525252',
+      //       border: '1px solid #d4d4d4',
+      //     },
+      //   }),
+      // },
     },
 
     Alert: {

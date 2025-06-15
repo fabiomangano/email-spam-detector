@@ -29,11 +29,6 @@ export class ResultController {
           replyToDiffersFromFrom: false,
         },
         {
-          urgency: { score: 0.1, indicators: [] },
-          socialEngineering: { score: 0.1, techniques: [] },
-          patterns: { suspicious: [], analysis: 'test' },
-        },
-        {
           tokens: ['test', 'email', 'content'],
           tfidfVector: [0.1, 0.2, 0.1],
           nlpMetrics: {

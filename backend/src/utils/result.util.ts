@@ -1,5 +1,4 @@
 import { EmailTechnicalMetrics } from './email-metrics';
-import { BehaviorAnalysisResult } from './behavior.util';
 import { NlpAnalysisResult } from './nlp.util';
 
 interface DecisionMetrics {
@@ -15,7 +14,6 @@ export interface SpamAnalysisResult {
   summary: string;
   details: {
     technical: EmailTechnicalMetrics;
-    behavior: BehaviorAnalysisResult;
     nlp: NlpAnalysisResult;
   };
   recommendations: string[];
@@ -23,17 +21,13 @@ export interface SpamAnalysisResult {
 
 export function generateResult(
   technicalResult: EmailTechnicalMetrics,
-  behaviorResult: BehaviorAnalysisResult,
   nlpResult: NlpAnalysisResult,
 ): Promise<SpamAnalysisResult> {
   // Usa il nuovo sistema di calcolo
   const decisionMetrics = calculateResult(technicalResult, nlpResult);
   
-  // Calcola il behavior score separatamente (per compatibilità)
-  const behaviorScore = calculateBehaviorScore(behaviorResult);
-  
-  // Il punteggio finale combina decision metrics e behavior
-  const overallScore = Math.min((decisionMetrics.finalScore / 10) * 0.7 + behaviorScore * 0.3, 1);
+  // Il punteggio finale è basato solo su technical e NLP
+  const overallScore = Math.min(decisionMetrics.finalScore / 10, 1);
 
   return Promise.resolve({
     overallScore,
@@ -41,7 +35,6 @@ export function generateResult(
     summary: generateSummary(overallScore),
     details: {
       technical: technicalResult,
-      behavior: behaviorResult,
       nlp: nlpResult,
     },
     recommendations: generateRecommendations(overallScore),
@@ -68,12 +61,6 @@ function calculateTechnicalScore(metrics: EmailTechnicalMetrics): number {
   return score;
 }
 
-function calculateBehaviorScore(behavior: BehaviorAnalysisResult): number {
-  return Math.min(
-    (behavior.urgency.score + behavior.socialEngineering.score) / 2,
-    1,
-  );
-}
 
 function calculateNlpScore(nlpMetrics: any): number {
   let score = 0;

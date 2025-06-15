@@ -12,7 +12,6 @@ const API_BASE_URL = "http://localhost:3000";
 export function useEmailUpload() {
   const navigate = useNavigate();
   const { 
-    analysisResult,
     setAnalysisResult,
     textAreaValue,
     setTextAreaValue,

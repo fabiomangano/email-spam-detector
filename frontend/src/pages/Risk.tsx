@@ -133,17 +133,6 @@ function Risk() {
                     } />
                   </div>
                   
-                  <div>
-                    <Flex justify="space-between" align="center" mb="xs">
-                      <Text size="xs">Behavioral Risk</Text>
-                      <Text size="xs" fw={500}>
-                        {Math.round(((analysisResult.details.behavior.urgency.score + analysisResult.details.behavior.socialEngineering.score) / 2) * 100)}%
-                      </Text>
-                    </Flex>
-                    <Progress size="xs" color="orange" value={
-                      ((analysisResult.details.behavior.urgency.score + analysisResult.details.behavior.socialEngineering.score) / 2) * 100
-                    } />
-                  </div>
                   
                   <div>
                     <Flex justify="space-between" align="center" mb="xs">

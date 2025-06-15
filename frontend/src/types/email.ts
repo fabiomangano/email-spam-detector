@@ -13,9 +13,13 @@ export interface EmailMetrics {
 }
 
 export interface ParsedEmail {
-  metadata?: EmailMetadata;
-  plainText?: string;
-  htmlText?: string;
+  parsingOk: boolean;
+  headers: Record<string, any>;
+  plainText: string;
+  htmlText: string;
+  attachments: any[];
+  metadata: EmailMetadata;
+  warnings: string[];
 }
 
 export interface ParsedData {
@@ -41,22 +45,17 @@ export interface TechnicalAnalysisResult {
   replyToDiffersFromFrom: boolean;
 }
 
-export interface BehaviorAnalysisResult {
-  urgency: {
-    score: number;
-    indicators: string[];
-  };
-  socialEngineering: {
-    score: number;
-    techniques: string[];
-  };
-  patterns: {
-    suspicious: string[];
-    analysis: string;
-  };
-}
-
 export interface NlpAnalysisResult {
+  tokens: string[];
+  tfidfVector: number[];
+  nlpMetrics: {
+    numSpammyWords: number;
+    spamWordRatio: number;
+    allCapsCount: number;
+    exclamationCount: number;
+    tokens: string[];
+  };
+  prediction: string;
   sentiment: {
     score: number;
     label: string;
@@ -79,7 +78,6 @@ export interface PipelineResult {
   summary: string;
   details: {
     technical: TechnicalAnalysisResult;
-    behavior: BehaviorAnalysisResult;
     nlp: NlpAnalysisResult;
     parsing: ParsedData;
   };
