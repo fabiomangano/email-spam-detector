@@ -141,19 +141,8 @@ function Upload() {
           </Alert>
         )}
 
-        {/* Layout con Content centrale e sidebar Input a destra */}
+        {/* Layout con sidebar Input a sinistra e Content centrale */}
         <Grid style={{ flex: 1, height: 0 }}>
-          <Grid.Col span={{ base: 12, lg: 9 }} style={{ display: "flex" }}>
-            <ContentPanel
-              parsedData={parsedData}
-              onAnalyze={handleAnalyze}
-              analyzing={analyzing}
-              canAnalyze={canAnalyze}
-              onParse={handleParse}
-              canParse={canParse}
-            />
-          </Grid.Col>
-
           <Grid.Col span={{ base: 12, lg: 3 }} style={{ display: "flex" }}>
             <EmailInputPanel
               textAreaValue={textAreaValue}
@@ -165,6 +154,17 @@ function Upload() {
               onTabChange={setActiveTab}
               onClear={handleClear}
               onUpload={handleUpload}
+              onParse={handleParse}
+              canParse={canParse}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={{ base: 12, lg: 9 }} style={{ display: "flex" }}>
+            <ContentPanel
+              parsedData={parsedData}
+              onAnalyze={handleAnalyze}
+              analyzing={analyzing}
+              canAnalyze={canAnalyze}
               onParse={handleParse}
               canParse={canParse}
             />

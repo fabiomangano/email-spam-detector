@@ -134,6 +134,33 @@ export function ContentPanel({
               </div>
             </div>
 
+            <Divider size="xs" />
+
+            {/* Content Structure */}
+            <div>
+              <Text size="sm" fw={700} mb="xs" c="gray.9">Content Structure</Text>
+              <Stack gap={4}>
+                <Group justify="space-between" align="flex-start">
+                  <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Has HTML:</Text>
+                  <Text size="xs" c={parsedData?.parsed?.htmlText ? "gray.9" : "gray.5"} style={{ flex: 1, textAlign: "right", fontStyle: parsedData?.parsed?.htmlText ? "normal" : "italic" }}>
+                    {parsedData?.parsed?.htmlText ? 'Yes' : 'No'}
+                  </Text>
+                </Group>
+                <Group justify="space-between" align="flex-start">
+                  <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Has Plain Text:</Text>
+                  <Text size="xs" c={parsedData?.parsed?.plainText ? "gray.9" : "gray.5"} style={{ flex: 1, textAlign: "right", fontStyle: parsedData?.parsed?.plainText ? "normal" : "italic" }}>
+                    {parsedData?.parsed?.plainText ? 'Yes' : 'No'}
+                  </Text>
+                </Group>
+                <Group justify="space-between" align="flex-start">
+                  <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Attachments:</Text>
+                  <Text size="xs" c={(parsedData?.parsed?.attachments?.length || 0) > 0 ? "gray.9" : "gray.5"} style={{ flex: 1, textAlign: "right", fontStyle: (parsedData?.parsed?.attachments?.length || 0) > 0 ? "normal" : "italic" }}>
+                    {parsedData?.parsed?.attachments?.length || 0}
+                  </Text>
+                </Group>
+              </Stack>
+            </div>
+
           </Stack>
         </ScrollArea>
       </Stack>
