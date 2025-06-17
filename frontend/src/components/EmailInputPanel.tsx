@@ -31,6 +31,8 @@ interface EmailInputPanelProps {
   onTabChange: (tab: TabType) => void;
   onClear: () => void;
   onUpload: () => void;
+  onParse: () => void;
+  canParse: boolean;
 }
 
 export function EmailInputPanel({
@@ -42,6 +44,8 @@ export function EmailInputPanel({
   onFileUpload,
   onTabChange,
   onUpload,
+  onParse,
+  canParse,
 }: EmailInputPanelProps) {
   const canUpload =
     !loading && (uploadedFile !== null || textAreaValue.trim() !== "");
@@ -98,7 +102,12 @@ export function EmailInputPanel({
           <Button
             variant="filled"
             size="xs"
-            onClick={onUpload}
+            onClick={async () => {
+              await onUpload();
+              if (canParse) {
+                onParse();
+              }
+            }}
             disabled={!canUpload}
             loading={loading}
             leftSection={<IconUpload size={14} />}
@@ -114,7 +123,7 @@ export function EmailInputPanel({
               },
             }}
           >
-            Upload
+            Upload & Parse
           </Button>
         </Group>
       </Flex>
@@ -211,9 +220,9 @@ export function EmailInputPanel({
               input: {
                 height: "100%",
                 flex: 1,
-                fontFamily: "Inter",
+                fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
                 fontSize: "var(--mantine-font-size-xs)",
-                lineHeight: 1.4,
+                lineHeight: 1.5,
                 minHeight: "200px",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",

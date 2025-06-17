@@ -141,9 +141,20 @@ function Upload() {
           </Alert>
         )}
 
-        {/* Layout principale responsive - le card riempiono lo spazio rimanente */}
+        {/* Layout con Content centrale e sidebar Input a destra */}
         <Grid style={{ flex: 1, height: 0 }}>
-          <Grid.Col span={{ base: 12, lg: 6 }} style={{ display: "flex" }}>
+          <Grid.Col span={{ base: 12, lg: 9 }} style={{ display: "flex" }}>
+            <ContentPanel
+              parsedData={parsedData}
+              onAnalyze={handleAnalyze}
+              analyzing={analyzing}
+              canAnalyze={canAnalyze}
+              onParse={handleParse}
+              canParse={canParse}
+            />
+          </Grid.Col>
+
+          <Grid.Col span={{ base: 12, lg: 3 }} style={{ display: "flex" }}>
             <EmailInputPanel
               textAreaValue={textAreaValue}
               uploadedFile={uploadedFile}
@@ -154,15 +165,6 @@ function Upload() {
               onTabChange={setActiveTab}
               onClear={handleClear}
               onUpload={handleUpload}
-            />
-          </Grid.Col>
-
-          <Grid.Col span={{ base: 12, lg: 6 }} style={{ display: "flex" }}>
-            <ContentPanel
-              parsedData={parsedData}
-              onAnalyze={handleAnalyze}
-              analyzing={analyzing}
-              canAnalyze={canAnalyze}
               onParse={handleParse}
               canParse={canParse}
             />

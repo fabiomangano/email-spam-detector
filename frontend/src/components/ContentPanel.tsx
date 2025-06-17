@@ -4,13 +4,12 @@ import {
   Divider,
   Flex,
   Group,
-  Textarea,
   Title,
   Text,
   Stack,
+  ScrollArea,
 } from "@mantine/core";
-import { IconCopy, IconFileText } from "@tabler/icons-react";
-import { FieldRow } from "./FieldRow";
+import { IconMail, IconCode, IconCopy } from "@tabler/icons-react";
 import type { ParsedData } from "../types/email";
 
 interface ContentPanelProps {
@@ -34,10 +33,11 @@ export function ContentPanel({
     <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
       <Stack gap="sm" h="100%">
         <Flex justify="space-between" align="center">
-          <Title order={2} size="h3">
-            Content
-          </Title>
-          <Group gap="sm">
+          <Flex align="center" gap="xs">
+            <IconCode size={20} />
+            <Title order={2} size="h3">Content</Title>
+          </Flex>
+          {parsedData && (
             <Button
               variant="outline"
               size="xs"
@@ -58,102 +58,100 @@ export function ContentPanel({
                     borderColor: '#e5e5e5 !important',
                     color: '#a3a3a3 !important',
                   },
-                  '&[data-disabled]': {
-                    backgroundColor: '#ffffff !important',
-                    borderColor: '#e5e5e5 !important',
-                    color: '#a3a3a3 !important',
-                  },
                 },
               }}
             >
               Copy
             </Button>
-            <Button
-              variant="filled"
-              size="xs"
-              onClick={onParse}
-              disabled={!canParse}
-              leftSection={<IconFileText size={14} />}
-              styles={{
-                root: {
-                  backgroundColor: '#262626',
-                  color: '#ffffff',
-                  '&:disabled': {
-                    backgroundColor: '#f5f5f5 !important',
-                    borderColor: '#e5e5e5 !important',
-                    color: '#a3a3a3 !important',
-                  },
-                },
-              }}
-            >
-              Parse
-            </Button>
-          </Group>
+          )}
         </Flex>
 
         <Divider />
 
         {!parsedData ? (
-          <Stack align="center" justify="center" style={{ flex: 1 }}>
-            <Text c="dimmed" ta="center" size="sm">
-              Upload and parse an email to see its content here
-            </Text>
+          <Stack align="center" justify="center" style={{ flex: 1 }} gap="lg">
+            <IconMail size={64} color="var(--mantine-color-gray-4)" stroke={1.5} />
+            <Stack align="center" gap="xs">
+              <Text c="gray.8" ta="center" size="md" fw={500}>
+                No email content
+              </Text>
+              <Text c="dimmed" ta="center" size="sm">
+                Upload and parse an email to see its content here
+              </Text>
+            </Stack>
           </Stack>
         ) : (
-          <Stack gap="sm" style={{ flex: 1 }}>
-            <div>
-              <Text size="sm" fw={600} c="gray.9" mb="xs">
-                Headers
-              </Text>
-              <Stack gap={4}>
-                <FieldRow
-                  label="From"
-                  value={parsedData?.parsed?.metadata?.from}
-                />
-                <FieldRow label="To" value={parsedData?.parsed?.metadata?.to} />
-                <FieldRow
-                  label="Subject"
-                  value={parsedData?.parsed?.metadata?.subject}
-                />
-              </Stack>
-            </div>
+          <ScrollArea 
+            scrollbars="y" 
+            style={{ flex: 1, height: "calc(100vh - 400px)" }}
+            styles={{
+              scrollbar: {
+                display: 'none'
+              },
+              thumb: {
+                display: 'none'
+              }
+            }}
+          >
+            <Stack gap="sm">
+              {/* Basic Email Headers */}
+              <div>
+                <Text size="sm" fw={700} mb="xs" c="gray.9">Basic Headers</Text>
+                <Stack gap={4}>
+                  <Group justify="space-between" align="flex-start">
+                    <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "80px" }}>Subject:</Text>
+                    <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      {parsedData?.parsed?.metadata?.subject || 'N/A'}
+                    </Text>
+                  </Group>
+                  <Group justify="space-between" align="flex-start">
+                    <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "80px" }}>From:</Text>
+                    <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      {parsedData?.parsed?.metadata?.from || 'N/A'}
+                    </Text>
+                  </Group>
+                  <Group justify="space-between" align="flex-start">
+                    <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "80px" }}>To:</Text>
+                    <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      {parsedData?.parsed?.metadata?.to || 'N/A'}
+                    </Text>
+                  </Group>
+                  <Group justify="space-between" align="flex-start">
+                    <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "80px" }}>Date:</Text>
+                    <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      {parsedData?.parsed?.metadata?.date || 'N/A'}
+                    </Text>
+                  </Group>
+                </Stack>
+              </div>
 
-            <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-              <Text size="sm" fw={600} c="gray.9" mb="xs">
-                Body
-              </Text>
-              <Textarea
-                placeholder="Email content will appear here after parsing..."
-                value={bodyText}
-                readOnly
-                style={{ flex: 1 }}
-                styles={{
-                  wrapper: { 
-                    height: "100%", 
+              <Divider size="xs" />
+
+              {/* Email Body */}
+              <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                <Text size="sm" fw={700} mb="xs" c="gray.9">Email Body</Text>
+                <Text 
+                  size="xs" 
+                  c="gray.9" 
+                  style={{ 
+                    backgroundColor: "#f8f9fa",
+                    padding: "12px",
+                    borderRadius: "8px",
+                    border: "1px solid #e9ecef",
+                    fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+                    lineHeight: 1.5,
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-word",
                     flex: 1,
-                    display: "flex",
-                    flexDirection: "column"
-                  },
-                  input: {
-                    height: "100%",
-                    flex: 1,
-                    backgroundColor: "var(--mantine-color-gray-0)",
-                    border: "1px solid var(--mantine-color-gray-3)",
-                    fontFamily: "Inter",
-                    fontSize: "var(--mantine-font-size-xs)",
-                    lineHeight: 1.4,
-                    resize: "none",
-                    minHeight: "200px",
-                    scrollbarWidth: "none",
-                    msOverflowStyle: "none",
-                    "&::-webkit-scrollbar": {
-                      display: "none"
-                    }
-                  },
-                }}
-              />
-            </div>
-          </Stack>
+                    overflow: "auto"
+                  }}
+                >
+                  {bodyText || 'No body content available'}
+                </Text>
+              </div>
+
+            </Stack>
+          </ScrollArea>
         )}
       </Stack>
     </Card>
