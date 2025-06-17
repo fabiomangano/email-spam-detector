@@ -182,18 +182,21 @@ export class NlpService {
   }
 
   private extractKeywords(tokens: string[], tfidfVector: number[]): string[] {
-    // Create token-score pairs and sort by TF-IDF score
-    const tokenScores = tokens.map((token, index) => ({
-      token,
-      score: tfidfVector[index] || 0
-    })).filter(item => item.score > 0);
+    // Count token frequencies
+    const tokenFrequency = new Map<string, number>();
+    tokens.forEach(token => {
+      if (token.length > 2) { // Filter short tokens immediately
+        tokenFrequency.set(token, (tokenFrequency.get(token) || 0) + 1);
+      }
+    });
     
-    // Sort by score descending and take top keywords
-    tokenScores.sort((a, b) => b.score - a.score);
+    // Create array of unique tokens with frequencies
+    const tokenArray = Array.from(tokenFrequency.entries())
+      .map(([token, frequency]) => ({ token, frequency }))
+      .sort((a, b) => b.frequency - a.frequency); // Sort by frequency descending
     
-    // Return top 10 unique keywords, filtering out very short tokens
-    return tokenScores
-      .filter(item => item.token.length > 2)
+    // Return top 10 unique keywords
+    return tokenArray
       .slice(0, 10)
       .map(item => item.token);
   }
