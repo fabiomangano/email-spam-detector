@@ -43,6 +43,38 @@ export interface TechnicalAnalysisResult {
   isHtmlOnly: boolean;
   numDomains: number;
   replyToDiffersFromFrom: boolean;
+  // Header-based metrics
+  numReceivedHeaders: number;
+  hasOutlookReceivedPattern: boolean;
+  xMailerBrand?: string;
+  missingDateHeader: boolean;
+  // From-based metrics
+  fromNameSuspicious: boolean;
+  fromDomainIsDisposable: boolean;
+  sentToMultiple: boolean;
+  // Campaign metrics
+  campaignIdentifierPresent: boolean;
+  containsFeedbackLoopHeader: boolean;
+  // Text-based metrics
+  uppercaseRatio: number;
+  excessiveExclamations: boolean;
+  containsUrgencyWords: boolean;
+  containsElectionTerms: boolean;
+  // Obfuscation and link metrics
+  containsObfuscatedText: boolean;
+  numExternalDomains: number;
+  linkDisplayMismatch: boolean;
+  containsShortenedUrls: boolean;
+  usesEncodedUrls: boolean;
+  linkToImageRatio: number;
+  // MIME metrics
+  hasMixedContentTypes: boolean;
+  hasNestedMultipart: boolean;
+  boundaryAnomaly: boolean;
+  hasFakeMultipartAlternative: boolean;
+  // Spam detection metrics
+  isImageHeavy: boolean;
+  hasRepeatedLinks: boolean;
 }
 
 export interface NlpAnalysisResult {

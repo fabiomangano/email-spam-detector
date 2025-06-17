@@ -337,162 +337,296 @@ function Report() {
               }}
             >
               <Stack gap="sm">
+                {/* Content Metrics */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Content Metrics</Text>
-                  <Text size="xs" mb="xs">Body Length: {analysisResult.details.technical.bodyLength}</Text>
-                  <Text size="xs" mb="xs">Links: {analysisResult.details.technical.numLinks} (Ratio: {analysisResult.details.technical.linkRatio})</Text>
-                  <Text size="xs" mb="xs">Images: {analysisResult.details.technical.numImages}</Text>
-                  <Text size="xs" mb="xs">External Domains: {analysisResult.details.technical.numExternalDomains || 'N/A'}</Text>
-                  <Text size="xs" mb="sm">Link/Image Ratio: {analysisResult.details.technical.linkToImageRatio?.toFixed(2) || 'N/A'}</Text>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Content Metrics</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Body Length:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.bodyLength}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Links:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.numLinks} (Ratio: {analysisResult.details.technical.linkRatio})
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Images:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.numImages}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>External Domains:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.numExternalDomains || 'N/A'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Link/Image Ratio:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.linkToImageRatio?.toFixed(2) || 'N/A'}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
                 <Divider size="xs" />
                 
+                {/* Header Analysis */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Header Analysis</Text>
-                  <Text size="xs" mb="xs">Received Headers: {analysisResult.details.technical.numReceivedHeaders ?? 'N/A'}</Text>
-                  <Text size="xs" mb="xs">X-Mailer: {analysisResult.details.technical.xMailerBrand || 'N/A'}</Text>
-                  <Group gap="xs" mb="sm">
-                    <Badge variant="outline" color={analysisResult.details.technical.hasOutlookReceivedPattern ? 'green' : 'gray'} size="sm">
-                      {analysisResult.details.technical.hasOutlookReceivedPattern ? 'Outlook Route' : 'No Outlook'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.missingDateHeader ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.missingDateHeader ? 'No Date' : 'Date OK'}
-                    </Badge>
-                  </Group>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Header Analysis</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Received Headers:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.numReceivedHeaders ?? 'N/A'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>X-Mailer:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.xMailerBrand || 'N/A'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Outlook Route:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.hasOutlookReceivedPattern ? 'Yes' : 'No'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Date Header:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.missingDateHeader ? 'Missing' : 'Present'}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
                 <Divider size="xs" />
                 
+                {/* Authentication */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Authentication</Text>
-                  <Group gap="xs" mb="sm">
-                    <Badge variant="outline" color={analysisResult.details.technical.spfResult === 'pass' ? 'green' : 'red'} size="sm">
-                      SPF: {analysisResult.details.technical.spfResult || 'Unknown'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.dkimResult === 'pass' ? 'green' : 'red'} size="sm">
-                      DKIM: {analysisResult.details.technical.dkimResult || 'Unknown'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.dmarcResult === 'pass' ? 'green' : 'red'} size="sm">
-                      DMARC: {analysisResult.details.technical.dmarcResult || 'Unknown'}
-                    </Badge>
-                  </Group>
-                </div>
-
-                <div>
-                  <Text size="sm" fw={600} mb="xs">Sender Analysis</Text>
-                  <Group gap="xs" mb="sm">
-                    <Badge variant="outline" color={analysisResult.details.technical.fromNameSuspicious ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.fromNameSuspicious ? 'Suspicious Name' : 'Name OK'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.fromDomainIsDisposable ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.fromDomainIsDisposable ? 'Disposable Domain' : 'Domain OK'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.sentToMultiple ? 'yellow' : 'green'} size="sm">
-                      {analysisResult.details.technical.sentToMultiple ? 'Multiple Recipients' : 'Single Recipient'}
-                    </Badge>
-                  </Group>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Authentication</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>SPF:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.spfResult || 'Unknown'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>DKIM:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.dkimResult || 'Unknown'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>DMARC:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.dmarcResult || 'Unknown'}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
                 <Divider size="xs" />
 
+                {/* Sender Analysis */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Text Analysis</Text>
-                  <Text size="xs" mb="xs">Uppercase Ratio: {((analysisResult.details.technical.uppercaseRatio || 0) * 100).toFixed(1)}%</Text>
-                  <Group gap="xs" mb="sm">
-                    <Badge variant="outline" color={analysisResult.details.technical.excessiveExclamations ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.excessiveExclamations ? 'Excessive !!!' : 'Normal Punctuation'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.containsUrgencyWords ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.containsUrgencyWords ? 'Urgency Words' : 'No Urgency'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.containsElectionTerms ? 'yellow' : 'green'} size="sm">
-                      {analysisResult.details.technical.containsElectionTerms ? 'Election Terms' : 'No Election Terms'}
-                    </Badge>
-                  </Group>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Sender Analysis</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>From Name:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.fromNameSuspicious ? 'Suspicious' : 'Normal'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Domain:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.fromDomainIsDisposable ? 'Disposable' : 'Regular'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Recipients:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.sentToMultiple ? 'Multiple' : 'Single'}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
                 <Divider size="xs" />
 
+                {/* Text Analysis */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Security Indicators</Text>
-                  <Group gap="xs" mb="sm">
-                    <Badge variant="outline" color={analysisResult.details.technical.hasTrackingPixel ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.hasTrackingPixel ? 'Tracking Pixel' : 'No Tracking'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.isHtmlOnly ? 'yellow' : 'green'} size="sm">
-                      {analysisResult.details.technical.isHtmlOnly ? 'HTML Only' : 'Text+HTML'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.replyToDiffersFromFrom ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.replyToDiffersFromFrom ? 'Reply-To Spoofed' : 'Reply-To OK'}
-                    </Badge>
-                  </Group>
-                </div>
-
-                <div>
-                  <Text size="sm" fw={600} mb="xs">Campaign & Content</Text>
-                  <Group gap="xs" mb="sm">
-                    <Badge variant="outline" color={analysisResult.details.technical.campaignIdentifierPresent ? 'blue' : 'gray'} size="sm">
-                      {analysisResult.details.technical.campaignIdentifierPresent ? 'Campaign Headers' : 'No Campaign'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.containsFeedbackLoopHeader ? 'blue' : 'gray'} size="sm">
-                      {analysisResult.details.technical.containsFeedbackLoopHeader ? 'FBL Headers' : 'No FBL'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.containsObfuscatedText ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.containsObfuscatedText ? 'Obfuscated Text' : 'Clear Text'}
-                    </Badge>
-                  </Group>
-                </div>
-
-                <Divider size="xs" />
-
-                <div>
-                  <Text size="sm" fw={600} mb="xs">Link Analysis</Text>
-                  <Group gap="xs" mb="sm">
-                    <Badge variant="outline" color={analysisResult.details.technical.linkDisplayMismatch ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.linkDisplayMismatch ? 'Link Mismatch' : 'Links OK'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.containsShortenedUrls ? 'yellow' : 'green'} size="sm">
-                      {analysisResult.details.technical.containsShortenedUrls ? 'Shortened URLs' : 'Direct URLs'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.usesEncodedUrls ? 'yellow' : 'green'} size="sm">
-                      {analysisResult.details.technical.usesEncodedUrls ? 'Encoded URLs' : 'Plain URLs'}
-                    </Badge>
-                  </Group>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Text Analysis</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Uppercase Ratio:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {((analysisResult.details.technical.uppercaseRatio || 0) * 100).toFixed(1)}%
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Exclamations:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.excessiveExclamations ? 'Excessive' : 'Normal'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Urgency Words:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.containsUrgencyWords ? 'Present' : 'None'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Election Terms:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.containsElectionTerms ? 'Present' : 'None'}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
                 <Divider size="xs" />
 
+                {/* Security Indicators */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">MIME Structure</Text>
-                  <Group gap="xs" mb="sm">
-                    <Badge variant="outline" color={analysisResult.details.technical.hasMixedContentTypes ? 'yellow' : 'green'} size="sm">
-                      {analysisResult.details.technical.hasMixedContentTypes ? 'Mixed MIME' : 'Simple MIME'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.hasNestedMultipart ? 'yellow' : 'green'} size="sm">
-                      {analysisResult.details.technical.hasNestedMultipart ? 'Nested MIME' : 'Flat MIME'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.boundaryAnomaly ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.boundaryAnomaly ? 'Boundary Anomaly' : 'Boundary OK'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.hasFakeMultipartAlternative ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.hasFakeMultipartAlternative ? 'Fake Alternative' : 'Valid Alternative'}
-                    </Badge>
-                  </Group>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Security Indicators</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Tracking Pixel:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.hasTrackingPixel ? 'Present' : 'None'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Content Type:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.isHtmlOnly ? 'HTML Only' : 'Text+HTML'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Reply-To:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.replyToDiffersFromFrom ? 'Spoofed' : 'Normal'}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
                 <Divider size="xs" />
 
+                {/* Campaign & Content */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Spam Detection</Text>
-                  <Group gap="xs" mb="sm">
-                    <Badge variant="outline" color={analysisResult.details.technical.isImageHeavy ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.isImageHeavy ? 'Image Heavy' : 'Balanced Content'}
-                    </Badge>
-                    <Badge variant="outline" color={analysisResult.details.technical.hasRepeatedLinks ? 'red' : 'green'} size="sm">
-                      {analysisResult.details.technical.hasRepeatedLinks ? 'Repeated Links' : 'Diverse Links'}
-                    </Badge>
-                  </Group>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Campaign & Content</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Campaign Headers:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.campaignIdentifierPresent ? 'Present' : 'None'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>FBL Headers:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.containsFeedbackLoopHeader ? 'Present' : 'None'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Obfuscated Text:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.containsObfuscatedText ? 'Present' : 'None'}
+                      </Text>
+                    </Group>
+                  </Stack>
+                </div>
+
+                <Divider size="xs" />
+
+                {/* Link Analysis */}
+                <div>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Link Analysis</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Link Display:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.linkDisplayMismatch ? 'Mismatch' : 'Normal'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Shortened URLs:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.containsShortenedUrls ? 'Present' : 'None'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Encoded URLs:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.usesEncodedUrls ? 'Present' : 'None'}
+                      </Text>
+                    </Group>
+                  </Stack>
+                </div>
+
+                <Divider size="xs" />
+
+                {/* MIME Structure */}
+                <div>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">MIME Structure</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Content Types:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.hasMixedContentTypes ? 'Mixed' : 'Simple'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Multipart:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.hasNestedMultipart ? 'Nested' : 'Flat'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Boundary:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.boundaryAnomaly ? 'Anomaly' : 'Normal'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Alternative:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.hasFakeMultipartAlternative ? 'Fake' : 'Valid'}
+                      </Text>
+                    </Group>
+                  </Stack>
+                </div>
+
+                <Divider size="xs" />
+
+                {/* Spam Detection */}
+                <div>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Spam Detection</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Image Heavy:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.isImageHeavy ? 'Yes' : 'No'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Repeated Links:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.technical.hasRepeatedLinks ? 'Yes' : 'No'}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
                 {analysisResult.details.technical.hasAttachments && (
