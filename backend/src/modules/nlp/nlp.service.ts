@@ -13,9 +13,9 @@ export class NlpService {
   private readonly modelPath = path.join(process.cwd(), MODEL_PATH);
 
   async analyzeNlp(parsedData: any): Promise<NlpAnalysisResult> {
-    const plainText = parsedData.parsed?.plainText || '';
-    const htmlText = parsedData.parsed?.htmlText || '';
-    const subject = parsedData.parsed?.metadata?.subject || '';
+    const plainText = parsedData.plainText || '';
+    const htmlText = parsedData.htmlText || '';
+    const subject = parsedData.metadata?.subject || '';
 
     const analysis = await this.classifyEmail(plainText, htmlText, subject);
     

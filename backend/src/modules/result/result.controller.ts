@@ -50,6 +50,8 @@ export class ResultController {
           hasNestedMultipart: false,
           boundaryAnomaly: false,
           hasFakeMultipartAlternative: false,
+          isImageHeavy: false,
+          hasRepeatedLinks: false,
         },
         {
           tokens: ['test', 'email', 'content'],
