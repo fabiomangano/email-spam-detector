@@ -15,6 +15,7 @@ import {
 } from "@mantine/core";
 import { 
   IconArrowLeft, 
+  IconArrowRight,
   IconSettings,
   IconBrain,
   IconCode,
@@ -66,14 +67,24 @@ function Report() {
     <div style={{ padding: "20px", paddingBottom: "80px", height: "100vh", display: "flex", flexDirection: "column" }}>
       <Flex justify="space-between" align="center" mb="xl">
         <Title order={1} size="h2">Analysis Report</Title>
-        <Button 
-          variant="outline" 
-          component={Link} 
-          to="/upload"
-          leftSection={<IconArrowLeft size={16} />}
-        >
-          Back to Upload
-        </Button>
+        <Group gap="sm">
+          <Button 
+            variant="outline" 
+            component={Link} 
+            to="/upload"
+            leftSection={<IconArrowLeft size={16} />}
+          >
+            Back to Upload
+          </Button>
+          <Button 
+            variant="outline"
+            component={Link} 
+            to="/risk"
+            rightSection={<IconArrowRight size={16} />}
+          >
+            View Risk Assessment
+          </Button>
+        </Group>
       </Flex>
 
       <Grid style={{ flex: 1, height: 0 }}>
