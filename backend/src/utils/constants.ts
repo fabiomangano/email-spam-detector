@@ -7,7 +7,20 @@ export const STOPWORDS = [
 
 // Spammy words for detection
 export const SPAM_WORDS = [
-  'free', 'win', 'offer', 'click', 'cash', 'prize', 'urgent', 'act now', 'buy now'
+  'free', 'win', 'offer', 'click', 'cash', 'prize', 'urgent', 'act now', 'buy now',
+  'money', 'earn', 'income', 'profit', 'sale', 'discount', 'limited', 'exclusive',
+  'guarantee', 'risk-free', 'refund', 'bonus', 'reward', 'lottery', 'winner',
+  'congratulations', 'selected', 'opportunity', 'deal', 'cheap', 'lowest',
+  'amazing', 'incredible', 'fantastic', 'unbelievable', 'revolutionary',
+  'breakthrough', 'secret', 'hidden', 'exposed', 'revealed', 'trick',
+  'method', 'system', 'formula', 'solution', 'magic', 'miracle',
+  'instant', 'immediate', 'fast', 'quick', 'easy', 'simple', 'effortless',
+  'automatic', 'guaranteed', 'certified', 'approved', 'verified',
+  'eliminate', 'remove', 'lose', 'weight', 'diet', 'supplement',
+  'medication', 'prescription', 'pharmacy', 'viagra', 'cialis',
+  'mortgage', 'loan', 'credit', 'debt', 'refinance', 'investment',
+  'stocks', 'trading', 'bitcoin', 'cryptocurrency', 'mlm', 'pyramid',
+  'work from home', 'make money online', 'get rich', 'financial freedom'
 ];
 
 // Model path for NLP classifier
