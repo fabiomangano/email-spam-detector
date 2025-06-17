@@ -11,7 +11,6 @@ import {
   Group,
   Stack,
   ScrollArea,
-  Collapse,
   Divider,
 } from "@mantine/core";
 import { 
@@ -19,16 +18,12 @@ import {
   IconSettings,
   IconBrain,
   IconCode,
-  IconChevronDown,
-  IconChevronRight,
 } from "@tabler/icons-react";
-import { useState } from "react";
 import { useAnalysis } from "../contexts/AnalysisContext";
 import { Link } from "react-router";
 
 function Report() {
   const { analysisResult } = useAnalysis();
-  const [showAdvancedHeaders, setShowAdvancedHeaders] = useState(false);
 
   // Helper function to get header values
   const getHeaderValue = (headerName: string) => {
@@ -84,84 +79,225 @@ function Report() {
       <Grid style={{ flex: 1, height: 0 }}>
         {/* Parsing Results Card */}
         <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
-          <Card padding="lg" radius="md" style={{ height: "calc(100vh - 180px)", flex: 1 }}>
+          <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
             <Flex align="center" gap="xs" mb="md">
               <IconCode size={20} />
               <Title order={2} size="h3">Parsing Results</Title>
             </Flex>
             <Divider mb="md" />
-            <ScrollArea style={{ flex: 1, height: "calc(100vh - 300px)" }}>
+            <ScrollArea 
+              scrollbars="y" 
+              style={{ flex: 1, height: "calc(100vh - 400px)" }}
+              styles={{
+                scrollbar: {
+                  display: 'none'
+                },
+                thumb: {
+                  display: 'none'
+                }
+              }}
+            >
               <Stack gap="sm">
                 {/* Basic Email Headers */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Basic Headers</Text>
-                  <Text size="xs" mb="xs">Subject: {analysisResult.details?.parsing?.parsed?.metadata?.subject || 'N/A'}</Text>
-                  <Text size="xs" mb="xs">From: {analysisResult.details?.parsing?.parsed?.metadata?.from || 'N/A'}</Text>
-                  <Text size="xs" mb="xs">To: {analysisResult.details?.parsing?.parsed?.metadata?.to || 'N/A'}</Text>
-                  <Text size="xs" mb="sm">Date: {analysisResult.details?.parsing?.parsed?.metadata?.date || 'N/A'}</Text>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Basic Headers</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "80px" }}>Subject:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details?.parsing?.parsed?.metadata?.subject || 'N/A'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "80px" }}>From:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details?.parsing?.parsed?.metadata?.from || 'N/A'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "80px" }}>To:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details?.parsing?.parsed?.metadata?.to || 'N/A'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "80px" }}>Date:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details?.parsing?.parsed?.metadata?.date || 'N/A'}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
                 <Divider size="xs" />
 
                 {/* Technical Headers */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Technical Headers</Text>
-                  <Text size="xs" mb="xs">Message-ID: {getHeaderValue('message-id')}</Text>
-                  <Text size="xs" mb="xs">Reply-To: {getHeaderValue('reply-to')}</Text>
-                  <Text size="xs" mb="xs">Return-Path: {getHeaderValue('return-path')}</Text>
-                  <Text size="xs" mb="xs">Content-Type: {getHeaderValue('content-type')}</Text>
-                  <Text size="xs" mb="sm">Sender IP: {getHeaderValue('x-sender-ip')}</Text>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Technical Headers</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Message-ID:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right", wordBreak: "break-all" }}>
+                        {getHeaderValue('message-id')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Reply-To:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {getHeaderValue('reply-to')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Return-Path:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {getHeaderValue('return-path')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Content-Type:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {getHeaderValue('content-type')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Sender IP:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {getHeaderValue('x-sender-ip')}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
                 <Divider size="xs" />
 
                 {/* Authentication Results */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Authentication</Text>
-                  <Text size="xs" mb="xs">Auth Results: {getHeaderValue('authentication-results')}</Text>
-                  <Text size="xs" mb="sm">Last Hop: {getLastReceived()}</Text>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Authentication</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Auth Results:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right", wordBreak: "break-all" }}>
+                        {getHeaderValue('authentication-results')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Last Hop:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right", wordBreak: "break-all" }}>
+                        {getLastReceived()}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
                 <Divider size="xs" />
 
                 {/* Content Structure */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Content Structure</Text>
-                  <Text size="xs" mb="xs">Has HTML: {analysisResult.details?.parsing?.parsed?.htmlText ? 'Yes' : 'No'}</Text>
-                  <Text size="xs" mb="xs">Has Plain Text: {analysisResult.details?.parsing?.parsed?.plainText ? 'Yes' : 'No'}</Text>
-                  <Text size="xs" mb="sm">Attachments: {analysisResult.details?.parsing?.parsed?.attachments?.length || 0}</Text>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Content Structure</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Has HTML:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details?.parsing?.parsed?.htmlText ? 'Yes' : 'No'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Has Plain Text:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details?.parsing?.parsed?.plainText ? 'Yes' : 'No'}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Attachments:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details?.parsing?.parsed?.attachments?.length || 0}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
-                {/* Advanced Headers - Collapsible */}
+                <Divider size="xs" />
+
+                {/* Advanced Headers */}
                 <div>
-                  <Button
-                    variant="subtle"
-                    size="xs"
-                    leftSection={showAdvancedHeaders ? <IconChevronDown size={14} /> : <IconChevronRight size={14} />}
-                    onClick={() => setShowAdvancedHeaders(!showAdvancedHeaders)}
-                    style={{ padding: '4px 8px', height: 'auto' }}
-                  >
-                    <Text size="sm" fw={600}>Advanced Headers</Text>
-                  </Button>
-                  
-                  <Collapse in={showAdvancedHeaders}>
-                    <Stack gap="xs" mt="xs">
-                      <Text size="xs" mb="xs">Received-SPF: {getHeaderValue('received-spf')}</Text>
-                      <Text size="xs" mb="xs">DKIM-Signature: {getHeaderValue('dkim-signature')}</Text>
-                      <Text size="xs" mb="xs">Feedback-ID: {getHeaderValue('feedback-id')}</Text>
-                      <Text size="xs" mb="xs">Auto-Submitted: {getHeaderValue('auto-submitted')}</Text>
-                      <Text size="xs" mb="xs">X-Mailer: {getHeaderValue('x-mailer')}</Text>
-                      <Text size="xs" mb="xs">X-Abuse: {getHeaderValue('x-abuse')}</Text>
-                      <Text size="xs" mb="xs">X-CSA-Complaints: {getHeaderValue('x-csa-complaints')}</Text>
-                      
-                      {/* Microsoft Exchange Headers */}
-                      <Text size="xs" fw={500} mt="xs" mb="xs">Microsoft Exchange:</Text>
-                      <Text size="xs" mb="xs">Organization ID: {getHeaderValue('x-ms-exchange-organization-network-message-id')}</Text>
-                      <Text size="xs" mb="xs">Antispam: {getHeaderValue('x-microsoft-antispam')}</Text>
-                      <Text size="xs" mb="xs">Message Info: {getHeaderValue('x-microsoft-antispam-message-info')}</Text>
-                      <Text size="xs" mb="xs">Cross-Tenant: {getHeaderValue('x-ms-exchange-crosstenant-id')}</Text>
-                    </Stack>
-                  </Collapse>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Advanced Headers</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Received-SPF:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {getHeaderValue('received-spf')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>DKIM-Signature:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right", wordBreak: "break-all" }}>
+                        {getHeaderValue('dkim-signature')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Feedback-ID:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {getHeaderValue('feedback-id')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Auto-Submitted:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {getHeaderValue('auto-submitted')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>X-Mailer:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {getHeaderValue('x-mailer')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>X-Abuse:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {getHeaderValue('x-abuse')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>X-CSA-Complaints:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {getHeaderValue('x-csa-complaints')}
+                      </Text>
+                    </Group>
+                  </Stack>
+                </div>
+
+                <Divider size="xs" />
+
+                {/* Microsoft Exchange Headers */}
+                <div>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Microsoft Exchange</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Organization ID:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right", wordBreak: "break-all" }}>
+                        {getHeaderValue('x-ms-exchange-organization-network-message-id')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Antispam:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right", wordBreak: "break-all" }}>
+                        {getHeaderValue('x-microsoft-antispam')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Message Info:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right", wordBreak: "break-all" }}>
+                        {getHeaderValue('x-microsoft-antispam-message-info')}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Cross-Tenant:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {getHeaderValue('x-ms-exchange-crosstenant-id')}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
               </Stack>
@@ -171,13 +307,24 @@ function Report() {
 
         {/* Technical Module Results Card */}
         <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
-          <Card padding="lg" radius="md" style={{ height: "calc(100vh - 180px)", flex: 1 }}>
+          <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
             <Flex align="center" gap="xs" mb="md">
               <IconSettings size={20} />
               <Title order={2} size="h3">Technical Analysis</Title>
             </Flex>
             <Divider mb="md" />
-            <ScrollArea style={{ flex: 1, height: "calc(100vh - 300px)" }}>
+            <ScrollArea 
+              scrollbars="y" 
+              style={{ flex: 1, height: "calc(100vh - 400px)" }}
+              styles={{
+                scrollbar: {
+                  display: 'none'
+                },
+                thumb: {
+                  display: 'none'
+                }
+              }}
+            >
               <Stack gap="sm">
                 <div>
                   <Text size="sm" fw={600} mb="xs">Content Metrics</Text>
@@ -356,13 +503,24 @@ function Report() {
 
         {/* NLP Module Results Card */}
         <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
-          <Card padding="lg" radius="md" style={{ height: "calc(100vh - 180px)", flex: 1 }}>
+          <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
             <Flex align="center" gap="xs" mb="md">
               <IconBrain size={20} />
               <Title order={2} size="h3">NLP Analysis</Title>
             </Flex>
             <Divider mb="md" />
-            <ScrollArea style={{ flex: 1, height: "calc(100vh - 300px)" }}>
+            <ScrollArea 
+              scrollbars="y" 
+              style={{ flex: 1, height: "calc(100vh - 400px)" }}
+              styles={{
+                scrollbar: {
+                  display: 'none'
+                },
+                thumb: {
+                  display: 'none'
+                }
+              }}
+            >
               <Stack gap="sm">
                 <div>
                   <Text size="sm" fw={600} mb="xs">Classification</Text>

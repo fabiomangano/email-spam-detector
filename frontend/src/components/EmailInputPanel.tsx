@@ -143,7 +143,7 @@ export function EmailInputPanel({
             "&:hover": {
               backgroundColor: "#f5f5f5 !important",
             },
-            '&[data-active="true"]': {
+            '&[data-active]': {
               backgroundColor: "#262626 !important",
               color: "#ffffff !important",
               border: "1px solid #262626 !important",
@@ -214,7 +214,12 @@ export function EmailInputPanel({
                 fontFamily: "Inter",
                 fontSize: "var(--mantine-font-size-xs)",
                 lineHeight: 1.4,
-                minHeight: "200px"
+                minHeight: "200px",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+                "&::-webkit-scrollbar": {
+                  display: "none"
+                }
               },
             }}
           />

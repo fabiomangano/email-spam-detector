@@ -159,7 +159,12 @@ export function ContentPanel({
                     fontSize: "var(--mantine-font-size-xs)",
                     lineHeight: 1.4,
                     resize: "none",
-                    minHeight: "200px"
+                    minHeight: "200px",
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    "&::-webkit-scrollbar": {
+                      display: "none"
+                    }
                   },
                 }}
               />
