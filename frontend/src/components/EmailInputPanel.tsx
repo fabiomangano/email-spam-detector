@@ -17,6 +17,7 @@ import {
   IconLetterCase,
   IconUpload,
   IconX,
+  IconFileText,
 } from "@tabler/icons-react";
 import { Dropzone } from "@mantine/dropzone";
 import type { TabType } from "../types/email";
@@ -63,9 +64,10 @@ export function EmailInputPanel({
       }}
     >
       <Flex justify="space-between" align="center">
-        <Title order={2} size="h3">
-          Input
-        </Title>
+        <Flex align="center" gap="xs">
+          <IconFileText size={20} />
+          <Title order={2} size="h3">Input</Title>
+        </Flex>
         <Group gap="sm" justify="flex-end">
           <Button
             variant="outline"
