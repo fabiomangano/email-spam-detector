@@ -667,57 +667,137 @@ function Report() {
               }}
             >
               <Stack gap="sm">
+                {/* Classification */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Classification</Text>
-                  <Badge color={analysisResult.details.nlp.prediction === 'spam' ? 'red' : 'green'} size="lg" mb="sm">
-                    {analysisResult.details.nlp.prediction === 'spam' ? 'SPAM' : 'HAM (Legitimate)'}
-                  </Badge>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Classification</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Prediction:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.nlp.prediction === 'spam' ? 'SPAM' : 'HAM (Legitimate)'}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
+                <Divider size="xs" />
+
+                {/* Spam Metrics */}
                 {analysisResult.details.nlp.nlpMetrics && (
-                  <div>
-                    <Text size="sm" fw={600} mb="xs">Spam Metrics</Text>
-                    <Text size="xs" mb="xs">Spam Words: {analysisResult.details.nlp.nlpMetrics.numSpammyWords}</Text>
-                    <Text size="xs" mb="xs">Spam Word Ratio: {(analysisResult.details.nlp.nlpMetrics.spamWordRatio * 100).toFixed(1)}%</Text>
-                    <Text size="xs" mb="xs">All Caps Count: {analysisResult.details.nlp.nlpMetrics.allCapsCount}</Text>
-                    <Text size="xs" mb="sm">Exclamation Count: {analysisResult.details.nlp.nlpMetrics.exclamationCount}</Text>
-                  </div>
+                  <>
+                    <div>
+                      <Text size="sm" fw={700} mb="xs" c="gray.9">Spam Metrics</Text>
+                      <Stack gap={4}>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Spam Words:</Text>
+                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                            {analysisResult.details.nlp.nlpMetrics.numSpammyWords}
+                          </Text>
+                        </Group>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Spam Word Ratio:</Text>
+                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                            {(analysisResult.details.nlp.nlpMetrics.spamWordRatio * 100).toFixed(1)}%
+                          </Text>
+                        </Group>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>All Caps Count:</Text>
+                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                            {analysisResult.details.nlp.nlpMetrics.allCapsCount}
+                          </Text>
+                        </Group>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Exclamation Count:</Text>
+                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                            {analysisResult.details.nlp.nlpMetrics.exclamationCount}
+                          </Text>
+                        </Group>
+                      </Stack>
+                    </div>
+
+                    <Divider size="xs" />
+                  </>
                 )}
                 
+                {/* Sentiment Analysis */}
                 <div>
-                  <Text size="sm" fw={600} mb="xs">Sentiment Analysis</Text>
-                  <Badge color={analysisResult.details.nlp.sentiment.label === 'positive' ? 'green' : analysisResult.details.nlp.sentiment.label === 'negative' ? 'red' : 'gray'} mb="sm">
-                    {analysisResult.details.nlp.sentiment.label} ({analysisResult.details.nlp.sentiment.score.toFixed(2)})
-                  </Badge>
-                </div>
-                
-                <div>
-                  <Text size="sm" fw={600} mb="xs">Language Detection</Text>
-                  <Text size="sm" mb="sm">
-                    {analysisResult.details.nlp.language.detected.toUpperCase()} ({Math.round(analysisResult.details.nlp.language.confidence * 100)}%)
-                  </Text>
-                </div>
-                
-                <div>
-                  <Text size="sm" fw={600} mb="xs">Toxicity Score</Text>
-                  <Progress 
-                    value={analysisResult.details.nlp.toxicity.score * 100} 
-                    color="red" 
-                    size="sm"
-                    mb="xs"
-                  />
-                  <Text size="xs" c="dimmed">{Math.round(analysisResult.details.nlp.toxicity.score * 100)}%</Text>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Sentiment Analysis</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Label:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.nlp.sentiment.label}
+                      </Text>
+                    </Group>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Score:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.nlp.sentiment.score.toFixed(2)}
+                      </Text>
+                    </Group>
+                  </Stack>
                 </div>
 
-                {analysisResult.details.nlp.keywords && analysisResult.details.nlp.keywords.length > 0 && (
-                  <div>
-                    <Text size="sm" fw={600} mb="xs">Keywords</Text>
-                    <Group gap="xs">
-                      {analysisResult.details.nlp.keywords.slice(0, 5).map((keyword, index) => (
-                        <Badge key={index} variant="light" size="sm">{keyword}</Badge>
-                      ))}
+                <Divider size="xs" />
+                
+                {/* Language Detection */}
+                <div>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Language Detection</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Language:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {analysisResult.details.nlp.language.detected.toUpperCase()}
+                      </Text>
                     </Group>
-                  </div>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Confidence:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {Math.round(analysisResult.details.nlp.language.confidence * 100)}%
+                      </Text>
+                    </Group>
+                  </Stack>
+                </div>
+
+                <Divider size="xs" />
+                
+                {/* Toxicity Analysis */}
+                <div>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">Toxicity Analysis</Text>
+                  <Stack gap={4}>
+                    <Group justify="space-between" align="flex-start">
+                      <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Toxicity Score:</Text>
+                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                        {Math.round(analysisResult.details.nlp.toxicity.score * 100)}%
+                      </Text>
+                    </Group>
+                    {analysisResult.details.nlp.toxicity.categories && analysisResult.details.nlp.toxicity.categories.length > 0 && (
+                      <Group justify="space-between" align="flex-start">
+                        <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Categories:</Text>
+                        <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                          {analysisResult.details.nlp.toxicity.categories.join(', ')}
+                        </Text>
+                      </Group>
+                    )}
+                  </Stack>
+                </div>
+
+                {/* Keywords */}
+                {analysisResult.details.nlp.keywords && analysisResult.details.nlp.keywords.length > 0 && (
+                  <>
+                    <Divider size="xs" />
+                    <div>
+                      <Text size="sm" fw={700} mb="xs" c="gray.9">Keywords</Text>
+                      <Stack gap={4}>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Top Keywords:</Text>
+                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                            {analysisResult.details.nlp.keywords.slice(0, 5).join(', ')}
+                          </Text>
+                        </Group>
+                      </Stack>
+                    </div>
+                  </>
                 )}
               </Stack>
             </ScrollArea>
