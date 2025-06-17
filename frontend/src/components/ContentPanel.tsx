@@ -7,7 +7,6 @@ import {
   Textarea,
   Title,
   Text,
-  Badge,
   Stack,
 } from "@mantine/core";
 import { IconCopy, IconFileText } from "@tabler/icons-react";
@@ -32,32 +31,17 @@ export function ContentPanel({
     parsedData?.parsed?.plainText || parsedData?.parsed?.htmlText || "";
 
   return (
-    <Card padding="lg" radius="sm" style={{ height: "100%", flex: 1 }}>
+    <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
       <Stack gap="sm" h="100%">
         <Flex justify="space-between" align="center">
-          <Flex align="center" gap="sm">
-            <Title order={2} size="h3">
-              Content
-            </Title>
-            {parsedData && (
-              <Badge 
-                variant="outline" 
-                size="sm"
-                style={{
-                  borderColor: '#22c55e',
-                  color: '#22c55e',
-                  backgroundColor: 'transparent',
-                }}
-              >
-                ● Parsed
-              </Badge>
-            )}
-          </Flex>
+          <Title order={2} size="h3">
+            Content
+          </Title>
           <Group gap="sm">
             <Button
               variant="outline"
-              size="sm"
-              leftSection={<IconCopy size={16} />}
+              size="xs"
+              leftSection={<IconCopy size={14} />}
               disabled={!bodyText}
               onClick={() => {
                 if (bodyText) {
@@ -86,10 +70,10 @@ export function ContentPanel({
             </Button>
             <Button
               variant="filled"
-              size="sm"
+              size="xs"
               onClick={onParse}
               disabled={!canParse}
-              leftSection={<IconFileText size={16} />}
+              leftSection={<IconFileText size={14} />}
               styles={{
                 root: {
                   backgroundColor: '#262626',

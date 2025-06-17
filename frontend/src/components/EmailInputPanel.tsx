@@ -49,9 +49,9 @@ export function EmailInputPanel({
   return (
     <Card
       padding="lg"
-      radius="sm"
+      radius="md"
       style={{
-        height: "100%",
+        height: "calc(100vh - 280px)",
         flex: 1,
         minHeight: 0,
         display: "flex",
@@ -65,8 +65,8 @@ export function EmailInputPanel({
         <Group gap="sm" justify="flex-end">
           <Button
             variant="outline"
-            size="sm"
-            leftSection={<IconCopy size={16} />}
+            size="xs"
+            leftSection={<IconCopy size={14} />}
             disabled={
               activeTab === "gallery" ? !textAreaValue.trim() : !uploadedFile
             }
@@ -97,11 +97,11 @@ export function EmailInputPanel({
           </Button>
           <Button
             variant="filled"
-            size="sm"
+            size="xs"
             onClick={onUpload}
             disabled={!canUpload}
             loading={loading}
-            leftSection={<IconUpload size={16} />}
+            leftSection={<IconUpload size={14} />}
             styles={{
               root: {
                 backgroundColor: "#262626",
