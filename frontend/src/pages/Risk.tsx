@@ -55,16 +55,16 @@ function Risk() {
 
   return (
     <div style={{ padding: "20px", height: "100%" }}>
-      <Flex align="center" gap="md" mb="xl">
+      <Flex justify="space-between" align="center" mb="xl">
+        <Title order={1} size="h2">Security Risk Analysis</Title>
         <Button 
           variant="outline" 
           component={Link} 
-          to="/upload"
+          to="/report"
           leftSection={<IconArrowLeft size={16} />}
         >
-          Back to Upload
+          Back to Report
         </Button>
-        <Title order={1} size="h2">Security Risk Analysis</Title>
       </Flex>
 
       <Grid>

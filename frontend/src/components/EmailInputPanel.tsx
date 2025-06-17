@@ -200,14 +200,21 @@ export function EmailInputPanel({
             value={textAreaValue}
             onChange={(e) => onTextChange(e.target.value)}
             placeholder="Paste your email content here (headers + body)...&#10;&#10;Example:&#10;From: sender@example.com&#10;To: recipient@example.com&#10;Subject: Test Email&#10;&#10;Email body content..."
-            h={"95%"}
+            style={{ flex: 1 }}
             styles={{
-              wrapper: { height: "100%" },
+              wrapper: { 
+                height: "100%", 
+                flex: 1,
+                display: "flex",
+                flexDirection: "column"
+              },
               input: {
                 height: "100%",
+                flex: 1,
                 fontFamily: "Inter",
                 fontSize: "var(--mantine-font-size-xs)",
                 lineHeight: 1.4,
+                minHeight: "200px"
               },
             }}
           />

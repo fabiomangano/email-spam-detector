@@ -37,7 +37,8 @@ export class PipelineService {
     return {
       ...finalResult,
       details: {
-        ...finalResult.details,
+        technical: finalResult.details.technical,
+        nlp: finalResult.details.nlp,
         parsing: {
           parsed: parsedData.parsed,
           metrics: {

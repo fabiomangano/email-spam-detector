@@ -59,8 +59,8 @@ function Upload() {
   };
 
   return (
-    <div style={{ padding: "40px", height: "100%" }}>
-      <Stack gap="lg">
+    <div style={{ padding: "20px", paddingBottom: "100px", height: "100vh", display: "flex", flexDirection: "column" }}>
+      <Stack gap="lg" style={{ flex: 1, height: 0 }}>
         {/* Header con titolo e stepper */}
         <Stack gap="md">
           <div>
@@ -184,9 +184,13 @@ function Upload() {
           </Flex>
         </Card>
 
-        {/* Layout principale responsive */}
-        <Grid h="100%" style={{ flex: 1 }}>
-          <Grid.Col span={{ base: 12, lg: 6 }} h="63vh">
+        {/* Layout principale responsive - le card riempiono lo spazio rimanente con altezza sincronizzata */}
+        <Grid style={{ flex: 1, height: 0, minHeight: "calc(100vh - 420px)" }}>
+          <Grid.Col span={{ base: 12, lg: 6 }} style={{ 
+            display: "flex", 
+            height: "calc(100vh - 420px)",
+            minHeight: "calc(100vh - 420px)"
+          }}>
             <EmailInputPanel
               textAreaValue={textAreaValue}
               uploadedFile={uploadedFile}
@@ -200,7 +204,11 @@ function Upload() {
             />
           </Grid.Col>
 
-          <Grid.Col span={{ base: 12, lg: 6 }} h="63vh">
+          <Grid.Col span={{ base: 12, lg: 6 }} style={{ 
+            display: "flex", 
+            height: "calc(100vh - 420px)",
+            minHeight: "calc(100vh - 420px)"
+          }}>
             <ContentPanel
               parsedData={parsedData}
               onAnalyze={handleAnalyze}

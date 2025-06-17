@@ -146,16 +146,20 @@ export function ContentPanel({
                 styles={{
                   wrapper: { 
                     height: "100%", 
-                    flex: 1
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column"
                   },
                   input: {
                     height: "100%",
+                    flex: 1,
                     backgroundColor: "var(--mantine-color-gray-0)",
                     border: "1px solid var(--mantine-color-gray-3)",
                     fontFamily: "Inter",
                     fontSize: "var(--mantine-font-size-xs)",
                     lineHeight: 1.4,
                     resize: "none",
+                    minHeight: "200px"
                   },
                 }}
               />

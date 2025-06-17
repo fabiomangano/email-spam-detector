@@ -76,6 +76,9 @@ export interface EmailTechnicalMetrics {
   hasNestedMultipart: boolean;
   boundaryAnomaly: boolean;
   hasFakeMultipartAlternative: boolean;
+  // New spam detection metrics
+  isImageHeavy: boolean;
+  hasRepeatedLinks: boolean;
 }
 
 export interface NlpAnalysisResult {

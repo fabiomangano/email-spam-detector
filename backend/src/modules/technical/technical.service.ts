@@ -38,7 +38,7 @@ export class TechnicalService {
     const allText = (parsedData.htmlText || '') + (parsedData.plainText || '');
 
     const trackingPixelRegex =
-      /<img[^>]*(width="1"|height="1"|style="[^"]*(display:\s*none|opacity:\s*0)[^"]*")/i;
+      /<img[^>]*(width="?1"?|height="?1"?|style="[^"]*(display:\s*none|opacity:\s*0)[^"]*")/i;
 
     const domains = new Set(
       [...(allText.matchAll(/https?:\/\/([^\s"'<>]+)/g) || [])].map(
@@ -133,8 +133,10 @@ export class TechnicalService {
 
     // Metriche basate sul mittente
     const fromName = parsedData.headers?.from?.value?.[0]?.name || '';
-    // Nome mittente sospetto (tutto maiuscolo o generico) - maschera l'identità reale
-    const fromNameSuspicious = /^[A-Z\s]+$/.test(fromName) && fromName.length > 10;
+    // Nome mittente sospetto (tutto maiuscolo, generico, o con caratteri strani) - maschera l'identità reale
+    const fromNameSuspicious = (/^[A-Z\s]+$/.test(fromName) && fromName.length > 10) ||
+                               /[*#@$%^&+=<>{}[\]|\\]/.test(fromName) ||
+                               /OWNER-|NOLIST-|ADMIN-|SYSTEM-/.test(fromName);
     
     const fromAddress = parsedData.headers?.from?.value?.[0]?.address || '';
     const fromDomain = fromAddress.split('@')[1] || '';
@@ -215,6 +217,13 @@ export class TechnicalService {
     
     // Rapporto link/immagini - troppi link rispetto a contenuti visivi
     const linkToImageRatio = numImages > 0 ? numLinks / numImages : numLinks;
+    
+    // Nuove metriche per spam basato su immagini
+    const isImageHeavy = numImages > 5 && (parsedData.plainText || '').length < 500;
+    const hasRepeatedLinks = links.length > 3 && 
+      new Set(links.map(link => {
+        try { return new URL(link).hostname; } catch { return link; }
+      })).size === 1;
 
     // Metriche MIME e struttura
     const contentType = parsedData.headers?.['content-type']?.value || '';
@@ -279,6 +288,9 @@ export class TechnicalService {
       hasNestedMultipart,
       boundaryAnomaly,
       hasFakeMultipartAlternative,
+      // New spam detection metrics
+      isImageHeavy,
+      hasRepeatedLinks,
     };
   }
 

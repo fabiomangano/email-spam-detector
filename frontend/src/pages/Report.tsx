@@ -68,8 +68,9 @@ function Report() {
   }
 
   return (
-    <div style={{ padding: "20px", height: "100%" }}>
-      <Flex align="center" gap="md" mb="xl">
+    <div style={{ padding: "20px", paddingBottom: "80px", height: "100vh", display: "flex", flexDirection: "column" }}>
+      <Flex justify="space-between" align="center" mb="xl">
+        <Title order={1} size="h2">Analysis Report</Title>
         <Button 
           variant="outline" 
           component={Link} 
@@ -78,18 +79,18 @@ function Report() {
         >
           Back to Upload
         </Button>
-        <Title order={1} size="h2">Analysis Report</Title>
       </Flex>
 
-      <Grid>
+      <Grid style={{ flex: 1, height: 0 }}>
         {/* Parsing Results Card */}
-        <Grid.Col span={6}>
-          <Card padding="lg" radius="md" h="400px">
+        <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
+          <Card padding="lg" radius="md" style={{ height: "calc(100vh - 180px)", flex: 1 }}>
             <Flex align="center" gap="xs" mb="md">
               <IconCode size={20} />
-              <Title order={5} size="h5">Parsing Results</Title>
+              <Title order={2} size="h3">Parsing Results</Title>
             </Flex>
-            <ScrollArea h={320}>
+            <Divider mb="md" />
+            <ScrollArea style={{ flex: 1, height: "calc(100vh - 300px)" }}>
               <Stack gap="sm">
                 {/* Basic Email Headers */}
                 <div>
@@ -169,60 +170,184 @@ function Report() {
         </Grid.Col>
 
         {/* Technical Module Results Card */}
-        <Grid.Col span={6}>
-          <Card padding="lg" radius="md" h="400px">
+        <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
+          <Card padding="lg" radius="md" style={{ height: "calc(100vh - 180px)", flex: 1 }}>
             <Flex align="center" gap="xs" mb="md">
               <IconSettings size={20} />
-              <Title order={5} size="h5">Technical Analysis</Title>
+              <Title order={2} size="h3">Technical Analysis</Title>
             </Flex>
-            <ScrollArea h={320}>
+            <Divider mb="md" />
+            <ScrollArea style={{ flex: 1, height: "calc(100vh - 300px)" }}>
               <Stack gap="sm">
                 <div>
                   <Text size="sm" fw={600} mb="xs">Content Metrics</Text>
                   <Text size="xs" mb="xs">Body Length: {analysisResult.details.technical.bodyLength}</Text>
                   <Text size="xs" mb="xs">Links: {analysisResult.details.technical.numLinks} (Ratio: {analysisResult.details.technical.linkRatio})</Text>
                   <Text size="xs" mb="xs">Images: {analysisResult.details.technical.numImages}</Text>
-                  <Text size="xs" mb="sm">Domains: {analysisResult.details.technical.numDomains}</Text>
+                  <Text size="xs" mb="xs">External Domains: {analysisResult.details.technical.numExternalDomains || 'N/A'}</Text>
+                  <Text size="xs" mb="sm">Link/Image Ratio: {analysisResult.details.technical.linkToImageRatio?.toFixed(2) || 'N/A'}</Text>
                 </div>
+
+                <Divider size="xs" />
+                
+                <div>
+                  <Text size="sm" fw={600} mb="xs">Header Analysis</Text>
+                  <Text size="xs" mb="xs">Received Headers: {analysisResult.details.technical.numReceivedHeaders ?? 'N/A'}</Text>
+                  <Text size="xs" mb="xs">X-Mailer: {analysisResult.details.technical.xMailerBrand || 'N/A'}</Text>
+                  <Group gap="xs" mb="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.hasOutlookReceivedPattern ? 'green' : 'gray'} size="sm">
+                      {analysisResult.details.technical.hasOutlookReceivedPattern ? 'Outlook Route' : 'No Outlook'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.missingDateHeader ? 'red' : 'green'} size="sm">
+                      {analysisResult.details.technical.missingDateHeader ? 'No Date' : 'Date OK'}
+                    </Badge>
+                  </Group>
+                </div>
+
+                <Divider size="xs" />
                 
                 <div>
                   <Text size="sm" fw={600} mb="xs">Authentication</Text>
                   <Group gap="xs" mb="sm">
-                    <Badge color={analysisResult.details.technical.spfResult === 'pass' ? 'green' : 'red'} size="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.spfResult === 'pass' ? 'green' : 'red'} size="sm">
                       SPF: {analysisResult.details.technical.spfResult || 'Unknown'}
                     </Badge>
-                    <Badge color={analysisResult.details.technical.dkimResult === 'pass' ? 'green' : 'red'} size="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.dkimResult === 'pass' ? 'green' : 'red'} size="sm">
                       DKIM: {analysisResult.details.technical.dkimResult || 'Unknown'}
                     </Badge>
-                    <Badge color={analysisResult.details.technical.dmarcResult === 'pass' ? 'green' : 'red'} size="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.dmarcResult === 'pass' ? 'green' : 'red'} size="sm">
                       DMARC: {analysisResult.details.technical.dmarcResult || 'Unknown'}
                     </Badge>
                   </Group>
                 </div>
 
                 <div>
+                  <Text size="sm" fw={600} mb="xs">Sender Analysis</Text>
+                  <Group gap="xs" mb="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.fromNameSuspicious ? 'red' : 'green'} size="sm">
+                      {analysisResult.details.technical.fromNameSuspicious ? 'Suspicious Name' : 'Name OK'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.fromDomainIsDisposable ? 'red' : 'green'} size="sm">
+                      {analysisResult.details.technical.fromDomainIsDisposable ? 'Disposable Domain' : 'Domain OK'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.sentToMultiple ? 'yellow' : 'green'} size="sm">
+                      {analysisResult.details.technical.sentToMultiple ? 'Multiple Recipients' : 'Single Recipient'}
+                    </Badge>
+                  </Group>
+                </div>
+
+                <Divider size="xs" />
+
+                <div>
+                  <Text size="sm" fw={600} mb="xs">Text Analysis</Text>
+                  <Text size="xs" mb="xs">Uppercase Ratio: {((analysisResult.details.technical.uppercaseRatio || 0) * 100).toFixed(1)}%</Text>
+                  <Group gap="xs" mb="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.excessiveExclamations ? 'red' : 'green'} size="sm">
+                      {analysisResult.details.technical.excessiveExclamations ? 'Excessive !!!' : 'Normal Punctuation'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.containsUrgencyWords ? 'red' : 'green'} size="sm">
+                      {analysisResult.details.technical.containsUrgencyWords ? 'Urgency Words' : 'No Urgency'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.containsElectionTerms ? 'yellow' : 'green'} size="sm">
+                      {analysisResult.details.technical.containsElectionTerms ? 'Election Terms' : 'No Election Terms'}
+                    </Badge>
+                  </Group>
+                </div>
+
+                <Divider size="xs" />
+
+                <div>
                   <Text size="sm" fw={600} mb="xs">Security Indicators</Text>
                   <Group gap="xs" mb="sm">
-                    <Badge color={analysisResult.details.technical.hasTrackingPixel ? 'red' : 'green'} size="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.hasTrackingPixel ? 'red' : 'green'} size="sm">
                       {analysisResult.details.technical.hasTrackingPixel ? 'Tracking Pixel' : 'No Tracking'}
                     </Badge>
-                    <Badge color={analysisResult.details.technical.isHtmlOnly ? 'yellow' : 'green'} size="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.isHtmlOnly ? 'yellow' : 'green'} size="sm">
                       {analysisResult.details.technical.isHtmlOnly ? 'HTML Only' : 'Text+HTML'}
                     </Badge>
-                    <Badge color={analysisResult.details.technical.replyToDiffersFromFrom ? 'red' : 'green'} size="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.replyToDiffersFromFrom ? 'red' : 'green'} size="sm">
                       {analysisResult.details.technical.replyToDiffersFromFrom ? 'Reply-To Spoofed' : 'Reply-To OK'}
                     </Badge>
                   </Group>
                 </div>
 
+                <div>
+                  <Text size="sm" fw={600} mb="xs">Campaign & Content</Text>
+                  <Group gap="xs" mb="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.campaignIdentifierPresent ? 'blue' : 'gray'} size="sm">
+                      {analysisResult.details.technical.campaignIdentifierPresent ? 'Campaign Headers' : 'No Campaign'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.containsFeedbackLoopHeader ? 'blue' : 'gray'} size="sm">
+                      {analysisResult.details.technical.containsFeedbackLoopHeader ? 'FBL Headers' : 'No FBL'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.containsObfuscatedText ? 'red' : 'green'} size="sm">
+                      {analysisResult.details.technical.containsObfuscatedText ? 'Obfuscated Text' : 'Clear Text'}
+                    </Badge>
+                  </Group>
+                </div>
+
+                <Divider size="xs" />
+
+                <div>
+                  <Text size="sm" fw={600} mb="xs">Link Analysis</Text>
+                  <Group gap="xs" mb="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.linkDisplayMismatch ? 'red' : 'green'} size="sm">
+                      {analysisResult.details.technical.linkDisplayMismatch ? 'Link Mismatch' : 'Links OK'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.containsShortenedUrls ? 'yellow' : 'green'} size="sm">
+                      {analysisResult.details.technical.containsShortenedUrls ? 'Shortened URLs' : 'Direct URLs'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.usesEncodedUrls ? 'yellow' : 'green'} size="sm">
+                      {analysisResult.details.technical.usesEncodedUrls ? 'Encoded URLs' : 'Plain URLs'}
+                    </Badge>
+                  </Group>
+                </div>
+
+                <Divider size="xs" />
+
+                <div>
+                  <Text size="sm" fw={600} mb="xs">MIME Structure</Text>
+                  <Group gap="xs" mb="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.hasMixedContentTypes ? 'yellow' : 'green'} size="sm">
+                      {analysisResult.details.technical.hasMixedContentTypes ? 'Mixed MIME' : 'Simple MIME'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.hasNestedMultipart ? 'yellow' : 'green'} size="sm">
+                      {analysisResult.details.technical.hasNestedMultipart ? 'Nested MIME' : 'Flat MIME'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.boundaryAnomaly ? 'red' : 'green'} size="sm">
+                      {analysisResult.details.technical.boundaryAnomaly ? 'Boundary Anomaly' : 'Boundary OK'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.hasFakeMultipartAlternative ? 'red' : 'green'} size="sm">
+                      {analysisResult.details.technical.hasFakeMultipartAlternative ? 'Fake Alternative' : 'Valid Alternative'}
+                    </Badge>
+                  </Group>
+                </div>
+
+                <Divider size="xs" />
+
+                <div>
+                  <Text size="sm" fw={600} mb="xs">Spam Detection</Text>
+                  <Group gap="xs" mb="sm">
+                    <Badge variant="outline" color={analysisResult.details.technical.isImageHeavy ? 'red' : 'green'} size="sm">
+                      {analysisResult.details.technical.isImageHeavy ? 'Image Heavy' : 'Balanced Content'}
+                    </Badge>
+                    <Badge variant="outline" color={analysisResult.details.technical.hasRepeatedLinks ? 'red' : 'green'} size="sm">
+                      {analysisResult.details.technical.hasRepeatedLinks ? 'Repeated Links' : 'Diverse Links'}
+                    </Badge>
+                  </Group>
+                </div>
+
                 {analysisResult.details.technical.hasAttachments && (
-                  <div>
-                    <Text size="sm" fw={600} mb="xs">Attachments</Text>
-                    <Text size="xs" mb="xs">Count: {analysisResult.details.technical.numAttachments}</Text>
-                    <Text size="xs" c="dimmed">
-                      Types: {analysisResult.details.technical.attachmentTypes.join(', ')}
-                    </Text>
-                  </div>
+                  <>
+                    <Divider size="xs" />
+                    <div>
+                      <Text size="sm" fw={600} mb="xs">Attachments</Text>
+                      <Text size="xs" mb="xs">Count: {analysisResult.details.technical.numAttachments}</Text>
+                      <Text size="xs" c="dimmed">
+                        Types: {analysisResult.details.technical.attachmentTypes.join(', ')}
+                      </Text>
+                    </div>
+                  </>
                 )}
               </Stack>
             </ScrollArea>
@@ -230,13 +355,14 @@ function Report() {
         </Grid.Col>
 
         {/* NLP Module Results Card */}
-        <Grid.Col span={6}>
-          <Card padding="lg" radius="md" h="400px">
+        <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
+          <Card padding="lg" radius="md" style={{ height: "calc(100vh - 180px)", flex: 1 }}>
             <Flex align="center" gap="xs" mb="md">
               <IconBrain size={20} />
-              <Title order={5} size="h5">NLP Analysis</Title>
+              <Title order={2} size="h3">NLP Analysis</Title>
             </Flex>
-            <ScrollArea h={320}>
+            <Divider mb="md" />
+            <ScrollArea style={{ flex: 1, height: "calc(100vh - 300px)" }}>
               <Stack gap="sm">
                 <div>
                   <Text size="sm" fw={600} mb="xs">Classification</Text>
