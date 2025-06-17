@@ -10,7 +10,7 @@ export class ResultController {
   async testResult(@Res() res: Response) {
     try {
       // Endpoint per testare il servizio result
-      const mockResult = await this.resultService.generateResult(
+      const mockResult = this.resultService.generateResult(
         {
           bodyLength: 1000,
           numLinks: 2,
@@ -27,6 +27,29 @@ export class ResultController {
           isHtmlOnly: false,
           numDomains: 2,
           replyToDiffersFromFrom: false,
+          numReceivedHeaders: 3,
+          hasOutlookReceivedPattern: false,
+          xMailerBrand: 'Outlook',
+          missingDateHeader: false,
+          fromNameSuspicious: false,
+          fromDomainIsDisposable: false,
+          sentToMultiple: false,
+          campaignIdentifierPresent: false,
+          containsFeedbackLoopHeader: false,
+          uppercaseRatio: 0.05,
+          excessiveExclamations: false,
+          containsUrgencyWords: false,
+          containsElectionTerms: false,
+          containsObfuscatedText: false,
+          numExternalDomains: 1,
+          linkDisplayMismatch: false,
+          containsShortenedUrls: false,
+          usesEncodedUrls: false,
+          linkToImageRatio: 2.0,
+          hasMixedContentTypes: false,
+          hasNestedMultipart: false,
+          boundaryAnomaly: false,
+          hasFakeMultipartAlternative: false,
         },
         {
           tokens: ['test', 'email', 'content'],
