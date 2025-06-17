@@ -9,7 +9,7 @@ import {
   Stack,
   ScrollArea,
 } from "@mantine/core";
-import { IconMail, IconCode, IconCopy } from "@tabler/icons-react";
+import { IconCode, IconCopy } from "@tabler/icons-react";
 import type { ParsedData } from "../types/email";
 
 interface ContentPanelProps {
@@ -23,8 +23,6 @@ interface ContentPanelProps {
 
 export function ContentPanel({
   parsedData,
-  onParse,
-  canParse,
 }: ContentPanelProps) {
   const bodyText =
     parsedData?.parsed?.plainText || parsedData?.parsed?.htmlText || "";
@@ -35,7 +33,7 @@ export function ContentPanel({
         <Flex justify="space-between" align="center">
           <Flex align="center" gap="xs">
             <IconCode size={20} />
-            <Title order={2} size="h3">Content</Title>
+            <Title order={2} size="h3">Email</Title>
           </Flex>
           {parsedData && (
             <Button
@@ -129,7 +127,7 @@ export function ContentPanel({
                     fontStyle: bodyText ? "normal" : "italic"
                   }}
                 >
-{bodyText || 'Email content will appear here after parsing...\n\nThis is where you\'ll see the complete message body including:\n• Plain text content\n• HTML rendering\n• Formatted paragraphs\n• Links and attachments references'}
+{bodyText || 'Email content will appear here once parsing is complete...\n\nThis area will display the full body of the email, including all its components. Here\'s what you can expect to see:\n\n• The plain text version of the message, exactly as written by the sender\n• A rich HTML rendering with styles, formatting, and layout preserved\n• Structured paragraphs and headings for improved readability\n• Hyperlinks, buttons, and references to any external content\n• Mentions of attachments, embedded images, and inline files\n• Special characters, tables, or layout elements used in the original\n• Any metadata or footer typically added by mail clients or servers\n\nIf the email was malformed or contained suspicious content, relevant warnings or highlights may also be shown here.'}
                 </Text>
               </div>
             </div>

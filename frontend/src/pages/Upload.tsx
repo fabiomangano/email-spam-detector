@@ -1,15 +1,15 @@
 import {
   Alert,
-  Grid,
   Stack,
   Title,
   Text,
   Flex,
   Group,
   Button,
+  Modal,
 } from "@mantine/core";
-import { useEffect } from "react";
-import { IconShield } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { IconShield, IconEdit } from "@tabler/icons-react";
 import { useEmailUpload } from "../hooks/useEmailUpload";
 import { EmailInputPanel } from "../components/EmailInputPanel";
 import { ContentPanel } from "../components/ContentPanel";
@@ -17,6 +17,7 @@ import { useAnalysis } from "../contexts/AnalysisContext";
 
 function Upload() {
   const { analysisResult } = useAnalysis();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     textAreaValue,
     uploadedFile,
@@ -61,6 +62,24 @@ function Upload() {
           </div>
           
           <Group gap="sm">
+            <Button
+              variant="outline"
+              size="xs"
+              onClick={() => setIsModalOpen(true)}
+              leftSection={<IconEdit size={14} />}
+              styles={{
+                root: {
+                  borderColor: "#262626",
+                  color: "#262626",
+                  backgroundColor: "#ffffff",
+                  "&:hover": {
+                    backgroundColor: "#f9fafb",
+                  },
+                },
+              }}
+            >
+              Upload
+            </Button>
             {parsedData && (
               <Button
                 variant="outline"
@@ -141,35 +160,57 @@ function Upload() {
           </Alert>
         )}
 
-        {/* Layout con sidebar Input a sinistra e Content centrale */}
-        <Grid style={{ flex: 1, height: 0 }}>
-          <Grid.Col span={{ base: 12, lg: 3 }} style={{ display: "flex" }}>
-            <EmailInputPanel
-              textAreaValue={textAreaValue}
-              uploadedFile={uploadedFile}
-              activeTab={activeTab}
-              loading={loading}
-              onTextChange={setTextAreaValue}
-              onFileUpload={setUploadedFile}
-              onTabChange={setActiveTab}
-              onClear={handleClear}
-              onUpload={handleUpload}
-              onParse={handleParse}
-              canParse={canParse}
-            />
-          </Grid.Col>
+        {/* Content Panel - Full Width */}
+        <div style={{ flex: 1, height: 0 }}>
+          <ContentPanel
+            parsedData={parsedData}
+            onAnalyze={handleAnalyze}
+            analyzing={analyzing}
+            canAnalyze={canAnalyze}
+            onParse={handleParse}
+            canParse={canParse}
+          />
+        </div>
 
-          <Grid.Col span={{ base: 12, lg: 9 }} style={{ display: "flex" }}>
-            <ContentPanel
-              parsedData={parsedData}
-              onAnalyze={handleAnalyze}
-              analyzing={analyzing}
-              canAnalyze={canAnalyze}
-              onParse={handleParse}
-              canParse={canParse}
-            />
-          </Grid.Col>
-        </Grid>
+        {/* Modal per Input Panel */}
+        <Modal
+          opened={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          title="Email Input"
+          size="lg"
+          centered
+          styles={{
+            body: {
+              padding: 0,
+            },
+            header: {
+              paddingBottom: "16px",
+            },
+          }}
+          style={{
+            maxHeight: "90vh",
+          }}
+        >
+          <EmailInputPanel
+            textAreaValue={textAreaValue}
+            uploadedFile={uploadedFile}
+            activeTab={activeTab}
+            loading={loading}
+            onTextChange={setTextAreaValue}
+            onFileUpload={setUploadedFile}
+            onTabChange={setActiveTab}
+            onClear={handleClear}
+            onUpload={async () => {
+              await handleUpload();
+              if (canParse) {
+                handleParse();
+              }
+              setIsModalOpen(false);
+            }}
+            onParse={handleParse}
+            canParse={canParse}
+          />
+        </Modal>
       </Stack>
     </div>
   );
