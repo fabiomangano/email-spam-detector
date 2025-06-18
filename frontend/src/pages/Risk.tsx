@@ -79,9 +79,9 @@ function Risk() {
   const getRiskIcon = (riskLevel: string) => {
     const color = getRiskColorHex(riskLevel);
     switch (riskLevel) {
-      case 'low': return <IconShield size={20} style={{ color }} />;
-      case 'medium': case 'high': return <IconAlertTriangle size={20} style={{ color }} />;
-      default: return <IconShield size={20} style={{ color }} />;
+      case 'low': return <IconShield size={18} style={{ color }} />;
+      case 'medium': case 'high': return <IconAlertTriangle size={18} style={{ color }} />;
+      default: return <IconShield size={18} style={{ color }} />;
     }
   };
 
@@ -349,12 +349,12 @@ function Risk() {
       <Stack gap="lg" style={{ flex: 1, height: 0 }}>
         {/* Risk Score Header - Compact */}
         <Card padding="md" radius="md">
-          <Flex align="center" gap="md" mb="md">
+          <Flex align="center" gap="xs" mb="md">
             {getRiskIcon(analysisResult.riskLevel)}
             <div style={{ flex: 1 }}>
-              <Flex align="center" gap="md" mb="xs">
+              <Flex align="center" gap="sm" mb="xs">
                 <Badge 
-                  size="lg"
+                  size="sm"
                   variant="outline"
                   styles={{
                     root: {
@@ -366,13 +366,13 @@ function Risk() {
                 >
                   {analysisResult.riskLevel.toUpperCase()} RISK
                 </Badge>
-                <Text size="md" fw={600} style={{ color: getRiskColorHex(analysisResult.riskLevel) }}>
+                <Text size="sm" fw={600} style={{ color: getRiskColorHex(analysisResult.riskLevel) }}>
                   Score: {Math.round(analysisResult.overallScore * 100)}%
                 </Text>
               </Flex>
               <div style={{ 
                 width: '100%', 
-                height: '8px', 
+                height: '6px', 
                 backgroundColor: '#e5e7eb', 
                 borderRadius: '9999px',
                 overflow: 'hidden'
@@ -388,7 +388,7 @@ function Risk() {
             </div>
           </Flex>
           
-          <Text size="sm" mt="sm" c="dimmed">
+          <Text size="xs" mt="sm" c="dimmed" style={{ lineHeight: 1.4 }}>
             {analysisResult.summary}
           </Text>
         </Card>
