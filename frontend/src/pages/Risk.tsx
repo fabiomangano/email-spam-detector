@@ -396,81 +396,130 @@ function Risk() {
         {/* Main Content Area */}
         <div style={{ height: "calc(100vh - 360px)" }}>
           <Grid style={{ height: "100%", gap: "md" }}>
-            {/* Left Column - Risk Explanations */}
-            <Grid.Col span={8} style={{ height: "100%" }}>
-              <Card padding="md" radius="md" style={{ height: "100%" }}>
-                <Flex align="center" gap="xs" mb="md">
-                  <Title order={5} size="h5">Detailed Risk Analysis</Title>
-                </Flex>
-                <Divider mb="md" />
-                
-                <ScrollArea 
-                  scrollbars="y" 
-                  style={{ height: "calc(100% - 60px)" }}
-                  styles={{
-                    scrollbar: {
-                      display: 'none'
-                    },
-                    thumb: {
-                      display: 'none'
-                    }
-                  }}
-                >
-                  {riskExplanations.length > 0 ? (
-                    <Stack gap="md">
-                      {riskExplanations.map((explanation, index) => (
-                        <div key={index}>
-                          <Flex align="center" gap="sm" mb="xs">
-                            <Badge 
+            {/* Left Column - Risk Card + Detailed Analysis */}
+            <Grid.Col span={{ base: 12, md: 8 }} style={{ height: "100%" }}>
+              <Stack gap="md" style={{ height: "100%" }}>
+                {/* Risk Score Card */}
+                <Card padding="md" radius="md">
+                  <Flex align="center" gap="md" mb="md">
+                    {getRiskIcon(analysisResult.riskLevel)}
+                    <div style={{ flex: 1, marginRight: '8px' }}>
+                      <Flex align="center" gap="md" mb="sm">
+                        <Badge 
+                          size="sm"
+                          variant="outline"
+                          styles={{
+                            root: {
+                              borderColor: getRiskColorHex(analysisResult.riskLevel),
+                              color: getRiskColorHex(analysisResult.riskLevel),
+                              backgroundColor: "transparent",
+                            },
+                          }}
+                        >
+                          {analysisResult.riskLevel.toUpperCase()} RISK
+                        </Badge>
+                        <Text size="sm" fw={600} style={{ color: getRiskColorHex(analysisResult.riskLevel) }}>
+                          Score: {Math.round(analysisResult.overallScore * 100)}%
+                        </Text>
+                      </Flex>
+                      <div style={{ 
+                        width: '100%', 
+                        height: '6px', 
+                        backgroundColor: '#e5e7eb', 
+                        borderRadius: '9999px',
+                        overflow: 'hidden'
+                      }}>
+                        <div style={{
+                          width: `${analysisResult.overallScore * 100}%`,
+                          height: '100%',
+                          backgroundColor: getRiskColorHex(analysisResult.riskLevel),
+                          borderRadius: '9999px',
+                          transition: 'width 0.3s ease'
+                        }} />
+                      </div>
+                    </div>
+                  </Flex>
+                  
+                  <Text size="xs" mt="xs" c="dimmed" style={{ lineHeight: 1.4 }}>
+                    {analysisResult.summary}
+                  </Text>
+                </Card>
+
+                {/* Detailed Risk Analysis Card */}
+                <Card padding="md" radius="md" style={{ flex: 1 }}>
+                  <Flex align="center" gap="xs" mb="md">
+                    <Title order={5} size="h5">Detailed Risk Analysis</Title>
+                  </Flex>
+                  <Divider mb="md" />
+                  
+                  <ScrollArea 
+                    scrollbars="y" 
+                    style={{ height: "calc(100% - 60px)" }}
+                    styles={{
+                      scrollbar: {
+                        display: 'none'
+                      },
+                      thumb: {
+                        display: 'none'
+                      }
+                    }}
+                  >
+                    {riskExplanations.length > 0 ? (
+                      <Stack gap="md">
+                        {riskExplanations.map((explanation, index) => (
+                          <div key={index}>
+                            <Flex align="center" gap="sm" mb="xs">
+                              <Badge 
+                                color={getSeverityColor(explanation.severity)} 
+                                size="sm" 
+                                leftSection={getSeverityIcon(explanation.severity)}
+                              >
+                                {explanation.severity.toUpperCase()}
+                              </Badge>
+                              <Text size="sm" c="dimmed">{explanation.category}</Text>
+                            </Flex>
+                            
+                            <Text size="sm" fw={600} mb="xs" c="gray.9">
+                              {explanation.title}
+                            </Text>
+                            
+                            <Text size="xs" c="gray.7" mb="xs" style={{ lineHeight: 1.5 }}>
+                              {explanation.description}
+                            </Text>
+                            
+                            <Alert 
                               color={getSeverityColor(explanation.severity)} 
-                              size="sm" 
-                              leftSection={getSeverityIcon(explanation.severity)}
+                              variant="light" 
+                              size="xs"
+                              mb="xs"
                             >
-                              {explanation.severity.toUpperCase()}
-                            </Badge>
-                            <Text size="sm" c="dimmed">{explanation.category}</Text>
-                          </Flex>
-                          
-                          <Text size="sm" fw={600} mb="xs" c="gray.9">
-                            {explanation.title}
-                          </Text>
-                          
-                          <Text size="xs" c="gray.7" mb="xs" style={{ lineHeight: 1.5 }}>
-                            {explanation.description}
-                          </Text>
-                          
-                          <Alert 
-                            color={getSeverityColor(explanation.severity)} 
-                            variant="light" 
-                            size="xs"
-                            mb="xs"
-                          >
-                            <Text size="xs" fw={600}>Impact: {explanation.impact}</Text>
-                          </Alert>
-                          
-                          <Text size="xs" c="dimmed" style={{ fontFamily: 'monospace' }}>
-                            {explanation.metrics}
-                          </Text>
-                          
-                          {index < riskExplanations.length - 1 && <Divider my="md" />}
-                        </div>
-                      ))}
-                    </Stack>
-                  ) : (
-                    <Alert color="green" variant="light">
-                      <Text size="sm" fw={600} mb="xs">No Significant Risk Factors Detected</Text>
-                      <Text size="sm">
-                        Our analysis did not identify any major risk factors in this email. 
-                        The content appears to follow legitimate email patterns and practices.
-                      </Text>
-                    </Alert>
-                  )}
-                </ScrollArea>
-              </Card>
+                              <Text size="xs" fw={600}>Impact: {explanation.impact}</Text>
+                            </Alert>
+                            
+                            <Text size="xs" c="dimmed" style={{ fontFamily: 'monospace' }}>
+                              {explanation.metrics}
+                            </Text>
+                            
+                            {index < riskExplanations.length - 1 && <Divider my="md" />}
+                          </div>
+                        ))}
+                      </Stack>
+                    ) : (
+                      <Alert color="green" variant="light">
+                        <Text size="sm" fw={600} mb="xs">No Significant Risk Factors Detected</Text>
+                        <Text size="sm">
+                          Our analysis did not identify any major risk factors in this email. 
+                          The content appears to follow legitimate email patterns and practices.
+                        </Text>
+                      </Alert>
+                    )}
+                  </ScrollArea>
+                </Card>
+              </Stack>
             </Grid.Col>
             
             {/* Right Column - Summary & Recommendations */}
-            <Grid.Col span={4} style={{ height: "100%", marginLeft: "auto" }}>
+            <Grid.Col span={{ base: 12, md: 4 }} style={{ height: "100%" }}>
               <Stack gap="md" style={{ height: "100%" }}>
                 {/* Risk Summary */}
                 <Card padding="md" radius="md" style={{ height: "calc(50% - 6px)" }}>
