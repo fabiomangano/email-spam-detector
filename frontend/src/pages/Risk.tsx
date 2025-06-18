@@ -67,6 +67,15 @@ function Risk() {
     }
   };
 
+  const getRiskColorHex = (riskLevel: string) => {
+    switch (riskLevel) {
+      case 'low': return '#22c55e';
+      case 'medium': return '#eab308';
+      case 'high': return '#ef4444';
+      default: return '#6b7280';
+    }
+  };
+
   const getRiskIcon = (riskLevel: string) => {
     switch (riskLevel) {
       case 'low': return <IconShield size={24} />;
@@ -344,9 +353,15 @@ function Risk() {
             <div style={{ flex: 1 }}>
               <Flex align="center" gap="md" mb="xs">
                 <Badge 
-                  color={getRiskColor(analysisResult.riskLevel)} 
                   size="lg"
                   variant="outline"
+                  styles={{
+                    root: {
+                      borderColor: getRiskColorHex(analysisResult.riskLevel),
+                      color: getRiskColorHex(analysisResult.riskLevel),
+                      backgroundColor: "transparent",
+                    },
+                  }}
                 >
                   {analysisResult.riskLevel.toUpperCase()} RISK
                 </Badge>
@@ -356,9 +371,13 @@ function Risk() {
               </Flex>
               <Progress 
                 value={analysisResult.overallScore * 100} 
-                color={getRiskColor(analysisResult.riskLevel)}
                 size="md"
                 radius="xl"
+                styles={{
+                  bar: {
+                    backgroundColor: getRiskColorHex(analysisResult.riskLevel),
+                  },
+                }}
               />
             </div>
           </Flex>
