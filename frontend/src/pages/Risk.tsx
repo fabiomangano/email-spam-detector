@@ -424,7 +424,7 @@ function Risk() {
                           </Alert>
                           
                           <Text size="xs" c="dimmed" style={{ fontFamily: 'monospace' }}>
-                            📊 {explanation.metrics}
+                            {explanation.metrics}
                           </Text>
                           
                           {index < riskExplanations.length - 1 && <Divider my="md" />}
