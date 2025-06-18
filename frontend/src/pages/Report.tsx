@@ -19,12 +19,39 @@ import {
   IconSettings,
   IconBrain,
   IconCode,
+  IconRefresh,
 } from "@tabler/icons-react";
 import { useAnalysis } from "../contexts/AnalysisContext";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 function Report() {
-  const { analysisResult } = useAnalysis();
+  const { 
+    analysisResult, 
+    setAnalysisResult,
+    setTextAreaValue,
+    setUploadedFile,
+    setUploadedFilename,
+    setParsedData,
+    setActiveTab,
+    setError,
+    setLoading,
+    setAnalyzing
+  } = useAnalysis();
+  const navigate = useNavigate();
+
+  const handleNewAnalysis = () => {
+    // Reset all analysis and upload data
+    setAnalysisResult(null);
+    setTextAreaValue("");
+    setUploadedFile(null);
+    setUploadedFilename(null);
+    setParsedData(null);
+    setActiveTab("gallery");
+    setError(null);
+    setLoading(false);
+    setAnalyzing(false);
+    navigate('/upload');
+  };
 
   // Helper function to get header values
   const getHeaderValue = (headerName: string) => {
@@ -69,20 +96,59 @@ function Report() {
         <Title order={1} size="h2">Analysis Report</Title>
         <Group gap="sm">
           <Button 
+            variant="outline"
+            size="xs"
+            onClick={handleNewAnalysis}
+            leftSection={<IconRefresh size={14} />}
+            styles={{
+              root: {
+                borderColor: "#ef4444",
+                color: "#ef4444",
+                backgroundColor: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#fef2f2",
+                },
+              },
+            }}
+          >
+            New Analysis
+          </Button>
+          <Button 
             variant="outline" 
+            size="xs"
             component={Link} 
             to="/upload"
-            leftSection={<IconArrowLeft size={16} />}
+            leftSection={<IconArrowLeft size={14} />}
+            styles={{
+              root: {
+                borderColor: "#262626",
+                color: "#262626",
+                backgroundColor: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#f9fafb",
+                },
+              },
+            }}
           >
             Back to Upload
           </Button>
           <Button 
-            variant="outline"
+            variant="filled"
+            size="xs"
             component={Link} 
             to="/risk"
-            rightSection={<IconArrowRight size={16} />}
+            rightSection={<IconArrowRight size={14} />}
+            styles={{
+              root: {
+                backgroundColor: "#262626",
+                color: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#404040",
+                },
+              },
+            }}
           >
-            View Risk Assessment
+            View Risk
           </Button>
         </Group>
       </Flex>
