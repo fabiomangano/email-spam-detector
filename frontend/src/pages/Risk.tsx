@@ -410,11 +410,10 @@ function Risk() {
                     <IconAlertTriangle size={18} />
                     <Title order={5} size="h5">Detailed Risk Analysis</Title>
                   </Flex>
-                  <Divider mb="md" />
                   
                   <ScrollArea 
                     scrollbars="y" 
-                    style={{ height: "calc(100% - 60px)" }}
+                    style={{ height: "calc(100% - 40px)" }}
                     styles={{
                       scrollbar: {
                         display: 'none'
