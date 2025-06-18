@@ -430,30 +430,26 @@ function Risk() {
                             <Flex align="center" gap="sm" mb="xs">
                               <Badge 
                                 color={getSeverityColor(explanation.severity)} 
-                                size="sm" 
+                                size="xs" 
                                 leftSection={getSeverityIcon(explanation.severity)}
                               >
                                 {explanation.severity.toUpperCase()}
                               </Badge>
-                              <Text size="sm" c="dimmed">{explanation.category}</Text>
+                              <Text size="xs" c="dimmed">{explanation.category}</Text>
                             </Flex>
                             
-                            <Text size="sm" fw={600} mb="xs" c="gray.9">
+                            <Text size="xs" fw={600} mb="xs" c="gray.9">
                               {explanation.title}
                             </Text>
                             
-                            <Text size="xs" c="gray.7" mb="xs" style={{ lineHeight: 1.5 }}>
+                            <Text size="xs" c="gray.7" mb="xs" style={{ lineHeight: 1.4 }}>
                               {explanation.description}
                             </Text>
                             
-                            <Alert 
-                              color={getSeverityColor(explanation.severity)} 
-                              variant="light" 
-                              size="xs"
-                              mb="xs"
-                            >
-                              <Text size="xs" fw={600}>Impact: {explanation.impact}</Text>
-                            </Alert>
+                            <Text size="xs" fw={600} mb="xs" c="gray.7">Impact:</Text>
+                            <Text size="xs" c="gray.7" mb="xs" style={{ lineHeight: 1.4 }}>
+                              {explanation.impact}
+                            </Text>
                             
                             <Text size="xs" c="dimmed" style={{ fontFamily: 'monospace' }}>
                               {explanation.metrics}
