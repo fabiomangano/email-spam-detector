@@ -355,6 +355,7 @@ function Risk() {
                 {/* Risk Score Card */}
                 <Card padding="md" radius="md">
                   <Flex align="center" gap="xs" mb="md">
+                    <IconShield size={18} />
                     <Title order={5} size="h5">Security Risk Level</Title>
                   </Flex>
                   <Divider mb="md" />
@@ -406,6 +407,7 @@ function Risk() {
                 {/* Detailed Risk Analysis Card */}
                 <Card padding="md" radius="md" style={{ flex: 1 }}>
                   <Flex align="center" gap="xs" mb="md">
+                    <IconAlertTriangle size={18} />
                     <Title order={5} size="h5">Detailed Risk Analysis</Title>
                   </Flex>
                   <Divider mb="md" />
