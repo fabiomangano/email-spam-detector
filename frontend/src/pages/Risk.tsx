@@ -433,7 +433,7 @@ function Risk() {
                     </Stack>
                   ) : (
                     <Alert color="green" variant="light">
-                      <Text size="sm" fw={600} mb="xs">✅ No Significant Risk Factors Detected</Text>
+                      <Text size="sm" fw={600} mb="xs">No Significant Risk Factors Detected</Text>
                       <Text size="sm">
                         Our analysis did not identify any major risk factors in this email. 
                         The content appears to follow legitimate email patterns and practices.
