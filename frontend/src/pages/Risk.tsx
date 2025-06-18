@@ -450,47 +450,59 @@ function Risk() {
             <Grid.Col span={3} style={{ height: "100%" }}>
               <Stack gap="md" style={{ height: "100%" }}>
                 {/* Risk Summary */}
-                <Card padding="md" radius="md" style={{ flex: 1 }}>
+                <Card padding="md" radius="md" style={{ height: "calc(50% - 6px)" }}>
                   <Flex align="center" gap="xs" mb="md">
                     <IconBrain size={18} />
                     <Title order={5} size="h5">Risk Summary</Title>
                   </Flex>
                   
-                  <Text size="xs" fw={600} mb="xs">Overall Assessment</Text>
-                  <Text size="xs" mb="md" c="dimmed" style={{ lineHeight: 1.4 }}>
-                    {analysisResult.summary}
-                  </Text>
-                  
-                  <Text size="xs" fw={600} mb="xs">Risk Breakdown</Text>
-                  <Stack gap="xs">
-                    <div>
-                      <Flex justify="space-between" align="center" mb="xs">
-                        <Text size="xs">Technical Risk</Text>
-                        <Text size="xs" fw={500}>
-                          {Math.round((analysisResult.details.technical.linkRatio + 
-                            (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
-                            (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100)}%
-                        </Text>
-                      </Flex>
-                      <Progress size="xs" color="blue" value={
-                        (analysisResult.details.technical.linkRatio + 
-                         (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
-                         (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100
-                      } />
-                    </div>
+                  <ScrollArea 
+                    style={{ height: "calc(100% - 40px)" }}
+                    styles={{
+                      scrollbar: {
+                        display: 'none'
+                      },
+                      thumb: {
+                        display: 'none'
+                      }
+                    }}
+                  >
+                    <Text size="xs" fw={600} mb="xs">Overall Assessment</Text>
+                    <Text size="xs" mb="md" c="dimmed" style={{ lineHeight: 1.4 }}>
+                      {analysisResult.summary}
+                    </Text>
                     
-                    <div>
-                      <Flex justify="space-between" align="center" mb="xs">
-                        <Text size="xs">Content Risk</Text>
-                        <Text size="xs" fw={500}>{Math.round(analysisResult.details.nlp.toxicity.score * 100)}%</Text>
-                      </Flex>
-                      <Progress size="xs" color="red" value={analysisResult.details.nlp.toxicity.score * 100} />
-                    </div>
-                  </Stack>
+                    <Text size="xs" fw={600} mb="xs">Risk Breakdown</Text>
+                    <Stack gap="xs">
+                      <div>
+                        <Flex justify="space-between" align="center" mb="xs">
+                          <Text size="xs">Technical Risk</Text>
+                          <Text size="xs" fw={500}>
+                            {Math.round((analysisResult.details.technical.linkRatio + 
+                              (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
+                              (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100)}%
+                          </Text>
+                        </Flex>
+                        <Progress size="xs" color="blue" value={
+                          (analysisResult.details.technical.linkRatio + 
+                           (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
+                           (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100
+                        } />
+                      </div>
+                      
+                      <div>
+                        <Flex justify="space-between" align="center" mb="xs">
+                          <Text size="xs">Content Risk</Text>
+                          <Text size="xs" fw={500}>{Math.round(analysisResult.details.nlp.toxicity.score * 100)}%</Text>
+                        </Flex>
+                        <Progress size="xs" color="red" value={analysisResult.details.nlp.toxicity.score * 100} />
+                      </div>
+                    </Stack>
+                  </ScrollArea>
                 </Card>
                 
                 {/* Security Recommendations */}
-                <Card padding="md" radius="md" style={{ flex: 1 }}>
+                <Card padding="md" radius="md" style={{ height: "calc(50% - 6px)" }}>
                   <Flex align="center" gap="xs" mb="md">
                     <IconShield size={18} />
                     <Title order={5} size="h5">Recommendations</Title>
