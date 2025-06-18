@@ -350,7 +350,7 @@ export const theme = createTheme({
           '&:hover': {
             backgroundColor: '#f5f5f5',
           },
-          '&[data-active]': {
+          '&[dataActive]': {
             backgroundColor: '#e5e5e5',
             color: '#262626',
           },
@@ -374,7 +374,7 @@ export const theme = createTheme({
             backgroundColor: '#f5f5f5 !important',
             borderColor: '#a3a3a3 !important',
           },
-          '&[data-active]': {
+          '&[dataActive]': {
             backgroundColor: '#262626 !important',
             color: '#ffffff !important',
             borderColor: '#262626 !important',
@@ -390,12 +390,12 @@ export const theme = createTheme({
     Stepper: {
       styles: {
         step: {
-          '&[data-progress]': {
+          '&[dataProgress]': {
             backgroundColor: '#ffffff',
             borderColor: '#262626',
             color: '#262626',
           },
-          '&[data-completed]': {
+          '&[dataCompleted]': {
             backgroundColor: '#ffffff',
             borderColor: '#262626',
             color: '#262626',

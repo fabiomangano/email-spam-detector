@@ -18,6 +18,8 @@ import {
   IconUpload,
   IconX,
   IconFileText,
+  IconCloudUpload,
+  IconTrash,
 } from "@tabler/icons-react";
 import { Dropzone } from "@mantine/dropzone";
 import type { TabType } from "../types/email";
@@ -44,9 +46,8 @@ export function EmailInputPanel({
   onTextChange,
   onFileUpload,
   onTabChange,
+  onClear,
   onUpload,
-  onParse,
-  canParse,
 }: EmailInputPanelProps) {
   const canUpload =
     !loading && (uploadedFile !== null || textAreaValue.trim() !== "");
@@ -56,7 +57,7 @@ export function EmailInputPanel({
       padding="lg"
       radius="md"
       style={{
-        height: "calc(100vh - 280px)",
+        height: "calc(70vh - 120px)",
         flex: 1,
         minHeight: 0,
         display: "flex",
@@ -69,6 +70,26 @@ export function EmailInputPanel({
           <Title order={2} size="h3">Input</Title>
         </Flex>
         <Group gap="sm" justify="flex-end">
+          {((activeTab === "gallery" && textAreaValue.trim()) || (activeTab === "messages" && uploadedFile)) && (
+            <Button
+              variant="outline"
+              size="xs"
+              leftSection={<IconTrash size={14} />}
+              onClick={onClear}
+              styles={{
+                root: {
+                  borderColor: "#ef4444",
+                  color: "#ef4444",
+                  backgroundColor: "#ffffff",
+                  "&:hover": {
+                    backgroundColor: "#fef2f2",
+                  },
+                },
+              }}
+            >
+              Clear
+            </Button>
+          )}
           <Button
             variant="outline"
             size="xs"
@@ -91,7 +112,7 @@ export function EmailInputPanel({
                   borderColor: "#e5e5e5 !important",
                   color: "#a3a3a3 !important",
                 },
-                "&[data-disabled]": {
+                "&[dataDisabled]": {
                   backgroundColor: "#ffffff !important",
                   borderColor: "#e5e5e5 !important",
                   color: "#a3a3a3 !important",
@@ -104,15 +125,12 @@ export function EmailInputPanel({
           <Button
             variant="filled"
             size="xs"
-            onClick={async () => {
-              await onUpload();
-              if (canParse) {
-                onParse();
-              }
+            onClick={() => {
+              onUpload();
             }}
             disabled={!canUpload}
             loading={loading}
-            leftSection={<IconUpload size={14} />}
+            leftSection={<IconCloudUpload size={14} />}
             styles={{
               root: {
                 backgroundColor: "#262626",
@@ -154,7 +172,7 @@ export function EmailInputPanel({
             "&:hover": {
               backgroundColor: "#f5f5f5 !important",
             },
-            '&[data-active]': {
+            '&[dataActive="true"]': {
               backgroundColor: "#262626 !important",
               color: "#ffffff !important",
               border: "1px solid #262626 !important",
@@ -225,10 +243,10 @@ export function EmailInputPanel({
                 fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
                 fontSize: "var(--mantine-font-size-xs)",
                 lineHeight: 1.5,
-                minHeight: "200px",
+                minHeight: "150px",
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
-                "&::-webkit-scrollbar": {
+                "&::WebkitScrollbar": {
                   display: "none"
                 }
               },

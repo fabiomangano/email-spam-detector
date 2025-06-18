@@ -53,7 +53,7 @@ export function useEmailUpload() {
   const handleUpload = async () => {
     if (!textAreaValue.trim() && !uploadedFile) {
       setError("Nessun contenuto da caricare.");
-      return;
+      return null;
     }
 
     setLoading(true);
@@ -86,18 +86,21 @@ export function useEmailUpload() {
 
       const result: UploadResponse = await response.json();
       setUploadedFilename(result.filename);
+      return result.filename;
       
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Errore sconosciuto durante l'upload";
       setError(errorMessage);
       console.error("Errore upload:", err);
+      return null;
     } finally {
       setLoading(false);
     }
   };
 
-  const handleParse = async () => {
-    if (!uploadedFilename) {
+  const handleParse = async (filename?: string) => {
+    const fileToUse = filename || uploadedFilename;
+    if (!fileToUse) {
       setError("Nessun file disponibile da analizzare.");
       return;
     }
@@ -106,7 +109,7 @@ export function useEmailUpload() {
     
     try {
       const response = await fetch(
-        `${API_BASE_URL}/parse/${encodeURIComponent(uploadedFilename)}`
+        `${API_BASE_URL}/parse/${encodeURIComponent(fileToUse)}`
       );
       
       if (!response.ok) {

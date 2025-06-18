@@ -9,7 +9,7 @@ import {
   Stack,
   ScrollArea,
 } from "@mantine/core";
-import { IconCode, IconCopy } from "@tabler/icons-react";
+import { IconMail, IconCopy } from "@tabler/icons-react";
 import type { ParsedData } from "../types/email";
 
 interface ContentPanelProps {
@@ -19,6 +19,20 @@ interface ContentPanelProps {
   canAnalyze: boolean;
   onParse: () => void;
   canParse: boolean;
+}
+
+function formatEmailDate(dateString: string | undefined): string {
+  if (!dateString) return 'Mon, 01 Jan 2024 12:00:00 +0000';
+  
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return dateString; // Return original if can't parse
+    }
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  } catch {
+    return dateString; // Return original if error
+  }
 }
 
 export function ContentPanel({
@@ -32,7 +46,7 @@ export function ContentPanel({
       <Stack gap="sm" h="100%">
         <Flex justify="space-between" align="center">
           <Flex align="center" gap="xs">
-            <IconCode size={20} />
+            <IconMail size={20} />
             <Title order={2} size="h3">Email</Title>
           </Flex>
           {parsedData && (
@@ -104,7 +118,7 @@ export function ContentPanel({
                 <Group justify="space-between" align="flex-start">
                   <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "80px" }}>Date:</Text>
                   <Text size="xs" c={parsedData?.parsed?.metadata?.date ? "gray.9" : "gray.5"} style={{ flex: 1, textAlign: "right", fontStyle: parsedData?.parsed?.metadata?.date ? "normal" : "italic" }}>
-                    {parsedData?.parsed?.metadata?.date || 'Mon, 01 Jan 2024 12:00:00 +0000'}
+                    {formatEmailDate(parsedData?.parsed?.metadata?.date)}
                   </Text>
                 </Group>
               </Stack>
@@ -132,32 +146,6 @@ export function ContentPanel({
               </div>
             </div>
 
-            <Divider size="xs" />
-
-            {/* Content Structure */}
-            <div>
-              <Text size="sm" fw={700} mb="xs" c="gray.9">Content Structure</Text>
-              <Stack gap={4}>
-                <Group justify="space-between" align="flex-start">
-                  <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Has HTML:</Text>
-                  <Text size="xs" c={parsedData?.parsed?.htmlText ? "gray.9" : "gray.5"} style={{ flex: 1, textAlign: "right", fontStyle: parsedData?.parsed?.htmlText ? "normal" : "italic" }}>
-                    {parsedData?.parsed?.htmlText ? 'Yes' : 'No'}
-                  </Text>
-                </Group>
-                <Group justify="space-between" align="flex-start">
-                  <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Has Plain Text:</Text>
-                  <Text size="xs" c={parsedData?.parsed?.plainText ? "gray.9" : "gray.5"} style={{ flex: 1, textAlign: "right", fontStyle: parsedData?.parsed?.plainText ? "normal" : "italic" }}>
-                    {parsedData?.parsed?.plainText ? 'Yes' : 'No'}
-                  </Text>
-                </Group>
-                <Group justify="space-between" align="flex-start">
-                  <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Attachments:</Text>
-                  <Text size="xs" c={(parsedData?.parsed?.attachments?.length || 0) > 0 ? "gray.9" : "gray.5"} style={{ flex: 1, textAlign: "right", fontStyle: (parsedData?.parsed?.attachments?.length || 0) > 0 ? "normal" : "italic" }}>
-                    {parsedData?.parsed?.attachments?.length || 0}
-                  </Text>
-                </Group>
-              </Stack>
-            </div>
 
           </Stack>
         </ScrollArea>

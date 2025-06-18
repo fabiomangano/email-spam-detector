@@ -9,10 +9,11 @@ import {
   Modal,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
-import { IconShield, IconEdit } from "@tabler/icons-react";
+import { IconShield, IconCloudUpload } from "@tabler/icons-react";
 import { useEmailUpload } from "../hooks/useEmailUpload";
 import { EmailInputPanel } from "../components/EmailInputPanel";
 import { ContentPanel } from "../components/ContentPanel";
+import { MetadataPanel } from "../components/MetadataPanel";
 import { useAnalysis } from "../contexts/AnalysisContext";
 
 function Upload() {
@@ -62,24 +63,6 @@ function Upload() {
           </div>
           
           <Group gap="sm">
-            <Button
-              variant="outline"
-              size="xs"
-              onClick={() => setIsModalOpen(true)}
-              leftSection={<IconEdit size={14} />}
-              styles={{
-                root: {
-                  borderColor: "#262626",
-                  color: "#262626",
-                  backgroundColor: "#ffffff",
-                  "&:hover": {
-                    backgroundColor: "#f9fafb",
-                  },
-                },
-              }}
-            >
-              Upload
-            </Button>
             {parsedData && (
               <Button
                 variant="outline"
@@ -95,7 +78,7 @@ function Upload() {
                       borderColor: "#e5e5e5 !important",
                       color: "#a3a3a3 !important",
                     },
-                    "&[data-disabled]": {
+                    "&[dataDisabled]": {
                       backgroundColor: "#ffffff !important",
                       borderColor: "#e5e5e5 !important",
                       color: "#a3a3a3 !important",
@@ -106,6 +89,24 @@ function Upload() {
                 New Analysis
               </Button>
             )}
+            <Button
+              variant="outline"
+              size="xs"
+              onClick={() => setIsModalOpen(true)}
+              leftSection={<IconCloudUpload size={14} />}
+              styles={{
+                root: {
+                  borderColor: "#262626",
+                  color: "#262626",
+                  backgroundColor: "#ffffff",
+                  "&:hover": {
+                    backgroundColor: "#f9fafb",
+                  },
+                },
+              }}
+            >
+              Upload
+            </Button>
             <Button
               variant="filled"
               size="xs"
@@ -160,16 +161,28 @@ function Upload() {
           </Alert>
         )}
 
-        {/* Content Panel - Full Width */}
-        <div style={{ flex: 1, height: 0 }}>
-          <ContentPanel
-            parsedData={parsedData}
-            onAnalyze={handleAnalyze}
-            analyzing={analyzing}
-            canAnalyze={canAnalyze}
-            onParse={handleParse}
-            canParse={canParse}
-          />
+        {/* Content Area with Email Card and Metadata */}
+        <div style={{ flex: 1, height: 0, display: "flex", gap: "16px" }}>
+          {/* Email Card - 3/4 Width */}
+          <div style={{ width: "75%" }}>
+            <ContentPanel
+              parsedData={parsedData}
+              onAnalyze={handleAnalyze}
+              analyzing={analyzing}
+              canAnalyze={canAnalyze}
+              onParse={handleParse}
+              canParse={canParse}
+            />
+          </div>
+          
+          {/* Metadata Card - 1/4 Width */}
+          <div style={{ width: "25%" }}>
+            <MetadataPanel
+              parsedData={parsedData}
+              uploadedFile={uploadedFile}
+              textAreaValue={textAreaValue}
+            />
+          </div>
         </div>
 
         {/* Modal per Input Panel */}
@@ -177,7 +190,7 @@ function Upload() {
           opened={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           title="Email Input"
-          size="lg"
+          size="xl"
           centered
           styles={{
             body: {
@@ -188,7 +201,7 @@ function Upload() {
             },
           }}
           style={{
-            maxHeight: "90vh",
+            maxHeight: "70vh",
           }}
         >
           <EmailInputPanel
@@ -201,9 +214,9 @@ function Upload() {
             onTabChange={setActiveTab}
             onClear={handleClear}
             onUpload={async () => {
-              await handleUpload();
-              if (canParse) {
-                handleParse();
+              const filename = await handleUpload();
+              if (filename) {
+                await handleParse(filename);
               }
               setIsModalOpen(false);
             }}
