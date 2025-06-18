@@ -336,44 +336,43 @@ function Risk() {
         </Group>
       </Flex>
 
-      <Grid style={{ flex: 1, height: 0 }}>
-        <Grid.Col span={12}>
-          <Card padding="lg" radius="md" mb="md">
-            <Flex align="center" gap="lg" mb="md">
-              {getRiskIcon(analysisResult.riskLevel)}
-              <div style={{ flex: 1 }}>
-                <Flex align="center" gap="md" mb="sm">
-                  <Badge 
-                    color={getRiskColor(analysisResult.riskLevel)} 
-                    size="xl"
-                    variant="filled"
-                  >
-                    {analysisResult.riskLevel.toUpperCase()} RISK
-                  </Badge>
-                  <Text size="lg" fw={600}>
-                    Score: {Math.round(analysisResult.overallScore * 100)}%
-                  </Text>
-                </Flex>
-                <Progress 
-                  value={analysisResult.overallScore * 100} 
-                  color={getRiskColor(analysisResult.riskLevel)}
+      <Stack gap="lg" style={{ flex: 1, height: 0 }}>
+        {/* Risk Score Header - Compact */}
+        <Card padding="md" radius="md">
+          <Flex align="center" gap="md">
+            {getRiskIcon(analysisResult.riskLevel)}
+            <div style={{ flex: 1 }}>
+              <Flex align="center" gap="md" mb="xs">
+                <Badge 
+                  color={getRiskColor(analysisResult.riskLevel)} 
                   size="lg"
-                  radius="xl"
-                />
-              </div>
-            </Flex>
-            
-            <Text size="md" mt="md">
-              {analysisResult.summary}
-            </Text>
-          </Card>
-        </Grid.Col>
+                  variant="filled"
+                >
+                  {analysisResult.riskLevel.toUpperCase()} RISK
+                </Badge>
+                <Text size="md" fw={600}>
+                  Score: {Math.round(analysisResult.overallScore * 100)}%
+                </Text>
+              </Flex>
+              <Progress 
+                value={analysisResult.overallScore * 100} 
+                color={getRiskColor(analysisResult.riskLevel)}
+                size="md"
+                radius="xl"
+              />
+            </div>
+          </Flex>
+          
+          <Text size="sm" mt="sm" c="dimmed">
+            {analysisResult.summary}
+          </Text>
+        </Card>
 
         {/* Main Content Area */}
-        <Grid.Col span={12} style={{ height: "calc(100vh - 280px)" }}>
+        <div style={{ height: "calc(100vh - 360px)" }}>
           <Grid style={{ height: "100%" }}>
             {/* Left Column - Risk Explanations */}
-            <Grid.Col span={8} style={{ height: "100%" }}>
+            <Grid.Col span={9} style={{ height: "100%" }}>
               <Card padding="lg" radius="md" style={{ height: "100%" }}>
                 <Flex align="center" gap="xs" mb="md">
                   <IconSettings size={20} />
@@ -448,7 +447,7 @@ function Risk() {
             </Grid.Col>
             
             {/* Right Column - Summary & Recommendations */}
-            <Grid.Col span={4} style={{ height: "100%" }}>
+            <Grid.Col span={3} style={{ height: "100%" }}>
               <Stack gap="md" style={{ height: "100%" }}>
                 {/* Risk Summary */}
                 <Card padding="md" radius="md" style={{ flex: 1 }}>
@@ -544,9 +543,9 @@ function Risk() {
               </Stack>
             </Grid.Col>
           </Grid>
-        </Grid.Col>
+        </div>
 
-      </Grid>
+      </Stack>
     </div>
   );
 }
