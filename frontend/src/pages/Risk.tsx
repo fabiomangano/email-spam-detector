@@ -61,7 +61,7 @@ function Risk() {
   const getRiskColor = (riskLevel: string) => {
     switch (riskLevel) {
       case 'low': return 'green';
-      case 'medium': return 'orange';
+      case 'medium': return 'yellow';
       case 'high': return 'red';
       default: return 'gray';
     }
