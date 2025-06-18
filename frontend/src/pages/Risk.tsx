@@ -346,55 +346,8 @@ function Risk() {
         </Group>
       </Flex>
 
-      <Stack gap="lg" style={{ flex: 1, height: 0 }}>
-        {/* Risk Score Header - Compact */}
-        <Card padding="md" radius="md" style={{ height: "calc(100% - 80px)" }}>
-          <Flex align="center" gap="md" mb="md">
-            {getRiskIcon(analysisResult.riskLevel)}
-            <div style={{ flex: 1, marginRight: '8px' }}>
-              <Flex align="center" gap="md" mb="sm">
-                <Badge 
-                  size="sm"
-                  variant="outline"
-                  styles={{
-                    root: {
-                      borderColor: getRiskColorHex(analysisResult.riskLevel),
-                      color: getRiskColorHex(analysisResult.riskLevel),
-                      backgroundColor: "transparent",
-                    },
-                  }}
-                >
-                  {analysisResult.riskLevel.toUpperCase()} RISK
-                </Badge>
-                <Text size="sm" fw={600} style={{ color: getRiskColorHex(analysisResult.riskLevel) }}>
-                  Score: {Math.round(analysisResult.overallScore * 100)}%
-                </Text>
-              </Flex>
-              <div style={{ 
-                width: '100%', 
-                height: '6px', 
-                backgroundColor: '#e5e7eb', 
-                borderRadius: '9999px',
-                overflow: 'hidden'
-              }}>
-                <div style={{
-                  width: `${analysisResult.overallScore * 100}%`,
-                  height: '100%',
-                  backgroundColor: getRiskColorHex(analysisResult.riskLevel),
-                  borderRadius: '9999px',
-                  transition: 'width 0.3s ease'
-                }} />
-              </div>
-            </div>
-          </Flex>
-          
-          <Text size="xs" mt="xs" c="dimmed" style={{ lineHeight: 1.4 }}>
-            {analysisResult.summary}
-          </Text>
-        </Card>
-
         {/* Main Content Area */}
-        <div style={{ height: "calc(100vh - 360px)" }}>
+        <div style={{ height: "calc(100vh - 280px)" }}>
           <Grid style={{ height: "100%", gap: "md" }}>
             {/* Left Column - Risk Card + Detailed Analysis */}
             <Grid.Col span={{ base: 12, md: 8 }} style={{ height: "100%" }}>
@@ -628,8 +581,6 @@ function Risk() {
             </Grid.Col>
           </Grid>
         </div>
-
-      </Stack>
     </div>
   );
 }
