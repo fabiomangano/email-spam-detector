@@ -54,6 +54,8 @@ export class ResultController {
           hasRepeatedLinks: false,
           containsFinancialPromises: false,
           hasNonStandardPorts: false,
+          containsSuspiciousDomains: false,
+          mailingListSpam: false,
         },
         {
           tokens: ['test', 'email', 'content'],

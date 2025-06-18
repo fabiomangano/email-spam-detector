@@ -505,24 +505,36 @@ function Risk() {
                         <Flex justify="space-between" align="center" mb="xs">
                           <Text size="xs">Technical Risk</Text>
                           <Text size="xs" fw={500}>
-                            {Math.round((analysisResult.details.technical.linkRatio + 
-                              (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
-                              (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100)}%
+                            {analysisResult.scores?.technicalPercentage ? 
+                              Math.round(analysisResult.scores.technicalPercentage) : 
+                              Math.round((analysisResult.details.technical.linkRatio + 
+                                (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
+                                (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100)}%
                           </Text>
                         </Flex>
                         <Progress size="xs" color="blue" value={
-                          (analysisResult.details.technical.linkRatio + 
-                           (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
-                           (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100
+                          analysisResult.scores?.technicalPercentage ? 
+                            analysisResult.scores.technicalPercentage : 
+                            (analysisResult.details.technical.linkRatio + 
+                             (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
+                             (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100
                         } />
                       </div>
                       
                       <div>
                         <Flex justify="space-between" align="center" mb="xs">
                           <Text size="xs">Content Risk</Text>
-                          <Text size="xs" fw={500}>{Math.round(analysisResult.details.nlp.toxicity.score * 100)}%</Text>
+                          <Text size="xs" fw={500}>
+                            {analysisResult.scores?.nlpPercentage ? 
+                              Math.round(analysisResult.scores.nlpPercentage) : 
+                              Math.round(analysisResult.details.nlp.toxicity.score * 100)}%
+                          </Text>
                         </Flex>
-                        <Progress size="xs" color="red" value={analysisResult.details.nlp.toxicity.score * 100} />
+                        <Progress size="xs" color="red" value={
+                          analysisResult.scores?.nlpPercentage ? 
+                            analysisResult.scores.nlpPercentage : 
+                            analysisResult.details.nlp.toxicity.score * 100
+                        } />
                       </div>
                     </Stack>
                   </ScrollArea>

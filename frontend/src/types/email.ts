@@ -75,6 +75,10 @@ export interface TechnicalAnalysisResult {
   // Spam detection metrics
   isImageHeavy: boolean;
   hasRepeatedLinks: boolean;
+  containsFinancialPromises: boolean;
+  hasNonStandardPorts: boolean;
+  containsSuspiciousDomains: boolean;
+  mailingListSpam: boolean;
 }
 
 export interface NlpAnalysisResult {
@@ -114,6 +118,12 @@ export interface PipelineResult {
     parsing: ParsedData;
   };
   recommendations: string[];
+  scores?: {
+    technicalScore: number;
+    nlpScore: number;
+    technicalPercentage: number;
+    nlpPercentage: number;
+  };
 }
 
 export interface UploadResponse {

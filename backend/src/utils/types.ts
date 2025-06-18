@@ -81,6 +81,8 @@ export interface EmailTechnicalMetrics {
   hasRepeatedLinks: boolean;
   containsFinancialPromises: boolean;
   hasNonStandardPorts: boolean;
+  containsSuspiciousDomains: boolean;
+  mailingListSpam: boolean;
 }
 
 export interface NlpAnalysisResult {
@@ -126,4 +128,10 @@ export interface SpamAnalysisResult {
     nlp: NlpAnalysisResult;
   };
   recommendations: string[];
+  scores: {
+    technicalScore: number;
+    nlpScore: number;
+    technicalPercentage: number;
+    nlpPercentage: number;
+  };
 }

@@ -8,7 +8,7 @@ const DISPOSABLE_DOMAINS = [
   'mailinator.com', '10minutemail.com', 'tempmail.org', 'guerrillamail.com', 
   'mailnesia.com', 'trashmail.com', 'maildrop.cc', 'throwaway.email',
   'temp-mail.org', 'fakeinbox.com', 'yopmail.com', 'mohmal.com',
-  'freemail.nl', 'flashmail.com', 'btamail.net.cn'
+  'freemail.nl', 'flashmail.com', 'btamail.net.cn', 'web.de'
 ];
 
 // Urgency words (Italian)
@@ -298,6 +298,8 @@ export class TechnicalService {
       hasRepeatedLinks,
       containsFinancialPromises: this.detectFinancialPromises(allText),
       hasNonStandardPorts: this.detectNonStandardPorts(allText),
+      containsSuspiciousDomains: this.detectSuspiciousDomains(allText),
+      mailingListSpam: this.detectMailingListSpam(parsedData, allText),
     };
   }
 
@@ -331,7 +333,10 @@ export class TechnicalService {
       /work\s*(?:from|at)\s*home/i,                  // Work from home schemes
       /(?:substantial|excellent|vast)\s*income/i,     // Income promises
       /(?:fortune\s*500|immediate\s*help\s*needed)/i, // Job scam patterns
-      /(?:no\s*experience\s*(?:required|needed))/i    // No experience required
+      /(?:no\s*experience\s*(?:required|needed))/i,    // No experience required
+      /save\s*(?:up\s*to\s*)?\d+%/i,                   // Save up to X% offers
+      /(?:free|lowest)\s*(?:access|rates|quote)/i,     // Free access/quote offers
+      /hundreds\s*or\s*(?:even\s*)?thousands/i         // Hundreds or thousands promise
     ];
     
     return financialPatterns.some(pattern => pattern.test(text));
@@ -341,5 +346,47 @@ export class TechnicalService {
     // Rileva URL con porte non standard (non 80, 443, 25, 587, 993, 995)
     const nonStandardPortPattern = /https?:\/\/[^\s"'<>]*:(?!80|443|25|587|993|995)\d+/i;
     return nonStandardPortPattern.test(text);
+  }
+
+  private detectSuspiciousDomains(text: string): boolean {
+    const suspiciousDomainPatterns = [
+      /\.cn\b/i,                      // Chinese domains often used in spam
+      /\.tk\b/i,                      // Free Tokelau domains
+      /\.ml\b/i,                      // Free Mali domains
+      /btamail\.net/i,                // Known spam domain
+      /netsgo\.com/i,                 // Suspicious domain pattern
+      /e365\.cc/i,                    // Short suspicious domains
+    ];
+    
+    return suspiciousDomainPatterns.some(pattern => pattern.test(text));
+  }
+
+  private detectMailingListSpam(parsedData: ParsedEmail, text: string): boolean {
+    // Rileva spam che si maschera come mailing list legittima
+    const hasMailingListHeaders = !!(
+      parsedData.headers?.['list-id'] ||
+      parsedData.headers?.['x-mailman-version'] ||
+      parsedData.headers?.['precedence'] === 'bulk'
+    );
+
+    if (!hasMailingListHeaders) return false;
+
+    // Pattern di contenuto commerciale/spam tipici
+    const spamContentPatterns = [
+      /guaranteed\s*to\s*lose/i,           // Weight loss guarantees
+      /fight\s*the\s*risk\s*of/i,          // Health scare tactics
+      /free\s*legal\s*advice/i,            // Legal offers
+      /fastest\s*growing\s*singles/i,      // Dating site promotions
+      /private\s*photo\s*album/i,          // Adult content hints
+      /offer\s*manager/i,                  // Commercial signatures
+      /prizemama/i,                        // Promotional company names
+      /adclick\.ws/i,                      // Known spam domains
+      /\d+\)\s*.+http/i,                   // Numbered list with links (1) Text http://...)
+    ];
+
+    const hasSpamContent = spamContentPatterns.some(pattern => pattern.test(text));
+
+    // Se ha header di mailing list MA contenuto spam → probabile hijack
+    return hasSpamContent;
   }
 }

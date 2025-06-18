@@ -28,6 +28,12 @@ export class ResultService {
         nlp: nlpResult,
       },
       recommendations: this.generateRecommendations(overallScore),
+      scores: {
+        technicalScore: decisionMetrics.techScore,
+        nlpScore: decisionMetrics.nlpScore,
+        technicalPercentage: Math.min((decisionMetrics.techScore / 25) * 100, 100),
+        nlpPercentage: Math.min((decisionMetrics.nlpScore / 25) * 100, 100),
+      },
     };
   }
 
@@ -37,10 +43,11 @@ export class ResultService {
     // === METRICHE BASE ===
     if (metrics.linkRatio > 0.01) score += 2;
     if (metrics.numLinks > 5) score += 3;
+    if (metrics.numLinks > 3) score += 2; // Multiple links are suspicious
     if (metrics.numDomains > 3) score += 2;
     if (metrics.hasTrackingPixel) score += 3; // Forte indicatore spam
     if (metrics.replyToDiffersFromFrom) score += 6; // Strong spam indicator
-    if (metrics.isHtmlOnly) score += 1;
+    if (metrics.isHtmlOnly) score += 3; // HTML-only emails are suspicious
     if (metrics.hasAttachments) score += 1;
 
     // === AUTENTICAZIONE EMAIL ===
@@ -84,6 +91,8 @@ export class ResultService {
     if (metrics.usesEncodedUrls) score += 2; // Encoding sospetto
     if (metrics.linkToImageRatio > 10) score += 2; // Troppi link vs contenuto
     if (metrics.hasNonStandardPorts) score += 3; // Link con porte non standard
+    if (metrics.containsSuspiciousDomains) score += 4; // Suspicious domains in content
+    if (metrics.mailingListSpam) score += 6; // Spam disguised as mailing list
 
     // === METRICHE MIME ===
     if (metrics.hasMixedContentTypes) score += 1;
