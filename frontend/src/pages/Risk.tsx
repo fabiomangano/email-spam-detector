@@ -285,7 +285,7 @@ function Risk() {
   }
 
   return (
-    <div style={{ padding: "20px", paddingBottom: "80px", height: "100vh" }}>
+    <div style={{ padding: "20px", paddingBottom: "80px", height: "100vh", display: "flex", flexDirection: "column" }}>
       <Flex justify="space-between" align="center" mb="xl">
         <div>
           <Title order={1} size="h2" mb="xs">
@@ -336,7 +336,7 @@ function Risk() {
         </Group>
       </Flex>
 
-      <Grid>
+      <Grid style={{ flex: 1, height: 0 }}>
         <Grid.Col span={12}>
           <Card padding="lg" radius="md" mb="md">
             <Flex align="center" gap="lg" mb="md">
@@ -369,152 +369,179 @@ function Risk() {
           </Card>
         </Grid.Col>
 
-        {/* Detailed Risk Analysis */}
-        <Grid.Col span={12}>
-          <Card padding="lg" radius="md">
-            <Flex align="center" gap="xs" mb="md">
-              <IconSettings size={20} />
-              <Title order={4} size="h4">Detailed Risk Analysis</Title>
-            </Flex>
-            
-            {riskExplanations.length > 0 ? (
-              <ScrollArea h={600}>
-                <Stack gap="lg">
-                  {riskExplanations.map((explanation, index) => (
-                    <Card key={index} padding="md" radius="sm" withBorder>
-                      <Stack gap="sm">
-                        <Flex align="center" gap="sm">
-                          {getCategoryIcon(explanation.category)}
-                          <Badge 
-                            color={getSeverityColor(explanation.severity)} 
-                            size="sm" 
-                            leftSection={getSeverityIcon(explanation.severity)}
-                          >
-                            {explanation.severity.toUpperCase()}
-                          </Badge>
-                          <Text size="sm" c="dimmed">{explanation.category}</Text>
-                        </Flex>
-                        
-                        <Title order={5} size="h5" c="gray.9">
-                          {explanation.title}
-                        </Title>
-                        
-                        <Text size="sm" c="gray.7" style={{ lineHeight: 1.6 }}>
-                          {explanation.description}
-                        </Text>
-                        
-                        <Alert 
-                          color={getSeverityColor(explanation.severity)} 
-                          variant="light" 
-                          size="sm"
-                        >
-                          <Text size="xs" fw={600} mb="xs">Impact:</Text>
-                          <Text size="xs">{explanation.impact}</Text>
-                        </Alert>
-                        
-                        <Text size="xs" c="dimmed" style={{ fontFamily: 'monospace' }}>
-                          📊 {explanation.metrics}
-                        </Text>
-                      </Stack>
-                    </Card>
-                  ))}
-                </Stack>
-              </ScrollArea>
-            ) : (
-              <Alert color="green" variant="light">
-                <Text size="sm" fw={600} mb="xs">✅ No Significant Risk Factors Detected</Text>
-                <Text size="sm">
-                  Our analysis did not identify any major risk factors in this email. 
-                  The content appears to follow legitimate email patterns and practices.
-                </Text>
-              </Alert>
-            )}
-          </Card>
-        </Grid.Col>
-
-        {/* Quick Summary & Recommendations */}
-        <Grid.Col span={12}>
-          <Grid>
-            <Grid.Col span={6}>
-              <Card padding="lg" radius="md">
+        {/* Main Content Area */}
+        <Grid.Col span={12} style={{ height: "calc(100vh - 280px)" }}>
+          <Grid style={{ height: "100%" }}>
+            {/* Left Column - Risk Explanations */}
+            <Grid.Col span={8} style={{ height: "100%" }}>
+              <Card padding="lg" radius="md" style={{ height: "100%" }}>
                 <Flex align="center" gap="xs" mb="md">
-                  <IconBrain size={20} />
-                  <Title order={4} size="h4">Risk Summary</Title>
+                  <IconSettings size={20} />
+                  <Title order={4} size="h4">Detailed Risk Analysis</Title>
                 </Flex>
+                <Divider mb="md" />
                 
-                <Text size="sm" fw={600} mb="xs">Overall Assessment</Text>
-                <Text size="sm" mb="md" c="dimmed" style={{ lineHeight: 1.6 }}>
-                  {analysisResult.summary}
-                </Text>
-                
-                <Text size="sm" fw={600} mb="xs">Risk Breakdown</Text>
-                <Stack gap="xs">
-                  <div>
-                    <Flex justify="space-between" align="center" mb="xs">
-                      <Text size="xs">Technical Risk</Text>
-                      <Text size="xs" fw={500}>
-                        {Math.round((analysisResult.details.technical.linkRatio + 
-                          (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
-                          (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100)}%
+                <ScrollArea 
+                  scrollbars="y" 
+                  style={{ height: "calc(100% - 80px)" }}
+                  styles={{
+                    scrollbar: {
+                      display: 'none'
+                    },
+                    thumb: {
+                      display: 'none'
+                    }
+                  }}
+                >
+                  {riskExplanations.length > 0 ? (
+                    <Stack gap="md">
+                      {riskExplanations.map((explanation, index) => (
+                        <div key={index}>
+                          <Flex align="center" gap="sm" mb="xs">
+                            {getCategoryIcon(explanation.category)}
+                            <Badge 
+                              color={getSeverityColor(explanation.severity)} 
+                              size="sm" 
+                              leftSection={getSeverityIcon(explanation.severity)}
+                            >
+                              {explanation.severity.toUpperCase()}
+                            </Badge>
+                            <Text size="sm" c="dimmed">{explanation.category}</Text>
+                          </Flex>
+                          
+                          <Text size="sm" fw={600} mb="xs" c="gray.9">
+                            {explanation.title}
+                          </Text>
+                          
+                          <Text size="xs" c="gray.7" mb="xs" style={{ lineHeight: 1.5 }}>
+                            {explanation.description}
+                          </Text>
+                          
+                          <Alert 
+                            color={getSeverityColor(explanation.severity)} 
+                            variant="light" 
+                            size="xs"
+                            mb="xs"
+                          >
+                            <Text size="xs" fw={600}>Impact: {explanation.impact}</Text>
+                          </Alert>
+                          
+                          <Text size="xs" c="dimmed" style={{ fontFamily: 'monospace' }}>
+                            📊 {explanation.metrics}
+                          </Text>
+                          
+                          {index < riskExplanations.length - 1 && <Divider my="md" />}
+                        </div>
+                      ))}
+                    </Stack>
+                  ) : (
+                    <Alert color="green" variant="light">
+                      <Text size="sm" fw={600} mb="xs">✅ No Significant Risk Factors Detected</Text>
+                      <Text size="sm">
+                        Our analysis did not identify any major risk factors in this email. 
+                        The content appears to follow legitimate email patterns and practices.
                       </Text>
-                    </Flex>
-                    <Progress size="xs" color="blue" value={
-                      (analysisResult.details.technical.linkRatio + 
-                       (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
-                       (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100
-                    } />
-                  </div>
-                  
-                  <div>
-                    <Flex justify="space-between" align="center" mb="xs">
-                      <Text size="xs">Content Risk</Text>
-                      <Text size="xs" fw={500}>{Math.round(analysisResult.details.nlp.toxicity.score * 100)}%</Text>
-                    </Flex>
-                    <Progress size="xs" color="red" value={analysisResult.details.nlp.toxicity.score * 100} />
-                  </div>
-                </Stack>
+                    </Alert>
+                  )}
+                </ScrollArea>
               </Card>
             </Grid.Col>
             
-            <Grid.Col span={6}>
-              <Card padding="lg" radius="md">
-                <Flex align="center" gap="xs" mb="md">
-                  <IconShield size={20} />
-                  <Title order={4} size="h4">Security Recommendations</Title>
-                </Flex>
-                
-                {analysisResult.recommendations.length > 0 ? (
-                  <List spacing="sm" size="sm">
-                    {analysisResult.recommendations.map((rec, index) => (
-                      <List.Item key={index}>
-                        <Text size="sm">{rec}</Text>
-                      </List.Item>
-                    ))}
-                  </List>
-                ) : (
-                  <Text size="sm" c="dimmed">
-                    No specific security recommendations at this time. Continue following standard email security practices.
+            {/* Right Column - Summary & Recommendations */}
+            <Grid.Col span={4} style={{ height: "100%" }}>
+              <Stack gap="md" style={{ height: "100%" }}>
+                {/* Risk Summary */}
+                <Card padding="md" radius="md" style={{ flex: 1 }}>
+                  <Flex align="center" gap="xs" mb="md">
+                    <IconBrain size={18} />
+                    <Title order={5} size="h5">Risk Summary</Title>
+                  </Flex>
+                  
+                  <Text size="xs" fw={600} mb="xs">Overall Assessment</Text>
+                  <Text size="xs" mb="md" c="dimmed" style={{ lineHeight: 1.4 }}>
+                    {analysisResult.summary}
                   </Text>
-                )}
+                  
+                  <Text size="xs" fw={600} mb="xs">Risk Breakdown</Text>
+                  <Stack gap="xs">
+                    <div>
+                      <Flex justify="space-between" align="center" mb="xs">
+                        <Text size="xs">Technical Risk</Text>
+                        <Text size="xs" fw={500}>
+                          {Math.round((analysisResult.details.technical.linkRatio + 
+                            (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
+                            (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100)}%
+                        </Text>
+                      </Flex>
+                      <Progress size="xs" color="blue" value={
+                        (analysisResult.details.technical.linkRatio + 
+                         (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
+                         (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100
+                      } />
+                    </div>
+                    
+                    <div>
+                      <Flex justify="space-between" align="center" mb="xs">
+                        <Text size="xs">Content Risk</Text>
+                        <Text size="xs" fw={500}>{Math.round(analysisResult.details.nlp.toxicity.score * 100)}%</Text>
+                      </Flex>
+                      <Progress size="xs" color="red" value={analysisResult.details.nlp.toxicity.score * 100} />
+                    </div>
+                  </Stack>
+                </Card>
                 
-                <Divider my="md" />
-                
-                <Text size="xs" fw={600} mb="xs" c="gray.7">General Best Practices:</Text>
-                <List size="xs" spacing="xs">
-                  <List.Item>
-                    <Text size="xs" c="dimmed">Verify sender identity before clicking links</Text>
-                  </List.Item>
-                  <List.Item>
-                    <Text size="xs" c="dimmed">Hover over links to preview destinations</Text>
-                  </List.Item>
-                  <List.Item>
-                    <Text size="xs" c="dimmed">Be cautious with urgent or pressure tactics</Text>
-                  </List.Item>
-                  <List.Item>
-                    <Text size="xs" c="dimmed">Report suspicious emails to IT security</Text>
-                  </List.Item>
-                </List>
-              </Card>
+                {/* Security Recommendations */}
+                <Card padding="md" radius="md" style={{ flex: 1 }}>
+                  <Flex align="center" gap="xs" mb="md">
+                    <IconShield size={18} />
+                    <Title order={5} size="h5">Recommendations</Title>
+                  </Flex>
+                  
+                  <ScrollArea 
+                    style={{ height: "calc(100% - 40px)" }}
+                    styles={{
+                      scrollbar: {
+                        display: 'none'
+                      },
+                      thumb: {
+                        display: 'none'
+                      }
+                    }}
+                  >
+                    {analysisResult.recommendations.length > 0 ? (
+                      <List spacing="xs" size="xs">
+                        {analysisResult.recommendations.map((rec, index) => (
+                          <List.Item key={index}>
+                            <Text size="xs">{rec}</Text>
+                          </List.Item>
+                        ))}
+                      </List>
+                    ) : (
+                      <Text size="xs" c="dimmed" mb="md">
+                        No specific security recommendations at this time.
+                      </Text>
+                    )}
+                    
+                    <Divider my="sm" />
+                    
+                    <Text size="xs" fw={600} mb="xs" c="gray.7">General Best Practices:</Text>
+                    <List size="xs" spacing="xs">
+                      <List.Item>
+                        <Text size="xs" c="dimmed">Verify sender identity</Text>
+                      </List.Item>
+                      <List.Item>
+                        <Text size="xs" c="dimmed">Hover over links first</Text>
+                      </List.Item>
+                      <List.Item>
+                        <Text size="xs" c="dimmed">Avoid urgent pressure</Text>
+                      </List.Item>
+                      <List.Item>
+                        <Text size="xs" c="dimmed">Report suspicious emails</Text>
+                      </List.Item>
+                    </List>
+                  </ScrollArea>
+                </Card>
+              </Stack>
             </Grid.Col>
           </Grid>
         </Grid.Col>
