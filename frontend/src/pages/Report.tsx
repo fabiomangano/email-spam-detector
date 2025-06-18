@@ -20,6 +20,7 @@ import {
   IconBrain,
   IconCode,
   IconRefresh,
+  IconCopy,
 } from "@tabler/icons-react";
 import { useAnalysis } from "../contexts/AnalysisContext";
 import { Link, useNavigate } from "react-router";
@@ -77,6 +78,120 @@ function Report() {
     return received[0] || 'N/A'; // First item is the most recent
   };
 
+  // Copy functions for each card
+  const handleCopyParsingResults = () => {
+    const sections: string[] = [];
+    
+    sections.push("=== PARSING RESULTS ===");
+    sections.push("");
+    
+    sections.push("Basic Headers:");
+    sections.push(`Subject: ${analysisResult?.details?.parsing?.parsed?.metadata?.subject || 'N/A'}`);
+    sections.push(`From: ${analysisResult?.details?.parsing?.parsed?.metadata?.from || 'N/A'}`);
+    sections.push(`To: ${analysisResult?.details?.parsing?.parsed?.metadata?.to || 'N/A'}`);
+    sections.push(`Date: ${analysisResult?.details?.parsing?.parsed?.metadata?.date || 'N/A'}`);
+    sections.push("");
+    
+    sections.push("Technical Headers:");
+    sections.push(`Message-ID: ${getHeaderValue('message-id')}`);
+    sections.push(`Reply-To: ${getHeaderValue('reply-to')}`);
+    sections.push(`Return-Path: ${getHeaderValue('return-path')}`);
+    sections.push(`Content-Type: ${getHeaderValue('content-type')}`);
+    sections.push(`Sender IP: ${getHeaderValue('x-sender-ip')}`);
+    sections.push("");
+    
+    sections.push("Authentication:");
+    sections.push(`Auth Results: ${getHeaderValue('authentication-results')}`);
+    sections.push(`Last Hop: ${getLastReceived()}`);
+    sections.push("");
+    
+    sections.push("Content Structure:");
+    sections.push(`Has HTML: ${analysisResult?.details?.parsing?.parsed?.htmlText ? 'Yes' : 'No'}`);
+    sections.push(`Has Plain Text: ${analysisResult?.details?.parsing?.parsed?.plainText ? 'Yes' : 'No'}`);
+    sections.push(`Attachments: ${analysisResult?.details?.parsing?.parsed?.attachments?.length || 0}`);
+    
+    navigator.clipboard.writeText(sections.join('\n'));
+  };
+
+  const handleCopyTechnicalAnalysis = () => {
+    const sections: string[] = [];
+    
+    sections.push("=== TECHNICAL ANALYSIS ===");
+    sections.push("");
+    
+    sections.push("Content Metrics:");
+    sections.push(`Body Length: ${analysisResult?.details.technical.bodyLength}`);
+    sections.push(`Links: ${analysisResult?.details.technical.numLinks} (Ratio: ${analysisResult?.details.technical.linkRatio})`);
+    sections.push(`Images: ${analysisResult?.details.technical.numImages}`);
+    sections.push(`External Domains: ${analysisResult?.details.technical.numExternalDomains || 'N/A'}`);
+    sections.push(`Link/Image Ratio: ${analysisResult?.details.technical.linkToImageRatio?.toFixed(2) || 'N/A'}`);
+    sections.push("");
+    
+    sections.push("Header Analysis:");
+    sections.push(`Received Headers: ${analysisResult?.details.technical.numReceivedHeaders ?? 'N/A'}`);
+    sections.push(`X-Mailer: ${analysisResult?.details.technical.xMailerBrand || 'N/A'}`);
+    sections.push(`Outlook Route: ${analysisResult?.details.technical.hasOutlookReceivedPattern ? 'Yes' : 'No'}`);
+    sections.push(`Date Header: ${analysisResult?.details.technical.missingDateHeader ? 'Missing' : 'Present'}`);
+    sections.push("");
+    
+    sections.push("Authentication:");
+    sections.push(`SPF: ${analysisResult?.details.technical.spfResult || 'Unknown'}`);
+    sections.push(`DKIM: ${analysisResult?.details.technical.dkimResult || 'Unknown'}`);
+    sections.push(`DMARC: ${analysisResult?.details.technical.dmarcResult || 'Unknown'}`);
+    sections.push("");
+    
+    sections.push("Security Indicators:");
+    sections.push(`Tracking Pixel: ${analysisResult?.details.technical.hasTrackingPixel ? 'Present' : 'None'}`);
+    sections.push(`Content Type: ${analysisResult?.details.technical.isHtmlOnly ? 'HTML Only' : 'Text+HTML'}`);
+    sections.push(`Reply-To: ${analysisResult?.details.technical.replyToDiffersFromFrom ? 'Spoofed' : 'Normal'}`);
+    
+    navigator.clipboard.writeText(sections.join('\n'));
+  };
+
+  const handleCopyNLPAnalysis = () => {
+    const sections: string[] = [];
+    
+    sections.push("=== NLP ANALYSIS ===");
+    sections.push("");
+    
+    sections.push("Classification:");
+    sections.push(`Prediction: ${analysisResult?.details.nlp.prediction === 'spam' ? 'SPAM' : 'HAM (Legitimate)'}`);
+    sections.push("");
+    
+    if (analysisResult?.details.nlp.nlpMetrics) {
+      sections.push("Spam Metrics:");
+      sections.push(`Spam Words: ${analysisResult.details.nlp.nlpMetrics.numSpammyWords}`);
+      sections.push(`Spam Word Ratio: ${(analysisResult.details.nlp.nlpMetrics.spamWordRatio * 100).toFixed(1)}%`);
+      sections.push(`All Caps Count: ${analysisResult.details.nlp.nlpMetrics.allCapsCount}`);
+      sections.push(`Exclamation Count: ${analysisResult.details.nlp.nlpMetrics.exclamationCount}`);
+      sections.push("");
+    }
+    
+    sections.push("Sentiment Analysis:");
+    sections.push(`Label: ${analysisResult?.details.nlp.sentiment.label}`);
+    sections.push(`Score: ${analysisResult?.details.nlp.sentiment.score.toFixed(2)}`);
+    sections.push("");
+    
+    sections.push("Language Detection:");
+    sections.push(`Language: ${analysisResult?.details.nlp.language.detected.toUpperCase()}`);
+    sections.push(`Confidence: ${Math.round((analysisResult?.details.nlp.language.confidence || 0) * 100)}%`);
+    sections.push("");
+    
+    sections.push("Toxicity Analysis:");
+    sections.push(`Toxicity Score: ${Math.round((analysisResult?.details.nlp.toxicity.score || 0) * 100)}%`);
+    if (analysisResult?.details.nlp.toxicity.categories && analysisResult.details.nlp.toxicity.categories.length > 0) {
+      sections.push(`Categories: ${analysisResult.details.nlp.toxicity.categories.join(', ')}`);
+    }
+    
+    if (analysisResult?.details.nlp.keywords && analysisResult.details.nlp.keywords.length > 0) {
+      sections.push("");
+      sections.push("Keywords:");
+      sections.push(`Top Keywords: ${analysisResult.details.nlp.keywords.slice(0, 5).join(', ')}`);
+    }
+    
+    navigator.clipboard.writeText(sections.join('\n'));
+  };
+
   if (!analysisResult) {
     return (
       <div style={{ padding: "20px" }}>
@@ -93,7 +208,14 @@ function Report() {
   return (
     <div style={{ padding: "20px", paddingBottom: "80px", height: "100vh", display: "flex", flexDirection: "column" }}>
       <Flex justify="space-between" align="center" mb="xl">
-        <Title order={1} size="h2">Analysis Report</Title>
+        <div>
+          <Title order={1} size="h2" mb="xs">
+            Analysis Report
+          </Title>
+          <Text c="dimmed" size="sm">
+            Comprehensive security analysis results and technical details of your email
+          </Text>
+        </div>
         <Group gap="sm">
           <Button 
             variant="outline"
@@ -157,9 +279,29 @@ function Report() {
         {/* Parsing Results Card */}
         <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
           <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
-            <Flex align="center" gap="xs" mb="md">
-              <IconCode size={20} />
-              <Title order={2} size="h3">Parsing Results</Title>
+            <Flex justify="space-between" align="center" mb="md">
+              <Flex align="center" gap="xs">
+                <IconCode size={20} />
+                <Title order={2} size="h3">Parsing Results</Title>
+              </Flex>
+              <Button
+                variant="outline"
+                size="xs"
+                leftSection={<IconCopy size={14} />}
+                onClick={handleCopyParsingResults}
+                styles={{
+                  root: {
+                    borderColor: '#262626',
+                    color: '#262626',
+                    backgroundColor: '#ffffff',
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  },
+                }}
+              >
+                Copy
+              </Button>
             </Flex>
             <Divider mb="md" />
             <ScrollArea 
@@ -385,9 +527,29 @@ function Report() {
         {/* Technical Module Results Card */}
         <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
           <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
-            <Flex align="center" gap="xs" mb="md">
-              <IconSettings size={20} />
-              <Title order={2} size="h3">Technical Analysis</Title>
+            <Flex justify="space-between" align="center" mb="md">
+              <Flex align="center" gap="xs">
+                <IconSettings size={20} />
+                <Title order={2} size="h3">Technical Analysis</Title>
+              </Flex>
+              <Button
+                variant="outline"
+                size="xs"
+                leftSection={<IconCopy size={14} />}
+                onClick={handleCopyTechnicalAnalysis}
+                styles={{
+                  root: {
+                    borderColor: '#262626',
+                    color: '#262626',
+                    backgroundColor: '#ffffff',
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  },
+                }}
+              >
+                Copy
+              </Button>
             </Flex>
             <Divider mb="md" />
             <ScrollArea 
@@ -715,9 +877,29 @@ function Report() {
         {/* NLP Module Results Card */}
         <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
           <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
-            <Flex align="center" gap="xs" mb="md">
-              <IconBrain size={20} />
-              <Title order={2} size="h3">NLP Analysis</Title>
+            <Flex justify="space-between" align="center" mb="md">
+              <Flex align="center" gap="xs">
+                <IconBrain size={20} />
+                <Title order={2} size="h3">NLP Analysis</Title>
+              </Flex>
+              <Button
+                variant="outline"
+                size="xs"
+                leftSection={<IconCopy size={14} />}
+                onClick={handleCopyNLPAnalysis}
+                styles={{
+                  root: {
+                    borderColor: '#262626',
+                    color: '#262626',
+                    backgroundColor: '#ffffff',
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  },
+                }}
+              >
+                Copy
+              </Button>
             </Flex>
             <Divider mb="md" />
             <ScrollArea 
