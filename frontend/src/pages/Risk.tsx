@@ -397,7 +397,6 @@ function Risk() {
                       {riskExplanations.map((explanation, index) => (
                         <div key={index}>
                           <Flex align="center" gap="sm" mb="xs">
-                            {getCategoryIcon(explanation.category)}
                             <Badge 
                               color={getSeverityColor(explanation.severity)} 
                               size="sm" 
