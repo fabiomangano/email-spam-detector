@@ -375,7 +375,10 @@ function Risk() {
                 radius="xl"
                 styles={{
                   bar: {
-                    backgroundColor: getRiskColorHex(analysisResult.riskLevel),
+                    backgroundColor: `${getRiskColorHex(analysisResult.riskLevel)} !important`,
+                  },
+                  root: {
+                    backgroundColor: '#e5e7eb',
                   },
                 }}
               />
