@@ -348,11 +348,11 @@ function Risk() {
 
       <Stack gap="lg" style={{ flex: 1, height: 0 }}>
         {/* Risk Score Header - Compact */}
-        <Card padding="md" radius="md">
-          <Flex align="center" gap="xs" mb="md">
+        <Card padding="md" radius="md" style={{ height: "calc(100% - 80px)" }}>
+          <Flex align="center" gap="md" mb="md">
             {getRiskIcon(analysisResult.riskLevel)}
-            <div style={{ flex: 1 }}>
-              <Flex align="center" gap="sm" mb="xs">
+            <div style={{ flex: 1, marginRight: '8px' }}>
+              <Flex align="center" gap="md" mb="sm">
                 <Badge 
                   size="sm"
                   variant="outline"
@@ -388,7 +388,7 @@ function Risk() {
             </div>
           </Flex>
           
-          <Text size="xs" mt="sm" c="dimmed" style={{ lineHeight: 1.4 }}>
+          <Text size="xs" mt="xs" c="dimmed" style={{ lineHeight: 1.4 }}>
             {analysisResult.summary}
           </Text>
         </Card>
@@ -397,7 +397,7 @@ function Risk() {
         <div style={{ height: "calc(100vh - 360px)" }}>
           <Grid style={{ height: "100%", gap: "md" }}>
             {/* Left Column - Risk Explanations */}
-            <Grid.Col span={9} style={{ height: "100%" }}>
+            <Grid.Col span={8} style={{ height: "100%" }}>
               <Card padding="md" radius="md" style={{ height: "100%" }}>
                 <Flex align="center" gap="xs" mb="md">
                   <Title order={5} size="h5">Detailed Risk Analysis</Title>
@@ -470,7 +470,7 @@ function Risk() {
             </Grid.Col>
             
             {/* Right Column - Summary & Recommendations */}
-            <Grid.Col span={3} style={{ height: "100%" }}>
+            <Grid.Col span={4} style={{ height: "100%", marginLeft: "auto" }}>
               <Stack gap="md" style={{ height: "100%" }}>
                 {/* Risk Summary */}
                 <Card padding="md" radius="md" style={{ height: "calc(50% - 6px)" }}>
