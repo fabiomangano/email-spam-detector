@@ -61,7 +61,7 @@ function Risk() {
   const getRiskColor = (riskLevel: string) => {
     switch (riskLevel) {
       case 'low': return 'green';
-      case 'medium': return 'yellow';
+      case 'medium': return 'orange';
       case 'high': return 'red';
       default: return 'gray';
     }
@@ -346,7 +346,7 @@ function Risk() {
                 <Badge 
                   color={getRiskColor(analysisResult.riskLevel)} 
                   size="lg"
-                  variant="filled"
+                  variant="outline"
                 >
                   {analysisResult.riskLevel.toUpperCase()} RISK
                 </Badge>
@@ -375,7 +375,6 @@ function Risk() {
             <Grid.Col span={9} style={{ height: "100%" }}>
               <Card padding="md" radius="md" style={{ height: "100%" }}>
                 <Flex align="center" gap="xs" mb="md">
-                  <IconSettings size={18} />
                   <Title order={5} size="h5">Detailed Risk Analysis</Title>
                 </Flex>
                 <Divider mb="md" />
