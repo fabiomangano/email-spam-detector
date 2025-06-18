@@ -370,19 +370,19 @@ function Risk() {
 
         {/* Main Content Area */}
         <div style={{ height: "calc(100vh - 360px)" }}>
-          <Grid style={{ height: "100%" }}>
+          <Grid style={{ height: "100%", gap: "md" }}>
             {/* Left Column - Risk Explanations */}
             <Grid.Col span={9} style={{ height: "100%" }}>
-              <Card padding="lg" radius="md" style={{ height: "100%" }}>
+              <Card padding="md" radius="md" style={{ height: "100%" }}>
                 <Flex align="center" gap="xs" mb="md">
-                  <IconSettings size={20} />
-                  <Title order={4} size="h4">Detailed Risk Analysis</Title>
+                  <IconSettings size={18} />
+                  <Title order={5} size="h5">Detailed Risk Analysis</Title>
                 </Flex>
                 <Divider mb="md" />
                 
                 <ScrollArea 
                   scrollbars="y" 
-                  style={{ height: "calc(100% - 80px)" }}
+                  style={{ height: "calc(100% - 60px)" }}
                   styles={{
                     scrollbar: {
                       display: 'none'
