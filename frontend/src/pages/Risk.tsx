@@ -354,6 +354,11 @@ function Risk() {
               <Stack gap="md" style={{ height: "100%" }}>
                 {/* Risk Score Card */}
                 <Card padding="md" radius="md">
+                  <Flex align="center" gap="xs" mb="md">
+                    <Title order={5} size="h5">Security Risk Level</Title>
+                  </Flex>
+                  <Divider mb="md" />
+                  
                   <Flex align="center" gap="md" mb="md">
                     {getRiskIcon(analysisResult.riskLevel)}
                     <div style={{ flex: 1, marginRight: '8px' }}>
