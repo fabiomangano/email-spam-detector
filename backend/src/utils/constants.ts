@@ -20,7 +20,10 @@ export const SPAM_WORDS = [
   'medication', 'prescription', 'pharmacy', 'viagra', 'cialis',
   'mortgage', 'loan', 'credit', 'debt', 'refinance', 'investment',
   'stocks', 'trading', 'bitcoin', 'cryptocurrency', 'mlm', 'pyramid',
-  'work from home', 'make money online', 'get rich', 'financial freedom'
+  'work from home', 'make money online', 'get rich', 'financial freedom',
+  'million', 'thousand', 'dollars', '$', 'usd', 'gbp', 'eur', 'pounds',
+  'beneficiary', 'inheritance', 'fund', 'transfer', 'bank', 'account',
+  'attorney', 'lawyer', 'legal', 'claim', 'compensation', 'settlement'
 ];
 
 // Model path for NLP classifier

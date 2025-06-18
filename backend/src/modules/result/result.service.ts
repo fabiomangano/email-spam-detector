@@ -39,7 +39,7 @@ export class ResultService {
     if (metrics.numLinks > 5) score += 3;
     if (metrics.numDomains > 3) score += 2;
     if (metrics.hasTrackingPixel) score += 3; // Forte indicatore spam
-    if (metrics.replyToDiffersFromFrom) score += 2;
+    if (metrics.replyToDiffersFromFrom) score += 6; // Strong spam indicator
     if (metrics.isHtmlOnly) score += 1;
     if (metrics.hasAttachments) score += 1;
 
@@ -71,7 +71,9 @@ export class ResultService {
     if (metrics.uppercaseRatio > 0.3) score += 3; // Troppo maiuscolo
     if (metrics.uppercaseRatio > 0.5) score += 2; // Ancora peggio
     if (metrics.excessiveExclamations) score += 2;
-    if (metrics.containsUrgencyWords) score += 3; // Linguaggio pressante
+    if (metrics.containsUrgencyWords) score += 4; // Linguaggio pressante
+    if (metrics.containsFinancialPromises) score += 5; // Financial promises are strong spam indicators
+    if (metrics.sentToMultiple) score += 3; // Email sent to multiple recipients
     if (metrics.containsElectionTerms) score += 2; // Possibile campagna tematica
 
     // === METRICHE OFFUSCAMENTO E LINK ===
@@ -81,6 +83,7 @@ export class ResultService {
     if (metrics.containsShortenedUrls) score += 3; // URL mascherati
     if (metrics.usesEncodedUrls) score += 2; // Encoding sospetto
     if (metrics.linkToImageRatio > 10) score += 2; // Troppi link vs contenuto
+    if (metrics.hasNonStandardPorts) score += 3; // Link con porte non standard
 
     // === METRICHE MIME ===
     if (metrics.hasMixedContentTypes) score += 1;
@@ -119,8 +122,15 @@ export class ResultService {
     const techScore = this.calculateTechnicalScore(technicalMetrics);
     const nlpScore = this.calculateNlpScore(nlpOutput?.nlpMetrics || {});
 
-    // Ponderazione: 60% tecniche, 40% NLP
-    const finalScore = techScore * 0.6 + nlpScore * 0.4;
+    // Se NLP predice spam ma il punteggio tecnico è basso, aumenta il peso NLP
+    let finalScore: number;
+    if (nlpOutput?.prediction === 'spam' && techScore < 5) {
+      // Quando mancano metriche tecniche ma NLP è sicuro, peso 30% tecnico / 70% NLP
+      finalScore = techScore * 0.3 + nlpScore * 0.7 + 3; // Bonus per compensare carenza tecnica
+    } else {
+      // Ponderazione normale: 60% tecniche, 40% NLP
+      finalScore = techScore * 0.6 + nlpScore * 0.4;
+    }
 
     // Soglia di decisione (ridotta per essere più sensibile)
     const isSpam = finalScore > 10 || (nlpOutput && nlpOutput.prediction === 'spam');
@@ -145,8 +155,8 @@ export class ResultService {
   }
 
   private determineRiskLevel(score: number): 'low' | 'medium' | 'high' {
-    if (score < 0.3) return 'low';
-    if (score < 0.7) return 'medium';
+    if (score < 0.25) return 'low';
+    if (score < 0.6) return 'medium';
     return 'high';
   }
 

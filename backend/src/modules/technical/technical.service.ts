@@ -7,7 +7,8 @@ import { EmailTechnicalMetrics, ParsedEmail } from '../../utils/types';
 const DISPOSABLE_DOMAINS = [
   'mailinator.com', '10minutemail.com', 'tempmail.org', 'guerrillamail.com', 
   'mailnesia.com', 'trashmail.com', 'maildrop.cc', 'throwaway.email',
-  'temp-mail.org', 'fakeinbox.com', 'yopmail.com', 'mohmal.com'
+  'temp-mail.org', 'fakeinbox.com', 'yopmail.com', 'mohmal.com',
+  'freemail.nl', 'flashmail.com', 'btamail.net.cn'
 ];
 
 // Urgency words (Italian)
@@ -144,8 +145,12 @@ export class TechnicalService {
     const fromDomainIsDisposable = DISPOSABLE_DOMAINS.includes(fromDomain.toLowerCase());
     
     // Email inviata a più destinatari visibili - non è una comunicazione personale
-    const sentToMultiple = parsedData.headers?.to?.value?.length > 1 ||
-                          (parsedData.headers?.cc?.value?.length || 0) > 0;
+    const toHeader = parsedData.headers?.to || parsedData.metadata?.to || '';
+    const ccHeader = parsedData.headers?.cc || '';
+    const sentToMultiple = (typeof toHeader === 'string' && toHeader.split(',').length > 1) ||
+                          (typeof ccHeader === 'string' && ccHeader.split(',').length > 0) ||
+                          (Array.isArray(toHeader) && toHeader.length > 1) ||
+                          (Array.isArray(ccHeader) && ccHeader.length > 0);
 
     // Metriche di campagna e mailing list
     const campaignHeaders = ['x-rpcampaign', 'list-help', 'feedback-id', 'list-unsubscribe'];
@@ -291,6 +296,8 @@ export class TechnicalService {
       // New spam detection metrics
       isImageHeavy,
       hasRepeatedLinks,
+      containsFinancialPromises: this.detectFinancialPromises(allText),
+      hasNonStandardPorts: this.detectNonStandardPorts(allText),
     };
   }
 
@@ -305,5 +312,34 @@ export class TechnicalService {
     const joined = receivedArray.join('\n');
     const ipMatch = joined.match(/from .*?\((\d{1,3}(?:\.\d{1,3}){3})\)/);
     return ipMatch?.[1];
+  }
+
+  private detectFinancialPromises(text: string): boolean {
+    const financialPatterns = [
+      /\$[\d,]+(?:\.\d{2})?/i,          // $100,000 or $1,000.00
+      /[\d,]+\s*(?:dollars?|usd|eur|gbp|pounds?)/i,  // 100000 dollars
+      /(?:million|thousand|billion)\s*(?:dollars?|usd|eur|gbp|pounds?)/i,
+      /(?:win|earn|make|receive|get|claim)\s*(?:up\s*to\s*)?\$[\d,]+/i,
+      /guaranteed\s*(?:income|money|profit|return)/i,
+      /(?:inheritance|fund|transfer|compensation|settlement)\s*of\s*\$?[\d,]+/i,
+      /(?:attorney|lawyer|legal)\s*(?:fee|fees|claim|fund)/i,
+      /(?:beneficiary|next\s*of\s*kin|deceased)/i,
+      /(?:direct\s*)?e-?mail\s*marketing/i,          // Email marketing services
+      /(?:mlm|network\s*marketing|pyramid)/i,        // MLM schemes
+      /(?:bulk\s*email|mass\s*email|email\s*blast)/i, // Bulk email services
+      /(?:\d+\s*million|million\s*e-?mails?)\s*delivered/i, // Million emails delivered
+      /work\s*(?:from|at)\s*home/i,                  // Work from home schemes
+      /(?:substantial|excellent|vast)\s*income/i,     // Income promises
+      /(?:fortune\s*500|immediate\s*help\s*needed)/i, // Job scam patterns
+      /(?:no\s*experience\s*(?:required|needed))/i    // No experience required
+    ];
+    
+    return financialPatterns.some(pattern => pattern.test(text));
+  }
+
+  private detectNonStandardPorts(text: string): boolean {
+    // Rileva URL con porte non standard (non 80, 443, 25, 587, 993, 995)
+    const nonStandardPortPattern = /https?:\/\/[^\s"'<>]*:(?!80|443|25|587|993|995)\d+/i;
+    return nonStandardPortPattern.test(text);
   }
 }

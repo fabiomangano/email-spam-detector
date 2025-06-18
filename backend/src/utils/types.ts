@@ -79,6 +79,8 @@ export interface EmailTechnicalMetrics {
   // New spam detection metrics
   isImageHeavy: boolean;
   hasRepeatedLinks: boolean;
+  containsFinancialPromises: boolean;
+  hasNonStandardPorts: boolean;
 }
 
 export interface NlpAnalysisResult {
