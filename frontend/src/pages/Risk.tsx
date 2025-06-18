@@ -10,18 +10,46 @@ import {
   Title,
   Alert,
   Stack,
+  Group,
 } from "@mantine/core";
 import { 
   IconArrowLeft, 
   IconShield, 
   IconAlertTriangle,
   IconSettings,
+  IconRefresh,
 } from "@tabler/icons-react";
 import { useAnalysis } from "../contexts/AnalysisContext";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 function Risk() {
-  const { analysisResult } = useAnalysis();
+  const { 
+    analysisResult, 
+    setAnalysisResult,
+    setTextAreaValue,
+    setUploadedFile,
+    setUploadedFilename,
+    setParsedData,
+    setActiveTab,
+    setError,
+    setLoading,
+    setAnalyzing
+  } = useAnalysis();
+  const navigate = useNavigate();
+
+  const handleNewAnalysis = () => {
+    // Reset all analysis and upload data
+    setAnalysisResult(null);
+    setTextAreaValue("");
+    setUploadedFile(null);
+    setUploadedFilename(null);
+    setParsedData(null);
+    setActiveTab("gallery");
+    setError(null);
+    setLoading(false);
+    setAnalyzing(false);
+    navigate('/upload');
+  };
 
   const getRiskColor = (riskLevel: string) => {
     switch (riskLevel) {
@@ -56,15 +84,53 @@ function Risk() {
   return (
     <div style={{ padding: "20px", height: "100%" }}>
       <Flex justify="space-between" align="center" mb="xl">
-        <Title order={1} size="h2">Security Risk Analysis</Title>
-        <Button 
-          variant="outline" 
-          component={Link} 
-          to="/report"
-          leftSection={<IconArrowLeft size={16} />}
-        >
-          Back to Report
-        </Button>
+        <div>
+          <Title order={1} size="h2" mb="xs">
+            Security Risk Analysis
+          </Title>
+          <Text c="dimmed" size="sm">
+            Detailed risk assessment and security recommendations for your email
+          </Text>
+        </div>
+        <Group gap="sm">
+          <Button 
+            variant="outline"
+            size="xs"
+            onClick={handleNewAnalysis}
+            leftSection={<IconRefresh size={14} />}
+            styles={{
+              root: {
+                borderColor: "#ef4444",
+                color: "#ef4444",
+                backgroundColor: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#fef2f2",
+                },
+              },
+            }}
+          >
+            New Analysis
+          </Button>
+          <Button 
+            variant="outline" 
+            size="xs"
+            component={Link} 
+            to="/report"
+            leftSection={<IconArrowLeft size={14} />}
+            styles={{
+              root: {
+                borderColor: "#262626",
+                color: "#262626",
+                backgroundColor: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#f9fafb",
+                },
+              },
+            }}
+          >
+            Back to Report
+          </Button>
+        </Group>
       </Flex>
 
       <Grid>
