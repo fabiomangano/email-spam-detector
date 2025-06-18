@@ -365,7 +365,7 @@ function Risk() {
                 >
                   {analysisResult.riskLevel.toUpperCase()} RISK
                 </Badge>
-                <Text size="md" fw={600}>
+                <Text size="md" fw={600} style={{ color: getRiskColorHex(analysisResult.riskLevel) }}>
                   Score: {Math.round(analysisResult.overallScore * 100)}%
                 </Text>
               </Flex>
