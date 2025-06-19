@@ -137,25 +137,25 @@ function Upload() {
         {/* Alert per errori */}
         {error && (
           <Alert
-            variant="outline"
+            variant="filled"
             title="Error"
             withCloseButton
             onClose={() => setError(null)}
             styles={{
               root: {
+                backgroundColor: "#ef4444",
                 borderColor: "#ef4444",
-                backgroundColor: "transparent",
               },
               title: {
-                color: "#ef4444",
+                color: "#ffffff",
               },
               body: {
-                color: "#ef4444",
+                color: "#ffffff",
               },
               closeButton: {
-                color: "#ef4444",
+                color: "#ffffff",
                 '&:hover': {
-                  backgroundColor: "#fef2f2",
+                  backgroundColor: "#dc2626",
                 },
               },
             }}

@@ -10,7 +10,7 @@ import {
   Text,
   Divider,
   Grid,
-  Notification,
+  Alert,
   LoadingOverlay,
   Tabs,
   ScrollArea,
@@ -235,13 +235,33 @@ const Config: React.FC = () => {
       </Flex>
 
       {notification && (
-        <Notification
-          color={notification.type === 'success' ? 'green' : 'red'}
+        <Alert
+          variant="filled"
+          title={notification.type === 'success' ? 'Success' : 'Error'}
+          withCloseButton
           onClose={() => setNotification(null)}
           mb="md"
+          styles={{
+            root: {
+              backgroundColor: notification.type === 'success' ? '#22c55e' : '#ef4444',
+              borderColor: notification.type === 'success' ? '#22c55e' : '#ef4444',
+            },
+            title: {
+              color: '#ffffff',
+            },
+            body: {
+              color: '#ffffff',
+            },
+            closeButton: {
+              color: '#ffffff',
+              '&:hover': {
+                backgroundColor: notification.type === 'success' ? '#16a34a' : '#dc2626',
+              },
+            },
+          }}
         >
           {notification.message}
-        </Notification>
+        </Alert>
       )}
 
       <Tabs 
