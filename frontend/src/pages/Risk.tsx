@@ -237,6 +237,183 @@ function Risk() {
       });
     }
 
+    // New enhanced spam detection metrics
+    if (technical.containsFinancialPromises) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'high',
+        title: 'Financial Promises or Spam Content',
+        description: 'The email contains typical spam patterns such as financial promises, work-from-home schemes, MLM opportunities, or marketing services. These patterns are commonly used in unsolicited commercial emails and scams.',
+        impact: 'High likelihood of spam or scam content',
+        metrics: 'Financial/spam content patterns detected'
+      });
+    }
+
+    if (technical.sentToMultiple) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'medium',
+        title: 'Multiple Recipients Detected',
+        description: 'This email was sent to multiple recipients simultaneously, which is a common characteristic of mass marketing emails, newsletters, or spam campaigns rather than personal communication.',
+        impact: 'Indicates bulk email or mass marketing',
+        metrics: 'Multiple recipients in To/Cc fields'
+      });
+    }
+
+    if (technical.hasSpammySubject) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'high',
+        title: 'Suspicious Subject Line',
+        description: 'The subject line contains patterns typical of spam emails, such as guaranteed promises, urgent language, money amounts, or hyperbolic claims designed to grab attention.',
+        impact: 'Strong indicator of spam or promotional email',
+        metrics: 'Spam patterns detected in subject line'
+      });
+    }
+
+    if (technical.hasSuspiciousFromName) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'medium',
+        title: 'Suspicious Sender Name',
+        description: 'The sender name appears to be randomly generated, contains excessive numbers, or follows patterns typical of automated spam accounts rather than legitimate users.',
+        impact: 'Potential automated or fake sender account',
+        metrics: 'Suspicious sender name pattern detected'
+      });
+    }
+
+    if (technical.containsSuspiciousDomains) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'high',
+        title: 'Suspicious Domains Detected',
+        description: 'The email contains references to domains known for spam, ad networks, or suspicious services. This includes Chinese domains, free hosting services, or known spam infrastructure.',
+        impact: 'Connection to spam or suspicious services',
+        metrics: 'Suspicious domains found in content'
+      });
+    }
+
+    if (technical.mailingListSpam) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'high',
+        title: 'Compromised Mailing List',
+        description: 'This email appears to be spam content disguised as legitimate mailing list traffic. The email has mailing list headers but contains commercial spam content, indicating a hijacked or compromised mailing list.',
+        impact: 'Spam disguised as legitimate mailing list',
+        metrics: 'Mailing list headers with spam content'
+      });
+    }
+
+    if (technical.hasNonStandardPorts) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'medium',
+        title: 'Non-Standard Port Usage',
+        description: 'The email contains URLs using non-standard ports (not 80, 443, 25, etc.), which is often used by spam services to avoid detection or host content on compromised systems.',
+        impact: 'Potential connection to suspicious services',
+        metrics: 'Non-standard ports detected in URLs'
+      });
+    }
+
+    if (technical.hasTrackingPixel) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'medium',
+        title: 'Tracking Pixel Detected',
+        description: 'The email contains invisible tracking pixels (1x1 pixel images) used to monitor when and where the email is opened. This is commonly used for tracking user behavior and can indicate commercial or surveillance purposes.',
+        impact: 'Email opening tracking and privacy concerns',
+        metrics: 'Invisible tracking pixels found'
+      });
+    }
+
+    if (technical.isImageHeavy) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'medium',
+        title: 'Image-Heavy Content',
+        description: 'The email consists primarily of images with minimal text content. This technique is often used by spammers to avoid text-based spam filters and can make the email difficult to process by screen readers.',
+        impact: 'Potential spam evasion technique',
+        metrics: 'High image-to-text ratio detected'
+      });
+    }
+
+    if (technical.hasRepeatedLinks) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'medium',
+        title: 'Repeated Links to Same Domain',
+        description: 'Multiple links in the email all point to the same domain or website. This pattern is typical of promotional emails designed to drive traffic to a single destination.',
+        impact: 'Indicates promotional or marketing email',
+        metrics: 'Multiple links to same destination'
+      });
+    }
+
+    if (technical.isHtmlOnly) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'low',
+        title: 'HTML-Only Email Format',
+        description: 'The email is sent only in HTML format without a plain text alternative. While not inherently malicious, this is more common in marketing emails and can be used to embed tracking or malicious content.',
+        impact: 'Reduced compatibility and potential tracking',
+        metrics: 'No plain text version available'
+      });
+    }
+
+    if (technical.numLinks > 5) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'medium',
+        title: 'Excessive Link Count',
+        description: `The email contains ${technical.numLinks} links, which is unusually high for personal communication. High link counts are characteristic of promotional emails, newsletters, or spam.`,
+        impact: 'Indicates commercial or promotional content',
+        metrics: `${technical.numLinks} links detected`
+      });
+    }
+
+    if (technical.linkRatio > 0.02) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'medium',
+        title: 'High Link-to-Content Ratio',
+        description: `${(technical.linkRatio * 100).toFixed(1)}% of the email content consists of links. High link density often indicates spam, phishing attempts, or aggressive marketing campaigns.`,
+        impact: 'Potential spam or phishing indicators',
+        metrics: `Link ratio: ${(technical.linkRatio * 100).toFixed(1)}%`
+      });
+    }
+
+    if (technical.fromDomainIsDisposable) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'high',
+        title: 'Disposable Email Domain',
+        description: 'The sender is using a domain known for providing temporary or disposable email addresses. These domains are frequently used by spammers to avoid detection and accountability.',
+        impact: 'High likelihood of spam or throwaway account',
+        metrics: 'Disposable email domain detected'
+      });
+    }
+
+    if (technical.replyToDiffersFromFrom) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'high',
+        title: 'Reply-To Address Mismatch',
+        description: 'The Reply-To address differs from the From address, which can indicate email spoofing, phishing attempts, or the use of compromised accounts. Legitimate emails typically use matching addresses.',
+        impact: 'Potential spoofing or phishing attempt',
+        metrics: 'From and Reply-To addresses do not match'
+      });
+    }
+
+    if (technical.uppercaseRatio > 0.3) {
+      explanations.push({
+        category: 'Technical',
+        severity: 'medium',
+        title: 'Excessive Uppercase Text',
+        description: `${(technical.uppercaseRatio * 100).toFixed(1)}% of the email content is in uppercase letters. Excessive use of capitals is often associated with spam and aggressive marketing tactics.`,
+        impact: 'Indicates aggressive marketing or spam',
+        metrics: `${(technical.uppercaseRatio * 100).toFixed(1)}% uppercase content`
+      });
+    }
+
     // If no specific issues found but risk is still elevated
     if (explanations.length === 0 && analysisResult.overallScore > 0.3) {
       explanations.push({

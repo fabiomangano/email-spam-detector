@@ -83,6 +83,8 @@ export interface EmailTechnicalMetrics {
   hasNonStandardPorts: boolean;
   containsSuspiciousDomains: boolean;
   mailingListSpam: boolean;
+  hasSpammySubject: boolean;
+  hasSuspiciousFromName: boolean;
 }
 
 export interface NlpAnalysisResult {

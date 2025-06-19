@@ -56,6 +56,8 @@ export class ResultController {
           hasNonStandardPorts: false,
           containsSuspiciousDomains: false,
           mailingListSpam: false,
+          hasSpammySubject: false,
+          hasSuspiciousFromName: false,
         },
         {
           tokens: ['test', 'email', 'content'],

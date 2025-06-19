@@ -8,7 +8,7 @@ const DISPOSABLE_DOMAINS = [
   'mailinator.com', '10minutemail.com', 'tempmail.org', 'guerrillamail.com', 
   'mailnesia.com', 'trashmail.com', 'maildrop.cc', 'throwaway.email',
   'temp-mail.org', 'fakeinbox.com', 'yopmail.com', 'mohmal.com',
-  'freemail.nl', 'flashmail.com', 'btamail.net.cn', 'web.de'
+  'freemail.nl', 'flashmail.com', 'btamail.net.cn', 'web.de', 'bluemail.dk'
 ];
 
 // Urgency words (Italian)
@@ -147,10 +147,15 @@ export class TechnicalService {
     // Email inviata a più destinatari visibili - non è una comunicazione personale
     const toHeader = parsedData.headers?.to || parsedData.metadata?.to || '';
     const ccHeader = parsedData.headers?.cc || '';
-    const sentToMultiple = (typeof toHeader === 'string' && toHeader.split(',').length > 1) ||
-                          (typeof ccHeader === 'string' && ccHeader.split(',').length > 0) ||
-                          (Array.isArray(toHeader) && toHeader.length > 1) ||
-                          (Array.isArray(ccHeader) && ccHeader.length > 0);
+    
+    // Conta il numero totale di indirizzi email nei campi To e Cc
+    const toCount = (typeof toHeader === 'string') ? (toHeader.match(/@/g) || []).length : 
+                    (Array.isArray(toHeader) ? toHeader.length : 0);
+    const ccCount = (typeof ccHeader === 'string') ? (ccHeader.match(/@/g) || []).length : 
+                    (Array.isArray(ccHeader) ? ccHeader.length : 0);
+    
+    const totalRecipients = toCount + ccCount;
+    const sentToMultiple = totalRecipients > 1;
 
     // Metriche di campagna e mailing list
     const campaignHeaders = ['x-rpcampaign', 'list-help', 'feedback-id', 'list-unsubscribe'];
@@ -300,6 +305,8 @@ export class TechnicalService {
       hasNonStandardPorts: this.detectNonStandardPorts(allText),
       containsSuspiciousDomains: this.detectSuspiciousDomains(allText),
       mailingListSpam: this.detectMailingListSpam(parsedData, allText),
+      hasSpammySubject: this.detectSpammySubject(parsedData.metadata?.subject || ''),
+      hasSuspiciousFromName: this.detectSuspiciousFromName(fromAddress),
     };
   }
 
@@ -336,7 +343,24 @@ export class TechnicalService {
       /(?:no\s*experience\s*(?:required|needed))/i,    // No experience required
       /save\s*(?:up\s*to\s*)?\d+%/i,                   // Save up to X% offers
       /(?:free|lowest)\s*(?:access|rates|quote)/i,     // Free access/quote offers
-      /hundreds\s*or\s*(?:even\s*)?thousands/i         // Hundreds or thousands promise
+      /hundreds\s*or\s*(?:even\s*)?thousands/i,        // Hundreds or thousands promise
+      /(?:lose|drop)\s*\d+(?:-\d+)?\s*(?:lbs?|pounds?|kg)/i, // Weight loss promises
+      /(?:free|get)\s*(?:legal|child\s*support)/i,     // Legal/support offers
+      /(?:singles|dating)\s*community/i,               // Dating site promotions
+      /fight\s*the\s*risk/i,                          // Health scare tactics
+      /photo\s*album\s*online/i,                      // Photo sharing spam
+      /(?:direct\s*)?email\s*advertising/i,           // Email advertising services
+      /(?:multiply|maximize)\s*your\s*(?:customer|marketing)/i, // Marketing spam
+      /(?:\$\d+\s*per\s*(?:\d+\s*)?million)/i,        // Pricing per million
+      /marketing\s*(?:needs|dollars)/i,               // Marketing terminology
+      /(?:fax|complete).+form/i,                      // Fax forms (spam technique)
+      /consultant\s*will\s*contact/i,                 // Sales contact promises
+      /(?:cents?|minutes?)\s*per\s*minute/i,          // Per-minute pricing
+      /(?:lowest|best|highest)\s*(?:rate|quality|price)/i, // Superlative pricing claims
+      /(?:no\s*setup\s*fees?|no\s*contracts?)/i,      // No fees promises
+      /fill\s*out\s*the\s*form/i,                     // Form filling requests
+      /submit\s*information/i,                        // Data collection
+      /required\s*input\s*field/i                     // Form requirements
     ];
     
     return financialPatterns.some(pattern => pattern.test(text));
@@ -356,6 +380,12 @@ export class TechnicalService {
       /btamail\.net/i,                // Known spam domain
       /netsgo\.com/i,                 // Suspicious domain pattern
       /e365\.cc/i,                    // Short suspicious domains
+      /1premio\.com/i,                // Promotional domain
+      /qves\.com/i,                   // Known spam service
+      /adclick\.ws/i,                 // Ad network domain
+      /marketing401\.com/i,           // Marketing service domain
+      /sendgreatoffers\.com/i,        // Promotional domain
+      /theadmanager\.com/i            // Ad management domain
     ];
     
     return suspiciousDomainPatterns.some(pattern => pattern.test(text));
@@ -388,5 +418,38 @@ export class TechnicalService {
 
     // Se ha header di mailing list MA contenuto spam → probabile hijack
     return hasSpamContent;
+  }
+
+  private detectSpammySubject(subject: string): boolean {
+    const spammySubjectPatterns = [
+      /guaranteed\s*to\s*(?:lose|win|make|earn)/i,    // Guaranteed promises
+      /(?:free|win|earn)\s*(?:money|cash|prizes?)/i,  // Free money offers
+      /lose\s*\d+(?:-\d+)?\s*(?:lbs?|pounds?)/i,      // Weight loss in subject
+      /\$\d+(?:,\d{3})*(?:\.\d{2})?/i,               // Money amounts in subject
+      /(?:urgent|immediate|act\s*now|limited\s*time)/i, // Urgency words
+      /(?:click\s*here|visit\s*now|order\s*today)/i,  // Action words
+      /(?:amazing|incredible|unbelievable)\s*(?:offer|deal)/i, // Hyperbolic claims
+      /(?:\$[\d.]+|[\d.]+\s*cents?)\s*per\s*minute/i, // Per-minute pricing in subject
+      /(?:best|lowest|highest)\s*(?:quality|rate|price)/i, // Quality/pricing claims
+      /(?:conference|conferencing)\s*(?:calls?|made\s*easy)/i // Conference service promotion
+    ];
+    
+    return spammySubjectPatterns.some(pattern => pattern.test(subject));
+  }
+
+  private detectSuspiciousFromName(fromAddress: string): boolean {
+    const namePart = fromAddress.split('@')[0] || '';
+    
+    // Pattern sospetti per nomi mittente
+    const suspiciousPatterns = [
+      /^[a-z]{4,8}\d{8,16}$/i,        // Pattern come suz0123893616943
+      /^[a-z]{2,5}\d{4,}$/i,          // Pattern brevi con molti numeri
+      /^[bcdfghjklmnpqrstvwxyz]{4,}$/i, // Solo consonanti (gibberish)
+      /^.{15,}$/,                     // Nomi molto lunghi (>15 caratteri)
+      /\d{8,}/,                       // 8+ cifre consecutive
+      /^(test|temp|admin|user)\d+$/i, // Nomi di test generici
+    ];
+    
+    return suspiciousPatterns.some(pattern => pattern.test(namePart));
   }
 }
