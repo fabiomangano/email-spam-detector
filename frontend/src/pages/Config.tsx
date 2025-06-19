@@ -165,6 +165,25 @@ const Config: React.FC = () => {
 
   return (
     <Container size="lg">
+      <style>
+        {`
+          .config-tabs [data-active] {
+            background-color: #262626 !important;
+            color: #ffffff !important;
+            border: 1px solid #262626 !important;
+            font-weight: 600 !important;
+          }
+          .config-tabs .mantine-Tabs-tab:not([data-active]) {
+            background-color: #ffffff !important;
+            color: #525252 !important;
+            border: 1px solid #d4d4d4 !important;
+            font-weight: 500 !important;
+          }
+          .config-tabs .mantine-Tabs-tab:hover:not([data-active]) {
+            background-color: #f5f5f5 !important;
+          }
+        `}
+      </style>
       <Flex justify="space-between" align="center" mb="xl">
         <div>
           <Title order={1} size="h2" mb="xs">
@@ -177,16 +196,38 @@ const Config: React.FC = () => {
         <Group gap="sm">
           <Button
             variant="outline"
-            color="gray"
-            leftSection={<IconRestore size={16} />}
+            color="red"
+            size="xs"
+            leftSection={<IconRestore size={14} />}
             onClick={resetConfig}
+            styles={{
+              root: {
+                borderColor: "#ef4444",
+                color: "#ef4444",
+                backgroundColor: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#fef2f2",
+                },
+              },
+            }}
           >
             Reset to Default
           </Button>
           <Button
-            leftSection={<IconDeviceFloppy size={16} />}
+            variant="filled"
+            size="xs"
+            leftSection={<IconDeviceFloppy size={14} />}
             onClick={saveConfig}
             loading={saving}
+            styles={{
+              root: {
+                backgroundColor: "#262626",
+                color: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#404040",
+                },
+              },
+            }}
           >
             Save Configuration
           </Button>
@@ -203,7 +244,11 @@ const Config: React.FC = () => {
         </Notification>
       )}
 
-      <Tabs defaultValue="scoring">
+      <Tabs 
+        defaultValue="scoring"
+        variant="pills"
+        className="config-tabs"
+      >
         <Tabs.List mb="md">
           <Tabs.Tab value="scoring">Scores & Thresholds</Tabs.Tab>
           <Tabs.Tab value="technical">Technical Penalties</Tabs.Tab>
