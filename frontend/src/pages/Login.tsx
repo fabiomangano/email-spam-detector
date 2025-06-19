@@ -63,7 +63,7 @@ const Login: React.FC = () => {
     <Box
       style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        backgroundColor: '#ffffff',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -75,7 +75,7 @@ const Login: React.FC = () => {
           withBorder
           shadow="xl"
           p="xl"
-          radius="lg"
+          radius="md"
           style={{
             backgroundColor: '#ffffff',
             border: '1px solid #e5e5e5',
@@ -83,23 +83,21 @@ const Login: React.FC = () => {
         >
           <Stack gap="lg">
             {/* Logo and Title */}
-            <Group justify="center" mb="md">
-              <IconShield size={48} color="#262626" />
-            </Group>
-            
             <Stack gap="xs" align="center">
-              <Title 
-                order={1} 
-                size="h2" 
-                style={{ 
-                  color: '#262626',
-                  fontWeight: 800,
-                  letterSpacing: '-0.025em',
-                  textAlign: 'center'
-                }}
-              >
-                SpamShield
-              </Title>
+              <Group gap="sm" align="center">
+                <IconShield size={48} color="#262626" />
+                <Title 
+                  order={1} 
+                  size="h2" 
+                  style={{ 
+                    color: '#262626',
+                    fontWeight: 800,
+                    letterSpacing: '-0.025em',
+                  }}
+                >
+                  SpamShield
+                </Title>
+              </Group>
               <Text c="dimmed" size="sm" ta="center">
                 Sign in to access the email security analysis platform
               </Text>
@@ -192,24 +190,6 @@ const Login: React.FC = () => {
                 </Button>
               </Stack>
             </form>
-
-            {/* Demo Credentials */}
-            <Paper
-              p="sm"
-              bg="gray.0"
-              radius="md"
-              style={{ border: '1px solid #e5e5e5' }}
-            >
-              <Text size="xs" fw={600} c="gray.7" mb="xs">
-                Demo Credentials:
-              </Text>
-              <Text size="xs" c="gray.6">
-                Username: <strong>admin</strong>
-              </Text>
-              <Text size="xs" c="gray.6">
-                Password: <strong>admin</strong>
-              </Text>
-            </Paper>
           </Stack>
         </Paper>
       </Container>
