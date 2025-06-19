@@ -87,6 +87,10 @@ function Risk() {
 
   // Generate detailed risk explanations
   const generateRiskExplanations = () => {
+    if (!analysisResult || !analysisResult.details || !analysisResult.details.technical || !analysisResult.details.nlp) {
+      return [];
+    }
+    
     const explanations = [];
     const technical = analysisResult.details.technical;
     const nlp = analysisResult.details.nlp;
@@ -545,10 +549,8 @@ function Risk() {
                 mah="calc(100vh - 440px)"
                 scrollbars="y"
                 styles={{
-                  scrollbar: {
-                    '&[data-orientation="vertical"] .mantine-ScrollArea-thumb': {
-                      backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                    },
+                  thumb: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.3)',
                   },
                 }}
               >
@@ -721,10 +723,8 @@ function Risk() {
                   mah="30vh"
                   scrollbars="y"
                   styles={{
-                    scrollbar: {
-                      '&[data-orientation="vertical"] .mantine-ScrollArea-thumb': {
-                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                      },
+                    thumb: {
+                      backgroundColor: 'rgba(0, 0, 0, 0.3)',
                     },
                   }}
                 >
