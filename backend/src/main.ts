@@ -13,6 +13,8 @@ async function bootstrap() {
   app.use(bodyParser.json({ limit: '2mb' }));
   app.use(bodyParser.urlencoded({ limit: '2mb', extended: true }));
 
+  app.setGlobalPrefix('api');
+
   await app.listen(process.env.PORT ?? 3000);
 }
 void bootstrap();

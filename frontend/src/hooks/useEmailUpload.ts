@@ -7,7 +7,7 @@ interface UploadResponse {
   message?: string;
 }
 
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "http://localhost:3000/api";
 
 export function useEmailUpload() {
   const navigate = useNavigate();

@@ -16,6 +16,7 @@ import {
   ScrollArea,
   ActionIcon,
   Tooltip,
+  Flex,
 } from '@mantine/core';
 import { IconSettings, IconDeviceFloppy, IconRestore, IconInfoCircle } from '@tabler/icons-react';
 
@@ -88,7 +89,7 @@ const Config: React.FC = () => {
       const data = await response.json();
       setConfig(data);
     } catch (error) {
-      setNotification({ type: 'error', message: 'Errore nel caricamento della configurazione' });
+      setNotification({ type: 'error', message: 'Failed to load configuration' });
     } finally {
       setLoading(false);
     }
@@ -110,9 +111,9 @@ const Config: React.FC = () => {
         throw new Error(error);
       }
       
-      setNotification({ type: 'success', message: 'Configurazione salvata con successo' });
+      setNotification({ type: 'success', message: 'Configuration saved successfully' });
     } catch (error) {
-      setNotification({ type: 'error', message: 'Errore nel salvataggio della configurazione' });
+      setNotification({ type: 'error', message: 'Failed to save configuration' });
     } finally {
       setSaving(false);
     }
@@ -124,9 +125,9 @@ const Config: React.FC = () => {
       const response = await fetch('/api/config/reset', { method: 'POST' });
       if (!response.ok) throw new Error('Failed to reset configuration');
       await loadConfig();
-      setNotification({ type: 'success', message: 'Configurazione ripristinata ai valori predefiniti' });
+      setNotification({ type: 'success', message: 'Configuration reset to default values' });
     } catch (error) {
-      setNotification({ type: 'error', message: 'Errore nel ripristino della configurazione' });
+      setNotification({ type: 'error', message: 'Failed to reset configuration' });
     }
   };
 
@@ -156,37 +157,41 @@ const Config: React.FC = () => {
   if (!config) {
     return (
       <Container size="lg">
-        <Title order={2}>Configurazione</Title>
-        <Text color="red">Errore nel caricamento della configurazione</Text>
+        <Title order={2}>Configuration</Title>
+        <Text color="red">Failed to load configuration</Text>
       </Container>
     );
   }
 
   return (
     <Container size="lg">
-      <Group justify="space-between" mb="xl">
-        <Group>
-          <IconSettings size={32} />
-          <Title order={2}>Configurazione Sistema</Title>
-        </Group>
-        <Group>
+      <Flex justify="space-between" align="center" mb="xl">
+        <div>
+          <Title order={1} size="h2" mb="xs">
+            System Configuration
+          </Title>
+          <Text c="dimmed" size="sm">
+            Configure spam detection parameters, thresholds, and scoring weights
+          </Text>
+        </div>
+        <Group gap="sm">
           <Button
             variant="outline"
             color="gray"
             leftSection={<IconRestore size={16} />}
             onClick={resetConfig}
           >
-            Ripristina Default
+            Reset to Default
           </Button>
           <Button
             leftSection={<IconDeviceFloppy size={16} />}
             onClick={saveConfig}
             loading={saving}
           >
-            Salva Configurazione
+            Save Configuration
           </Button>
         </Group>
-      </Group>
+      </Flex>
 
       {notification && (
         <Notification
@@ -200,18 +205,18 @@ const Config: React.FC = () => {
 
       <Tabs defaultValue="scoring">
         <Tabs.List mb="md">
-          <Tabs.Tab value="scoring">Punteggi e Soglie</Tabs.Tab>
-          <Tabs.Tab value="technical">Penalità Tecniche</Tabs.Tab>
-          <Tabs.Tab value="thresholds">Soglie Tecniche</Tabs.Tab>
-          <Tabs.Tab value="nlp">Configurazione NLP</Tabs.Tab>
+          <Tabs.Tab value="scoring">Scores & Thresholds</Tabs.Tab>
+          <Tabs.Tab value="technical">Technical Penalties</Tabs.Tab>
+          <Tabs.Tab value="thresholds">Technical Thresholds</Tabs.Tab>
+          <Tabs.Tab value="nlp">NLP Configuration</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="scoring">
           <Card withBorder>
             <Card.Section withBorder inheritPadding py="xs">
               <Group justify="space-between">
-                <Text fw={500}>Configurazione Punteggi</Text>
-                <Tooltip label="Configura i pesi per il calcolo del punteggio finale e le soglie di rischio">
+                <Text fw={500}>Score Configuration</Text>
+                <Tooltip label="Configure weights for final score calculation and risk thresholds">
                   <ActionIcon variant="subtle" size="sm">
                     <IconInfoCircle size={16} />
                   </ActionIcon>
@@ -220,11 +225,11 @@ const Config: React.FC = () => {
             </Card.Section>
 
             <Stack gap="md" mt="md">
-              <Text size="sm" fw={500}>Pesi Moduli (devono sommare a 1.0)</Text>
+              <Text size="sm" fw={500}>Module Weights (must sum to 1.0)</Text>
               <Grid>
                 <Grid.Col span={6}>
                   <NumberInput
-                    label="Peso Modulo Tecnico"
+                    label="Technical Module Weight"
                     value={config.scoring.weights.technical}
                     onChange={(value) => updateConfig('scoring.weights.technical', value as number)}
                     min={0}
@@ -235,7 +240,7 @@ const Config: React.FC = () => {
                 </Grid.Col>
                 <Grid.Col span={6}>
                   <NumberInput
-                    label="Peso Modulo NLP"
+                    label="NLP Module Weight"
                     value={config.scoring.weights.nlp}
                     onChange={(value) => updateConfig('scoring.weights.nlp', value as number)}
                     min={0}
@@ -248,30 +253,30 @@ const Config: React.FC = () => {
 
               <Divider />
 
-              <Text size="sm" fw={500}>Soglie Livelli di Rischio</Text>
+              <Text size="sm" fw={500}>Risk Level Thresholds</Text>
               <Grid>
                 <Grid.Col span={6}>
                   <NumberInput
-                    label="Soglia Rischio Basso"
+                    label="Low Risk Threshold"
                     value={config.scoring.riskLevels.low}
                     onChange={(value) => updateConfig('scoring.riskLevels.low', value as number)}
                     min={0}
                     max={1}
                     step={0.1}
                     precision={1}
-                    description="Sotto questa soglia = rischio basso"
+                    description="Below this threshold = low risk"
                   />
                 </Grid.Col>
                 <Grid.Col span={6}>
                   <NumberInput
-                    label="Soglia Rischio Medio"
+                    label="Medium Risk Threshold"
                     value={config.scoring.riskLevels.medium}
                     onChange={(value) => updateConfig('scoring.riskLevels.medium', value as number)}
                     min={0}
                     max={1}
                     step={0.1}
                     precision={1}
-                    description="Sopra questa soglia = rischio alto"
+                    description="Above this threshold = high risk"
                   />
                 </Grid.Col>
               </Grid>
@@ -280,7 +285,7 @@ const Config: React.FC = () => {
         </Tabs.Panel>
 
         <Tabs.Panel value="technical">
-          <ScrollArea h={600}>
+          <ScrollArea style={{ height: 'calc(100vh - 300px)' }}>
             <Stack gap="md">
               {Object.entries(config.technical.penalties).map(([category, penalties]) => (
                 <Card key={category} withBorder>
@@ -309,7 +314,7 @@ const Config: React.FC = () => {
         </Tabs.Panel>
 
         <Tabs.Panel value="thresholds">
-          <ScrollArea h={600}>
+          <ScrollArea style={{ height: 'calc(100vh - 300px)' }}>
             <Stack gap="md">
               {Object.entries(config.technical.thresholds).map(([category, thresholds]) => (
                 <Card key={category} withBorder>
@@ -338,120 +343,122 @@ const Config: React.FC = () => {
         </Tabs.Panel>
 
         <Tabs.Panel value="nlp">
-          <Stack gap="md">
-            <Card withBorder>
-              <Card.Section withBorder inheritPadding py="xs">
-                <Text fw={500}>Moltiplicatori NLP</Text>
-              </Card.Section>
+          <ScrollArea style={{ height: 'calc(100vh - 300px)' }}>
+            <Stack gap="md">
+              <Card withBorder>
+                <Card.Section withBorder inheritPadding py="xs">
+                  <Text fw={500}>NLP Multipliers</Text>
+                </Card.Section>
 
-              <Grid mt="md">
-                <Grid.Col span={4}>
-                  <NumberInput
-                    label="Moltiplicatore Tossicità"
-                    value={config.nlp.multipliers.toxicity}
-                    onChange={(value) => updateConfig('nlp.multipliers.toxicity', value as number)}
-                    min={0}
-                    step={0.1}
-                    precision={1}
-                  />
-                </Grid.Col>
-                <Grid.Col span={4}>
-                  <NumberInput
-                    label="Sentiment Negativo"
-                    value={config.nlp.multipliers.sentiment.negative}
-                    onChange={(value) => updateConfig('nlp.multipliers.sentiment.negative', value as number)}
-                    min={0}
-                    step={0.1}
-                    precision={1}
-                  />
-                </Grid.Col>
-                <Grid.Col span={4}>
-                  <NumberInput
-                    label="Sentiment Positivo"
-                    value={config.nlp.multipliers.sentiment.positive}
-                    onChange={(value) => updateConfig('nlp.multipliers.sentiment.positive', value as number)}
-                    min={0}
-                    step={0.1}
-                    precision={1}
-                  />
-                </Grid.Col>
-                <Grid.Col span={4}>
-                  <NumberInput
-                    label="Parole Spam"
-                    value={config.nlp.multipliers.spamWords}
-                    onChange={(value) => updateConfig('nlp.multipliers.spamWords', value as number)}
-                    min={0}
-                    step={0.1}
-                    precision={1}
-                  />
-                </Grid.Col>
-              </Grid>
-            </Card>
+                <Grid mt="md">
+                  <Grid.Col span={4}>
+                    <NumberInput
+                      label="Toxicity Multiplier"
+                      value={config.nlp.multipliers.toxicity}
+                      onChange={(value) => updateConfig('nlp.multipliers.toxicity', value as number)}
+                      min={0}
+                      step={0.1}
+                      precision={1}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={4}>
+                    <NumberInput
+                      label="Negative Sentiment"
+                      value={config.nlp.multipliers.sentiment.negative}
+                      onChange={(value) => updateConfig('nlp.multipliers.sentiment.negative', value as number)}
+                      min={0}
+                      step={0.1}
+                      precision={1}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={4}>
+                    <NumberInput
+                      label="Positive Sentiment"
+                      value={config.nlp.multipliers.sentiment.positive}
+                      onChange={(value) => updateConfig('nlp.multipliers.sentiment.positive', value as number)}
+                      min={0}
+                      step={0.1}
+                      precision={1}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={4}>
+                    <NumberInput
+                      label="Spam Words"
+                      value={config.nlp.multipliers.spamWords}
+                      onChange={(value) => updateConfig('nlp.multipliers.spamWords', value as number)}
+                      min={0}
+                      step={0.1}
+                      precision={1}
+                    />
+                  </Grid.Col>
+                </Grid>
+              </Card>
 
-            <Card withBorder>
-              <Card.Section withBorder inheritPadding py="xs">
-                <Text fw={500}>Soglie NLP</Text>
-              </Card.Section>
+              <Card withBorder>
+                <Card.Section withBorder inheritPadding py="xs">
+                  <Text fw={500}>NLP Thresholds</Text>
+                </Card.Section>
 
-              <Grid mt="md">
-                <Grid.Col span={6}>
-                  <NumberInput
-                    label="Soglia Tossicità Bassa"
-                    value={config.nlp.thresholds.toxicity.low}
-                    onChange={(value) => updateConfig('nlp.thresholds.toxicity.low', value as number)}
-                    min={0}
-                    max={1}
-                    step={0.1}
-                    precision={1}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <NumberInput
-                    label="Soglia Tossicità Media"
-                    value={config.nlp.thresholds.toxicity.medium}
-                    onChange={(value) => updateConfig('nlp.thresholds.toxicity.medium', value as number)}
-                    min={0}
-                    max={1}
-                    step={0.1}
-                    precision={1}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <NumberInput
-                    label="Soglia Sentiment Negativo"
-                    value={config.nlp.thresholds.sentiment.negative}
-                    onChange={(value) => updateConfig('nlp.thresholds.sentiment.negative', value as number)}
-                    min={-1}
-                    max={1}
-                    step={0.1}
-                    precision={1}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <NumberInput
-                    label="Soglia Sentiment Positivo"
-                    value={config.nlp.thresholds.sentiment.positive}
-                    onChange={(value) => updateConfig('nlp.thresholds.sentiment.positive', value as number)}
-                    min={-1}
-                    max={1}
-                    step={0.1}
-                    precision={1}
-                  />
-                </Grid.Col>
-                <Grid.Col span={6}>
-                  <NumberInput
-                    label="Soglia Rapporto Parole Spam"
-                    value={config.nlp.thresholds.spamWordRatio}
-                    onChange={(value) => updateConfig('nlp.thresholds.spamWordRatio', value as number)}
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    precision={2}
-                  />
-                </Grid.Col>
-              </Grid>
-            </Card>
-          </Stack>
+                <Grid mt="md">
+                  <Grid.Col span={6}>
+                    <NumberInput
+                      label="Low Toxicity Threshold"
+                      value={config.nlp.thresholds.toxicity.low}
+                      onChange={(value) => updateConfig('nlp.thresholds.toxicity.low', value as number)}
+                      min={0}
+                      max={1}
+                      step={0.1}
+                      precision={1}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={6}>
+                    <NumberInput
+                      label="Medium Toxicity Threshold"
+                      value={config.nlp.thresholds.toxicity.medium}
+                      onChange={(value) => updateConfig('nlp.thresholds.toxicity.medium', value as number)}
+                      min={0}
+                      max={1}
+                      step={0.1}
+                      precision={1}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={6}>
+                    <NumberInput
+                      label="Negative Sentiment Threshold"
+                      value={config.nlp.thresholds.sentiment.negative}
+                      onChange={(value) => updateConfig('nlp.thresholds.sentiment.negative', value as number)}
+                      min={-1}
+                      max={1}
+                      step={0.1}
+                      precision={1}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={6}>
+                    <NumberInput
+                      label="Positive Sentiment Threshold"
+                      value={config.nlp.thresholds.sentiment.positive}
+                      onChange={(value) => updateConfig('nlp.thresholds.sentiment.positive', value as number)}
+                      min={-1}
+                      max={1}
+                      step={0.1}
+                      precision={1}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={6}>
+                    <NumberInput
+                      label="Spam Word Ratio Threshold"
+                      value={config.nlp.thresholds.spamWordRatio}
+                      onChange={(value) => updateConfig('nlp.thresholds.spamWordRatio', value as number)}
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      precision={2}
+                    />
+                  </Grid.Col>
+                </Grid>
+              </Card>
+            </Stack>
+          </ScrollArea>
         </Tabs.Panel>
       </Tabs>
     </Container>
