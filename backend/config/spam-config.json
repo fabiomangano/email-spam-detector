@@ -1,12 +1,12 @@
 {
   "scoring": {
     "riskLevels": {
-      "low": 0.2,
-      "medium": 0.5
+      "low": 0.15,
+      "medium": 0.4
     },
     "weights": {
-      "technical": 0.5,
-      "nlp": 0.5
+      "technical": 0.7,
+      "nlp": 0.3
     }
   },
   "technical": {
@@ -31,10 +31,10 @@
         "excessive": 2
       },
       "authentication": {
-        "spfFail": 5,
-        "spfSoftfail": 3,
-        "dkimFail": 4,
-        "dmarcFail": 6
+        "spfFail": 7,
+        "spfSoftfail": 4,
+        "dkimFail": 5,
+        "dmarcFail": 8
       },
       "domains": {
         "excessive": 3,
@@ -44,7 +44,7 @@
         "replyToDiffers": 2,
         "missingDate": 3,
         "excessiveReceived": 2,
-        "suspiciousXMailer": 2
+        "suspiciousXMailer": 3
       },
       "sender": {
         "fromNameSuspicious": 3,
@@ -56,9 +56,9 @@
         "feedbackLoopHeader": 2
       },
       "text": {
-        "uppercaseExcessive": 3,
-        "excessiveExclamations": 2,
-        "urgencyWords": 4,
+        "uppercaseExcessive": 4,
+        "excessiveExclamations": 3,
+        "urgencyWords": 3,
         "electionTerms": 1
       },
       "obfuscation": {
@@ -74,13 +74,13 @@
         "fakeMultipartAlternative": 3
       },
       "spam": {
-        "financialPromises": 4,
-        "nonStandardPorts": 3,
-        "suspiciousDomains": 5,
-        "mailingListSpam": 4,
-        "spammySubject": 3,
-        "suspiciousFromName": 2,
-        "repeatedLinks": 2
+        "financialPromises": 8,
+        "nonStandardPorts": 4,
+        "suspiciousDomains": 6,
+        "mailingListSpam": 6,
+        "spammySubject": 7,
+        "suspiciousFromName": 5,
+        "repeatedLinks": 3
       }
     },
     "thresholds": {
@@ -106,7 +106,7 @@
       },
       "text": {
         "uppercaseRatio": 0.3,
-        "linkToImageRatio": 5
+        "linkToImageRatio": 5.0
       },
       "mime": {
         "boundaryMaxLength": 50
@@ -115,23 +115,23 @@
   },
   "nlp": {
     "multipliers": {
-      "toxicity": 2,
+      "toxicity": 3.0,
       "sentiment": {
-        "negative": 1.5,
-        "positive": 0.5
+        "negative": 2.2,
+        "positive": 0.3
       },
-      "spamWords": 1.2
+      "spamWords": 2.0
     },
     "thresholds": {
       "toxicity": {
-        "low": 0.3,
-        "medium": 0.6
+        "low": 0.2,
+        "medium": 0.5
       },
       "sentiment": {
-        "negative": -0.5,
+        "negative": -0.3,
         "positive": 0.5
       },
-      "spamWordRatio": 0.1
+      "spamWordRatio": 0.03
     }
   },
   "domains": {
@@ -196,7 +196,16 @@
       "termina",
       "ultimo",
       "finale",
-      "critico"
+      "critico",
+      "now",
+      "immediate",
+      "urgent",
+      "limited time",
+      "act now",
+      "expires",
+      "hurry",
+      "deadline",
+      "last chance"
     ],
     "election": [
       "cabina",
@@ -317,7 +326,59 @@
       "legal",
       "claim",
       "compensation",
-      "settlement"
+      "settlement",
+      "business opportunity",
+      "mlm",
+      "multi level marketing",
+      "network marketing",
+      "residual income",
+      "passive income",
+      "home based business",
+      "be your own boss",
+      "financial independence",
+      "get rich quick",
+      "make money fast",
+      "no experience required",
+      "no selling",
+      "work part time",
+      "full time income",
+      "replace your income",
+      "retire early",
+      "financial security",
+      "unlimited income",
+      "earn while you sleep",
+      "ground floor opportunity",
+      "pre-launch",
+      "matrix",
+      "downline",
+      "upline",
+      "spillover",
+      "binary",
+      "forced matrix",
+      "compensation plan",
+      "recruitment",
+      "team building",
+      "monthly residual",
+      "leverage",
+      "duplication",
+      "exponential growth",
+      "consulting",
+      "services",
+      "promotion",
+      "marketing",
+      "enterprise",
+      "management",
+      "organization",
+      "valuable",
+      "shortest time",
+      "world wide web",
+      "sincerely yours",
+      "disturb you",
+      "reply to",
+      "technical organization",
+      "most valuable",
+      "consulting service",
+      "permission to enter"
     ]
   }
 }

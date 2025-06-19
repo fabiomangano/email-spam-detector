@@ -19,7 +19,7 @@ export class ResultService {
 
     // Il punteggio finale è basato solo su technical e NLP
     // Normalizzazione per il nuovo range di punteggi (soglia più bassa)
-    const overallScore = Math.min(decisionMetrics.finalScore / 25, 1);
+    const overallScore = Math.min(decisionMetrics.finalScore / 12, 1);
 
     return {
       overallScore,
@@ -33,8 +33,8 @@ export class ResultService {
       scores: {
         technicalScore: decisionMetrics.techScore,
         nlpScore: decisionMetrics.nlpScore,
-        technicalPercentage: Math.min((decisionMetrics.techScore / 25) * 100, 100),
-        nlpPercentage: Math.min((decisionMetrics.nlpScore / 25) * 100, 100),
+        technicalPercentage: Math.min((decisionMetrics.techScore / 12) * 100, 100),
+        nlpPercentage: Math.min((decisionMetrics.nlpScore / 12) * 100, 100),
       },
     };
   }
@@ -170,8 +170,8 @@ export class ResultService {
     console.log('🧠 NLP Score:', nlpScore);
     console.log('📊 Final Score:', finalScore);
     console.log('📌 Final Prediction:', finalPrediction);
-    console.log('📈 Overall Score (normalized):', finalScore / 25);
-    console.log('🎯 Risk Level:', finalScore / 25 < 0.3 ? 'LOW' : finalScore / 25 < 0.7 ? 'MEDIUM' : 'HIGH');
+    console.log('📈 Overall Score (normalized):', finalScore / 12);
+    console.log('🎯 Risk Level:', finalScore / 12 < 0.3 ? 'LOW' : finalScore / 12 < 0.7 ? 'MEDIUM' : 'HIGH');
 
     console.log('### STEP 5 - Decision Layer Ended ###');
 
