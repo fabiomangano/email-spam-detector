@@ -535,8 +535,14 @@ function Risk() {
               </Flex>
               <Divider mb="md" />
               
+              <Text size="xs" c="gray.7" mb="md" style={{ lineHeight: 1.4 }}>
+                Each risk factor is analyzed and categorized by severity level. The analysis examines technical headers, authentication protocols, content patterns, and behavioral indicators.
+                <br />
+                Review the detailed explanations below to understand specific security concerns and their potential impact on email safety.
+              </Text>
+              
               <ScrollArea.Autosize 
-                mah="calc(100vh - 400px)"
+                mah="calc(100vh - 440px)"
                 scrollbars="y"
                 styles={{
                   scrollbar: {
@@ -695,6 +701,12 @@ function Risk() {
                     } />
                   </div>
                 </Stack>
+                
+                <Text size="xs" c="gray.7" mt="md" style={{ lineHeight: 1.4 }}>
+                  Technical risk analyzes email headers, authentication, and infrastructure patterns.
+                  <br />
+                  Content risk evaluates language, sentiment, and spam indicators using natural language processing.
+                </Text>
               </Card>
               
               {/* Security Recommendations */}
@@ -706,7 +718,7 @@ function Risk() {
                 <Divider mb="md" />
                 
                 <ScrollArea.Autosize 
-                  mah="35vh"
+                  mah="30vh"
                   scrollbars="y"
                   styles={{
                     scrollbar: {
