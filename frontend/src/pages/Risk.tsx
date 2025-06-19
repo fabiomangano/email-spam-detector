@@ -528,14 +528,15 @@ function Risk() {
           {/* Left Column - Detailed Analysis */}
           <Grid.Col span={{ base: 12, md: 8 }}>
             {/* Detailed Risk Analysis Card */}
-            <Card padding="md" radius="md">
+            <Card padding="lg" radius="md">
               <Flex align="center" gap="xs" mb="md">
-                <IconAlertTriangle size={18} />
-                <Title order={5} size="h5">Detailed Risk Analysis</Title>
+                <IconAlertTriangle size={20} />
+                <Title order={2} size="h3">Detailed Risk Analysis</Title>
               </Flex>
+              <Divider mb="md" />
               
               <ScrollArea.Autosize 
-                mah="70vh"
+                mah="calc(100vh - 400px)"
                 scrollbars="y"
                 styles={{
                   scrollbar: {
@@ -560,7 +561,7 @@ function Risk() {
                           <Text size="xs" c="dimmed">{explanation.category}</Text>
                         </Flex>
                         
-                        <Text size="xs" fw={600} mb="xs" c="gray.9">
+                        <Text size="sm" fw={700} mb="xs" c="gray.9">
                           {explanation.title}
                         </Text>
                         
@@ -598,13 +599,14 @@ function Risk() {
           <Grid.Col span={{ base: 12, md: 4 }}>
             <Stack gap="md">
               {/* Risk Score Card */}
-              <Card padding="sm" radius="md">
-                <Flex align="center" gap="xs" mb="sm">
-                  <IconShield size={16} />
-                  <Title order={6} size="sm">Security Risk Level</Title>
+              <Card padding="lg" radius="md">
+                <Flex align="center" gap="xs" mb="md">
+                  <IconShield size={20} />
+                  <Title order={2} size="h3">Security Risk Level</Title>
                 </Flex>
+                <Divider mb="md" />
                 
-                <Flex align="center" gap="sm" mb="sm">
+                <Flex align="center" gap="sm" mb="md">
                   {getRiskIcon(analysisResult.riskLevel)}
                   <div style={{ flex: 1 }}>
                     <Flex align="center" gap="sm" mb="xs">
@@ -643,23 +645,24 @@ function Risk() {
                   </div>
                 </Flex>
                 
-                <Text size="xs" c="dimmed" style={{ lineHeight: 1.3 }}>
+                <Text size="xs" c="gray.7" style={{ lineHeight: 1.4 }}>
                   {analysisResult.summary}
                 </Text>
               </Card>
 
               {/* Risk Summary */}
-              <Card padding="sm" radius="md">
-                <Flex align="center" gap="xs" mb="sm">
-                  <IconBrain size={16} />
-                  <Title order={6} size="sm">Risk Breakdown</Title>
+              <Card padding="lg" radius="md">
+                <Flex align="center" gap="xs" mb="md">
+                  <IconBrain size={20} />
+                  <Title order={2} size="h3">Risk Breakdown</Title>
                 </Flex>
+                <Divider mb="md" />
                 
                 <Stack gap="xs">
                   <div>
                     <Flex justify="space-between" align="center" mb="xs">
-                      <Text size="xs">Technical Risk</Text>
-                      <Text size="xs" fw={500}>
+                      <Text size="xs" fw={600} c="gray.7">Technical Risk</Text>
+                      <Text size="xs" fw={500} c="gray.9">
                         {analysisResult.scores?.technicalPercentage ? 
                           Math.round(analysisResult.scores.technicalPercentage) : 
                           Math.round((analysisResult.details.technical.linkRatio + 
@@ -678,8 +681,8 @@ function Risk() {
                   
                   <div>
                     <Flex justify="space-between" align="center" mb="xs">
-                      <Text size="xs">Content Risk</Text>
-                      <Text size="xs" fw={500}>
+                      <Text size="xs" fw={600} c="gray.7">Content Risk</Text>
+                      <Text size="xs" fw={500} c="gray.9">
                         {analysisResult.scores?.nlpPercentage ? 
                           Math.round(analysisResult.scores.nlpPercentage) : 
                           Math.round(analysisResult.details.nlp.toxicity.score * 100)}%
@@ -695,11 +698,12 @@ function Risk() {
               </Card>
               
               {/* Security Recommendations */}
-              <Card padding="sm" radius="md">
-                <Flex align="center" gap="xs" mb="sm">
-                  <IconShield size={16} />
-                  <Title order={6} size="sm">Recommendations</Title>
+              <Card padding="lg" radius="md">
+                <Flex align="center" gap="xs" mb="md">
+                  <IconShield size={20} />
+                  <Title order={2} size="h3">Recommendations</Title>
                 </Flex>
+                <Divider mb="md" />
                 
                 <ScrollArea.Autosize 
                   mah="35vh"
@@ -721,26 +725,26 @@ function Risk() {
                       ))}
                     </List>
                   ) : (
-                    <Text size="xs" c="dimmed" mb="sm">
+                    <Text size="xs" c="gray.7" mb="sm">
                       No specific security recommendations at this time.
                     </Text>
                   )}
                   
-                  <Divider my="xs" />
+                  <Divider my="sm" />
                   
-                  <Text size="xs" fw={600} mb="xs" c="gray.7">General Best Practices:</Text>
+                  <Text size="sm" fw={700} mb="xs" c="gray.9">General Best Practices:</Text>
                   <List size="xs" spacing="xs">
                     <List.Item>
-                      <Text size="xs" c="dimmed">Verify sender identity</Text>
+                      <Text size="xs" c="gray.7">Verify sender identity</Text>
                     </List.Item>
                     <List.Item>
-                      <Text size="xs" c="dimmed">Hover over links first</Text>
+                      <Text size="xs" c="gray.7">Hover over links first</Text>
                     </List.Item>
                     <List.Item>
-                      <Text size="xs" c="dimmed">Avoid urgent pressure</Text>
+                      <Text size="xs" c="gray.7">Avoid urgent pressure</Text>
                     </List.Item>
                     <List.Item>
-                      <Text size="xs" c="dimmed">Report suspicious emails</Text>
+                      <Text size="xs" c="gray.7">Report suspicious emails</Text>
                     </List.Item>
                   </List>
                 </ScrollArea.Autosize>
