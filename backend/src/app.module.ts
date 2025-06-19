@@ -6,7 +6,7 @@ import { ParsingModule } from './modules/parsing/parsing.module';
 import { TechnicalModule } from './modules/technical/technical.module';
 import { NlpModule } from './modules/nlp/nlp.module';
 import { ResultModule } from './modules/result/result.module';
-import { ConfigModule } from './config/config.module';
+import { ConfigModule } from './modules/config/config.module';
 import { PipelineModule } from './pipeline/pipeline.module';
 import { ModelModule } from './model/model.module';
 

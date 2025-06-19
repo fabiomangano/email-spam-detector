@@ -18,6 +18,7 @@ import { Link } from "react-router";
 import Upload from "./pages/Upload";
 import Risk from "./pages/Risk";
 import Report from "./pages/Report";
+import Config from "./pages/Config";
 import { AnalysisProvider, useAnalysis } from "./contexts/AnalysisContext";
 import { theme } from "./theme/theme";
 
@@ -156,7 +157,7 @@ function AppContent() {
             </Title>
             <NavLink
               component={Link}
-              to="/dashboard"
+              to="/config"
               label="Config"
               leftSection={<IconSettings size={16} stroke={1.5} />}
               style={{
@@ -222,6 +223,7 @@ function AppContent() {
           <Route path="upload" element={<Upload />} />
           <Route path="risk" element={<Risk />} />
           <Route path="report" element={<Report />} />
+          <Route path="config" element={<Config />} />
         </Routes>
       </AppShell.Main>
 

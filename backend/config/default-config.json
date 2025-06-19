@@ -1,0 +1,323 @@
+{
+  "scoring": {
+    "riskLevels": {
+      "low": 0.2,
+      "medium": 0.5
+    },
+    "weights": {
+      "technical": 0.6,
+      "nlp": 0.4
+    }
+  },
+  "technical": {
+    "penalties": {
+      "bodyLength": {
+        "short": 2,
+        "veryShort": 3
+      },
+      "links": {
+        "excessive": 3,
+        "highRatio": 2
+      },
+      "images": {
+        "excessive": 2,
+        "heavy": 3
+      },
+      "tracking": {
+        "hasTrackingPixel": 4
+      },
+      "attachments": {
+        "hasAttachments": 1,
+        "excessive": 2
+      },
+      "authentication": {
+        "spfFail": 5,
+        "spfSoftfail": 3,
+        "dkimFail": 4,
+        "dmarcFail": 6
+      },
+      "domains": {
+        "excessive": 3,
+        "externalExcessive": 2
+      },
+      "headers": {
+        "replyToDiffers": 2,
+        "missingDate": 3,
+        "excessiveReceived": 2,
+        "suspiciousXMailer": 2
+      },
+      "sender": {
+        "fromNameSuspicious": 3,
+        "fromDomainDisposable": 5,
+        "sentToMultiple": 1
+      },
+      "campaign": {
+        "campaignIdentifier": 1,
+        "feedbackLoopHeader": 2
+      },
+      "text": {
+        "uppercaseExcessive": 3,
+        "excessiveExclamations": 2,
+        "urgencyWords": 4,
+        "electionTerms": 1
+      },
+      "obfuscation": {
+        "obfuscatedText": 4,
+        "linkDisplayMismatch": 3,
+        "shortenedUrls": 2,
+        "encodedUrls": 2
+      },
+      "mime": {
+        "mixedContentTypes": 1,
+        "nestedMultipart": 2,
+        "boundaryAnomaly": 2,
+        "fakeMultipartAlternative": 3
+      },
+      "spam": {
+        "financialPromises": 4,
+        "nonStandardPorts": 3,
+        "suspiciousDomains": 5,
+        "mailingListSpam": 4,
+        "spammySubject": 3,
+        "suspiciousFromName": 2,
+        "repeatedLinks": 2
+      }
+    },
+    "thresholds": {
+      "bodyLength": {
+        "short": 100,
+        "veryShort": 50
+      },
+      "links": {
+        "excessive": 10,
+        "highRatio": 0.01
+      },
+      "images": {
+        "excessive": 5,
+        "heavyCount": 5,
+        "heavyTextLimit": 500
+      },
+      "domains": {
+        "excessive": 5,
+        "externalExcessive": 3
+      },
+      "headers": {
+        "excessiveReceived": 10
+      },
+      "text": {
+        "uppercaseRatio": 0.3,
+        "linkToImageRatio": 5.0
+      },
+      "mime": {
+        "boundaryMaxLength": 50
+      }
+    }
+  },
+  "nlp": {
+    "multipliers": {
+      "toxicity": 2.0,
+      "sentiment": {
+        "negative": 1.5,
+        "positive": 0.5
+      },
+      "spamWords": 1.2
+    },
+    "thresholds": {
+      "toxicity": {
+        "low": 0.3,
+        "medium": 0.6
+      },
+      "sentiment": {
+        "negative": -0.5,
+        "positive": 0.5
+      },
+      "spamWordRatio": 0.1
+    }
+  },
+  "domains": {
+    "disposable": [
+      "mailinator.com",
+      "10minutemail.com",
+      "tempmail.org",
+      "guerrillamail.com",
+      "mailnesia.com",
+      "trashmail.com",
+      "maildrop.cc",
+      "throwaway.email",
+      "temp-mail.org",
+      "fakeinbox.com",
+      "yopmail.com",
+      "mohmal.com",
+      "freemail.nl",
+      "flashmail.com",
+      "btamail.net.cn",
+      "web.de",
+      "bluemail.dk"
+    ],
+    "suspicious": [
+      ".cn",
+      ".tk",
+      ".ml",
+      "btamail.net",
+      "netsgo.com",
+      "e365.cc",
+      "1premio.com",
+      "qves.com",
+      "adclick.ws",
+      "marketing401.com",
+      "sendgreatoffers.com",
+      "theadmanager.com"
+    ],
+    "urlShorteners": [
+      "bit.ly",
+      "t.co",
+      "goo.gl",
+      "tinyurl.com",
+      "short.link",
+      "ow.ly",
+      "is.gd",
+      "buff.ly",
+      "tiny.cc",
+      "rb.gy",
+      "cutt.ly"
+    ]
+  },
+  "keywords": {
+    "urgency": [
+      "urgente",
+      "obbligatorio",
+      "immediato",
+      "scadenza",
+      "entro",
+      "subito",
+      "ora",
+      "adesso",
+      "scade",
+      "termina",
+      "ultimo",
+      "finale",
+      "critico"
+    ],
+    "election": [
+      "cabina",
+      "voto",
+      "delegati",
+      "elezioni",
+      "elettorale",
+      "commissione",
+      "candidati",
+      "assemblea",
+      "rappresentanza",
+      "mandato",
+      "ballottaggio"
+    ],
+    "spam": [
+      "free",
+      "win",
+      "offer",
+      "click",
+      "cash",
+      "prize",
+      "urgent",
+      "act now",
+      "buy now",
+      "money",
+      "earn",
+      "income",
+      "profit",
+      "sale",
+      "discount",
+      "limited",
+      "exclusive",
+      "guarantee",
+      "risk-free",
+      "refund",
+      "bonus",
+      "reward",
+      "lottery",
+      "winner",
+      "congratulations",
+      "selected",
+      "opportunity",
+      "deal",
+      "cheap",
+      "lowest",
+      "amazing",
+      "incredible",
+      "fantastic",
+      "unbelievable",
+      "revolutionary",
+      "breakthrough",
+      "secret",
+      "hidden",
+      "exposed",
+      "revealed",
+      "trick",
+      "method",
+      "system",
+      "formula",
+      "solution",
+      "magic",
+      "miracle",
+      "instant",
+      "immediate",
+      "fast",
+      "quick",
+      "easy",
+      "simple",
+      "effortless",
+      "automatic",
+      "guaranteed",
+      "certified",
+      "approved",
+      "verified",
+      "eliminate",
+      "remove",
+      "lose",
+      "weight",
+      "diet",
+      "supplement",
+      "medication",
+      "prescription",
+      "pharmacy",
+      "viagra",
+      "cialis",
+      "mortgage",
+      "loan",
+      "credit",
+      "debt",
+      "refinance",
+      "investment",
+      "stocks",
+      "trading",
+      "bitcoin",
+      "cryptocurrency",
+      "mlm",
+      "pyramid",
+      "work from home",
+      "make money online",
+      "get rich",
+      "financial freedom",
+      "million",
+      "thousand",
+      "dollars",
+      "$",
+      "usd",
+      "gbp",
+      "eur",
+      "pounds",
+      "beneficiary",
+      "inheritance",
+      "fund",
+      "transfer",
+      "bank",
+      "account",
+      "attorney",
+      "lawyer",
+      "legal",
+      "claim",
+      "compensation",
+      "settlement"
+    ]
+  }
+}

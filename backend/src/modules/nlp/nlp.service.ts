@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { NlpAnalysisResult } from '../../utils/types';
-import { STOPWORDS, SPAM_WORDS, MODEL_PATH } from '../../utils/constants';
+import { STOPWORDS, MODEL_PATH } from '../../utils/constants';
+import { ConfigService } from '../config/config.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import { TfIdf, PorterStemmer, WordTokenizer, BayesClassifier } from 'natural';
@@ -11,6 +12,8 @@ export class NlpService {
   private readonly tfidf = new TfIdf();
   private classifier: BayesClassifier | null = null;
   private readonly modelPath = path.join(process.cwd(), MODEL_PATH);
+
+  constructor(private readonly configService: ConfigService) {}
 
   async analyzeNlp(parsedData: any): Promise<NlpAnalysisResult> {
     const plainText = parsedData.plainText || '';
@@ -81,9 +84,11 @@ export class NlpService {
   }
 
   private calculateNlpMetrics(text: string): any {
+    const config = this.configService.getConfig();
+    const spamWords = config.keywords.spam;
     const tokens = this.preprocessText(text);
 
-    const numSpammyWords = tokens.filter((token) => SPAM_WORDS.includes(token)).length;
+    const numSpammyWords = tokens.filter((token) => spamWords.includes(token.toLowerCase())).length;
     const spamWordRatio = numSpammyWords / (tokens.length || 1);
     const allCapsCount = (text.match(/[A-Z]{3,}/g) || []).length;
     const exclamationCount = (text.match(/!/g) || []).length;

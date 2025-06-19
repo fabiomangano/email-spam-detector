@@ -5,9 +5,11 @@ import {
   SpamAnalysisResult,
   DecisionMetrics,
 } from '../../utils/types';
+import { ConfigService } from '../config/config.service';
 
 @Injectable()
 export class ResultService {
+  constructor(private readonly configService: ConfigService) {}
   generateResult(
     technicalResult: EmailTechnicalMetrics,
     nlpResult: NlpAnalysisResult,
@@ -39,72 +41,66 @@ export class ResultService {
 
   private calculateTechnicalScore(metrics: EmailTechnicalMetrics): number {
     let score = 0;
+    const config = this.configService.getConfig();
+    const penalties = config.technical.penalties;
+    const thresholds = config.technical.thresholds;
 
     // === METRICHE BASE ===
-    if (metrics.linkRatio > 0.01) score += 2;
-    if (metrics.numLinks > 5) score += 4; // Many links are highly suspicious
-    if (metrics.numLinks > 3) score += 3; // Multiple links are suspicious
-    if (metrics.numDomains > 3) score += 2;
-    if (metrics.hasTrackingPixel) score += 3; // Forte indicatore spam
-    if (metrics.replyToDiffersFromFrom) score += 6; // Strong spam indicator
-    if (metrics.isHtmlOnly) score += 3; // HTML-only emails are suspicious
-    if (metrics.hasAttachments) score += 1;
+    if (metrics.linkRatio > thresholds.links.highRatio) score += penalties.links.highRatio;
+    if (metrics.numLinks > thresholds.links.excessive) score += penalties.links.excessive;
+    if (metrics.numDomains > thresholds.domains.excessive) score += penalties.domains.excessive;
+    if (metrics.hasTrackingPixel) score += penalties.tracking.hasTrackingPixel;
+    if (metrics.replyToDiffersFromFrom) score += penalties.headers.replyToDiffers;
+    if (metrics.hasAttachments) score += penalties.attachments.hasAttachments;
 
     // === AUTENTICAZIONE EMAIL ===
-    if (metrics.spfResult === 'fail') score += 4;
-    if (metrics.dkimResult === 'fail') score += 4;
-    if (metrics.dmarcResult === 'fail') score += 4;
+    if (metrics.spfResult === 'fail') score += penalties.authentication.spfFail;
+    if (metrics.spfResult === 'softfail') score += penalties.authentication.spfSoftfail;
+    if (metrics.dkimResult === 'fail') score += penalties.authentication.dkimFail;
+    if (metrics.dmarcResult === 'fail') score += penalties.authentication.dmarcFail;
 
     // === METRICHE HEADER ===
-    if (metrics.numReceivedHeaders > 8) score += 2; // Troppi hop sospetti
-    if (metrics.numReceivedHeaders < 2) score += 3; // Too few hops, possibile falsificazione
-    if (!metrics.hasOutlookReceivedPattern && metrics.numReceivedHeaders > 0) score += 1;
-    if (metrics.missingDateHeader) score += 3; // Header malformato
+    if (metrics.numReceivedHeaders > thresholds.headers.excessiveReceived) score += penalties.headers.excessiveReceived;
+    if (metrics.missingDateHeader) score += penalties.headers.missingDate;
 
     // === METRICHE MITTENTE ===
-    if (metrics.fromNameSuspicious) score += 2; // Nome tutto maiuscolo
-    if (metrics.fromDomainIsDisposable) score += 4; // Email temporanea
-    if (metrics.sentToMultiple) score += 2; // Email di massa
+    if (metrics.fromNameSuspicious) score += penalties.sender.fromNameSuspicious;
+    if (metrics.fromDomainIsDisposable) score += penalties.sender.fromDomainDisposable;
+    if (metrics.sentToMultiple) score += penalties.sender.sentToMultiple;
 
     // === METRICHE CAMPAGNA ===
-    if (metrics.campaignIdentifierPresent) score += 1; // Newsletter/mailing
-    if (
-      !metrics.containsFeedbackLoopHeader &&
-      metrics.campaignIdentifierPresent
-    )
-      score += 2; // Campagna senza FBL
+    if (metrics.campaignIdentifierPresent) score += penalties.campaign.campaignIdentifier;
+    if (metrics.containsFeedbackLoopHeader) score += penalties.campaign.feedbackLoopHeader;
 
     // === METRICHE TESTUALI ===
-    if (metrics.uppercaseRatio > 0.3) score += 3; // Troppo maiuscolo
-    if (metrics.uppercaseRatio > 0.5) score += 2; // Ancora peggio
-    if (metrics.excessiveExclamations) score += 2;
-    if (metrics.containsUrgencyWords) score += 4; // Linguaggio pressante
-    if (metrics.containsFinancialPromises) score += 5; // Financial promises are strong spam indicators
-    if (metrics.sentToMultiple) score += 4; // Email sent to multiple recipients
-    if (metrics.containsElectionTerms) score += 2; // Possibile campagna tematica
+    if (metrics.uppercaseRatio > thresholds.text.uppercaseRatio) score += penalties.text.uppercaseExcessive;
+    if (metrics.excessiveExclamations) score += penalties.text.excessiveExclamations;
+    if (metrics.containsUrgencyWords) score += penalties.text.urgencyWords;
+    if (metrics.containsElectionTerms) score += penalties.text.electionTerms;
 
     // === METRICHE OFFUSCAMENTO E LINK ===
-    if (metrics.containsObfuscatedText) score += 4; // Forte indicatore evasione
-    if (metrics.numExternalDomains > 5) score += 3; // Troppi domini esterni
-    if (metrics.linkDisplayMismatch) score += 4; // Link ingannevole
-    if (metrics.containsShortenedUrls) score += 3; // URL mascherati
-    if (metrics.usesEncodedUrls) score += 2; // Encoding sospetto
-    if (metrics.linkToImageRatio > 10) score += 2; // Troppi link vs contenuto
-    if (metrics.hasNonStandardPorts) score += 3; // Link con porte non standard
-    if (metrics.containsSuspiciousDomains) score += 4; // Suspicious domains in content
-    if (metrics.mailingListSpam) score += 6; // Spam disguised as mailing list
-    if (metrics.hasSpammySubject) score += 4; // Spammy subject line
-    if (metrics.hasSuspiciousFromName) score += 3; // Suspicious sender name
+    if (metrics.containsObfuscatedText) score += penalties.obfuscation.obfuscatedText;
+    if (metrics.numExternalDomains > thresholds.domains.externalExcessive) score += penalties.domains.externalExcessive;
+    if (metrics.linkDisplayMismatch) score += penalties.obfuscation.linkDisplayMismatch;
+    if (metrics.containsShortenedUrls) score += penalties.obfuscation.shortenedUrls;
+    if (metrics.usesEncodedUrls) score += penalties.obfuscation.encodedUrls;
+    if (metrics.linkToImageRatio > thresholds.text.linkToImageRatio) score += penalties.text.uppercaseExcessive;
+    if (metrics.containsFinancialPromises) score += penalties.spam.financialPromises;
+    if (metrics.hasNonStandardPorts) score += penalties.spam.nonStandardPorts;
+    if (metrics.containsSuspiciousDomains) score += penalties.spam.suspiciousDomains;
+    if (metrics.mailingListSpam) score += penalties.spam.mailingListSpam;
+    if (metrics.hasSpammySubject) score += penalties.spam.spammySubject;
+    if (metrics.hasSuspiciousFromName) score += penalties.spam.suspiciousFromName;
 
     // === METRICHE MIME ===
-    if (metrics.hasMixedContentTypes) score += 1;
-    if (metrics.hasNestedMultipart) score += 2; // Struttura complessa
-    if (metrics.boundaryAnomaly) score += 2; // Boundary sospetto
-    if (metrics.hasFakeMultipartAlternative) score += 3; // MIME fraudolento
+    if (metrics.hasMixedContentTypes) score += penalties.mime.mixedContentTypes;
+    if (metrics.hasNestedMultipart) score += penalties.mime.nestedMultipart;
+    if (metrics.boundaryAnomaly) score += penalties.mime.boundaryAnomaly;
+    if (metrics.hasFakeMultipartAlternative) score += penalties.mime.fakeMultipartAlternative;
 
     // === NUOVE METRICHE SPAM ===
-    if (metrics.isImageHeavy) score += 4; // Email solo immagini con poco testo
-    if (metrics.hasRepeatedLinks) score += 3; // Tutti i link vanno allo stesso sito
+    if (metrics.isImageHeavy) score += penalties.images.heavy;
+    if (metrics.hasRepeatedLinks) score += penalties.spam.repeatedLinks;
 
     // === SUPER BONUS PER COMBINAZIONI SPAM EVIDENTI ===
     let spamIndicators = 0;
@@ -123,27 +119,27 @@ export class ResultService {
 
   private calculateNlpScore(nlpOutput: any): number {
     let score = 0;
+    const config = this.configService.getConfig();
+    const multipliers = config.nlp.multipliers;
+    const thresholds = config.nlp.thresholds;
     const nlpMetrics = nlpOutput?.nlpMetrics;
 
     // Penalizzazioni per parole spam
-    if (nlpMetrics?.spamWordRatio && nlpMetrics.spamWordRatio > 0.05) score += 3;
-    if (nlpMetrics?.numSpammyWords && nlpMetrics.numSpammyWords > 3) score += 2;
-
-    // Penalizzazioni per uso di maiuscole o esclamazioni
-    if (nlpMetrics?.allCapsCount && nlpMetrics.allCapsCount > 5) score += 2;
-    if (nlpMetrics?.exclamationCount && nlpMetrics.exclamationCount > 3) score += 2;
+    if (nlpMetrics?.spamWordRatio && nlpMetrics.spamWordRatio > thresholds.spamWordRatio) {
+      score += Math.round(nlpMetrics.spamWordRatio * 10 * multipliers.spamWords);
+    }
 
     // BONUS SIGNIFICATIVO per prediction del modello NLP
     if (nlpOutput?.prediction === 'spam') {
-      score += 10; // Base bonus aumentato for spam prediction
+      score += 10; // Base bonus for spam prediction
       
       // Bonus aggiuntivo basato su confidence del sentiment o toxicity
-      if (nlpOutput?.toxicity?.score > 0.7) score += 5; // High toxicity
-      if (nlpOutput?.sentiment?.score < -0.5) score += 4; // Very negative sentiment
-      
-      // Super bonus se NLP è molto sicuro (alto numero di spam words)
-      if (nlpMetrics?.numSpammyWords > 5) score += 3;
-      if (nlpMetrics?.spamWordRatio > 0.1) score += 3;
+      if (nlpOutput?.toxicity?.score > thresholds.toxicity.medium) {
+        score += Math.round(nlpOutput.toxicity.score * 10 * multipliers.toxicity);
+      }
+      if (nlpOutput?.sentiment?.score < thresholds.sentiment.negative) {
+        score += Math.round(Math.abs(nlpOutput.sentiment.score) * 10 * multipliers.sentiment.negative);
+      }
     }
 
     return score;
@@ -159,18 +155,11 @@ export class ResultService {
     const techScore = this.calculateTechnicalScore(technicalMetrics);
     const nlpScore = this.calculateNlpScore(nlpOutput);
 
-    // Se NLP predice spam ma il punteggio tecnico è basso, aumenta il peso NLP
-    let finalScore: number;
-    if (nlpOutput?.prediction === 'spam' && techScore < 8) {
-      // Quando mancano metriche tecniche ma NLP è sicuro, peso 20% tecnico / 80% NLP
-      finalScore = techScore * 0.2 + nlpScore * 0.8 + 5; // Bonus maggiore per compensare carenza tecnica
-    } else if (nlpOutput?.prediction === 'spam') {
-      // Se NLP predice spam con metriche tecniche moderate, peso 40% tecnico / 60% NLP
-      finalScore = techScore * 0.4 + nlpScore * 0.6;
-    } else {
-      // Ponderazione normale: 60% tecniche, 40% NLP
-      finalScore = techScore * 0.6 + nlpScore * 0.4;
-    }
+    const config = this.configService.getConfig();
+    const weights = config.scoring.weights;
+    
+    // Calcola il punteggio finale usando i pesi configurati
+    const finalScore = techScore * weights.technical + nlpScore * weights.nlp;
 
     // Soglia di decisione (ridotta per essere più sensibile)
     const isSpam = finalScore > 10 || (nlpOutput && nlpOutput.prediction === 'spam');
@@ -195,28 +184,37 @@ export class ResultService {
   }
 
   private determineRiskLevel(score: number): 'low' | 'medium' | 'high' {
-    if (score < 0.2) return 'low';
-    if (score < 0.5) return 'medium';
+    const config = this.configService.getConfig();
+    const riskLevels = config.scoring.riskLevels;
+    
+    if (score < riskLevels.low) return 'low';
+    if (score < riskLevels.medium) return 'medium';
     return 'high';
   }
 
   private generateSummary(score: number): string {
-    if (score < 0.3)
+    const config = this.configService.getConfig();
+    const riskLevels = config.scoring.riskLevels;
+    
+    if (score < riskLevels.low)
       return 'Email appears to be legitimate with low spam indicators';
-    if (score < 0.7)
+    if (score < riskLevels.medium)
       return 'Email shows some suspicious characteristics, exercise caution';
     return 'Email has high spam/phishing indicators, handle with extreme caution';
   }
 
   private generateRecommendations(score: number): string[] {
+    const config = this.configService.getConfig();
+    const riskLevels = config.scoring.riskLevels;
     const recommendations: string[] = [];
-    if (score > 0.3) {
+    
+    if (score > riskLevels.low) {
       recommendations.push('Verify sender identity through alternative means');
     }
-    if (score > 0.5) {
+    if (score > riskLevels.medium) {
       recommendations.push('Do not click on any links or download attachments');
     }
-    if (score > 0.7) {
+    if (score > riskLevels.medium * 1.4) {
       recommendations.push('Consider reporting this email as spam/phishing');
     }
     return recommendations;

@@ -2,46 +2,29 @@
 // @ts-nocheck
 import { Injectable } from '@nestjs/common';
 import { EmailTechnicalMetrics, ParsedEmail } from '../../utils/types';
+import { ConfigService } from '../config/config.service';
 
-// Disposable email domains
-const DISPOSABLE_DOMAINS = [
-  'mailinator.com', '10minutemail.com', 'tempmail.org', 'guerrillamail.com', 
-  'mailnesia.com', 'trashmail.com', 'maildrop.cc', 'throwaway.email',
-  'temp-mail.org', 'fakeinbox.com', 'yopmail.com', 'mohmal.com',
-  'freemail.nl', 'flashmail.com', 'btamail.net.cn', 'web.de', 'bluemail.dk'
-];
-
-// Urgency words (Italian)
-const URGENCY_WORDS = [
-  'urgente', 'obbligatorio', 'immediato', 'scadenza', 'entro', 'subito',
-  'ora', 'adesso', 'scade', 'termina', 'ultimo', 'finale', 'critico'
-];
-
-// Election-related terms (Italian)  
-const ELECTION_TERMS = [
-  'cabina', 'voto', 'delegati', 'elezioni', 'elettorale', 'commissione',
-  'candidati', 'assemblea', 'rappresentanza', 'mandato', 'ballottaggio'
-];
-
-// URL shorteners
-const URL_SHORTENERS = [
-  'bit.ly', 't.co', 'goo.gl', 'tinyurl.com', 'short.link', 'ow.ly',
-  'is.gd', 'buff.ly', 'tiny.cc', 'rb.gy', 'cutt.ly'
-];
+// These will be replaced by config values
 
 @Injectable()
 export class TechnicalService {
+  constructor(private readonly configService: ConfigService) {}
   analyzeTechnical(parsedData: ParsedEmail): EmailTechnicalMetrics {
     return this.computeEmailMetrics(parsedData);
   }
 
   private computeEmailMetrics(parsedData: ParsedEmail): EmailTechnicalMetrics {
+    const config = this.configService.getConfig();
+    const domains = config.domains;
+    const keywords = config.keywords;
+    const thresholds = config.technical.thresholds;
+    
     const allText = (parsedData.htmlText || '') + (parsedData.plainText || '');
 
     const trackingPixelRegex =
       /<img[^>]*(width="?1"?|height="?1"?|style="[^"]*(display:\s*none|opacity:\s*0)[^"]*")/i;
 
-    const domains = new Set(
+    const linkDomains = new Set(
       [...(allText.matchAll(/https?:\/\/([^\s"'<>]+)/g) || [])].map(
         ([, domain]) => domain.replace(/\/$/, ''),
       ),
@@ -102,7 +85,7 @@ export class TechnicalService {
     const isHtmlOnly = !!(parsedData.htmlText && !parsedData.plainText);
     
     // Domini diversi tra i link   
-    const numDomains = domains.size;
+    const numDomains = linkDomains.size;
 
     // Rreply-to differente da From
     const replyToDiffersFromFrom = !!(
@@ -142,7 +125,7 @@ export class TechnicalService {
     const fromAddress = parsedData.headers?.from?.value?.[0]?.address || '';
     const fromDomain = fromAddress.split('@')[1] || '';
     // Dominio del mittente è noto come temporaneo - email usa mittenti temporanei
-    const fromDomainIsDisposable = DISPOSABLE_DOMAINS.includes(fromDomain.toLowerCase());
+    const fromDomainIsDisposable = domains.disposable.includes(fromDomain.toLowerCase());
     
     // Email inviata a più destinatari visibili - non è una comunicazione personale
     const toHeader = parsedData.headers?.to || parsedData.metadata?.to || '';
@@ -181,12 +164,12 @@ export class TechnicalService {
     const excessiveExclamations = /!{3,}/.test(allText);
     
     // Parole di urgenza ("urgente", "immediato") - linguaggio pressante tipico di phishing/scam
-    const containsUrgencyWords = URGENCY_WORDS.some(word => 
+    const containsUrgencyWords = keywords.urgency.some(word => 
       plainTextLower.includes(word.toLowerCase())
     );
     
     // Parole chiave elettorali ("voto", "delegati") - campagne massive o phishing tematico
-    const containsElectionTerms = ELECTION_TERMS.some(word => 
+    const containsElectionTerms = keywords.election.some(word => 
       plainTextLower.includes(word.toLowerCase())
     );
 
@@ -218,7 +201,7 @@ export class TechnicalService {
         .some(match => match[1] !== match[2] && !match[2].includes('...'));
     
     // Usa accorciatori di URL (bit.ly, t.co) - maschera reale destinazione
-    const containsShortenedUrls = URL_SHORTENERS.some(shortener => 
+    const containsShortenedUrls = domains.urlShorteners.some(shortener => 
       allText.toLowerCase().includes(shortener)
     );
     
@@ -229,7 +212,7 @@ export class TechnicalService {
     const linkToImageRatio = numImages > 0 ? numLinks / numImages : numLinks;
     
     // Nuove metriche per spam basato su immagini
-    const isImageHeavy = numImages > 5 && (parsedData.plainText || '').length < 500;
+    const isImageHeavy = numImages > thresholds.images.heavyCount && (parsedData.plainText || '').length < thresholds.images.heavyTextLimit;
     const hasRepeatedLinks = links.length > 3 && 
       new Set(links.map(link => {
         try { return new URL(link).hostname; } catch { return link; }
@@ -246,7 +229,7 @@ export class TechnicalService {
       
     const boundary = parsedData.headers?.['content-type']?.params?.boundary || '';
     // Boundary MIME troppo lunghi o casuali - segnale di generazione automatica
-    const boundaryAnomaly = boundary.length > 50 || 
+    const boundaryAnomaly = boundary.length > thresholds.mime.boundaryMaxLength || 
       /[^a-zA-Z0-9\-_=]/.test(boundary.replace(/[=_-]/g, ''));
       
     // MIME alternative ma manca il text/plain - finge compatibilità ma nasconde contenuti
@@ -373,22 +356,19 @@ export class TechnicalService {
   }
 
   private detectSuspiciousDomains(text: string): boolean {
-    const suspiciousDomainPatterns = [
-      /\.cn\b/i,                      // Chinese domains often used in spam
-      /\.tk\b/i,                      // Free Tokelau domains
-      /\.ml\b/i,                      // Free Mali domains
-      /btamail\.net/i,                // Known spam domain
-      /netsgo\.com/i,                 // Suspicious domain pattern
-      /e365\.cc/i,                    // Short suspicious domains
-      /1premio\.com/i,                // Promotional domain
-      /qves\.com/i,                   // Known spam service
-      /adclick\.ws/i,                 // Ad network domain
-      /marketing401\.com/i,           // Marketing service domain
-      /sendgreatoffers\.com/i,        // Promotional domain
-      /theadmanager\.com/i            // Ad management domain
-    ];
+    const config = this.configService.getConfig();
+    const suspiciousDomains = config.domains.suspicious;
     
-    return suspiciousDomainPatterns.some(pattern => pattern.test(text));
+    return suspiciousDomains.some(domain => {
+      if (domain.startsWith('.')) {
+        // Domain extensions like .cn, .tk
+        const regex = new RegExp('\\' + domain + '\\b', 'i');
+        return regex.test(text);
+      } else {
+        // Specific domains
+        return text.toLowerCase().includes(domain.toLowerCase());
+      }
+    });
   }
 
   private detectMailingListSpam(parsedData: ParsedEmail, text: string): boolean {
