@@ -1,6 +1,6 @@
 import "@mantine/core/styles.css";
 import "@mantine/dropzone/styles.css";
-import { Divider, NavLink, Title, Flex, Text } from "@mantine/core";
+import { Divider, NavLink, Title, Flex, Text, Button, Group } from "@mantine/core";
 import {
   IconChartBar,
   IconCheckupList,
@@ -8,6 +8,7 @@ import {
   IconSettings,
   IconUpload,
   IconUserQuestion,
+  IconLogout,
 } from "@tabler/icons-react";
 
 import { Burger, MantineProvider } from "@mantine/core";
@@ -19,12 +20,16 @@ import Upload from "./pages/Upload";
 import Risk from "./pages/Risk";
 import Report from "./pages/Report";
 import Config from "./pages/Config";
+import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { AnalysisProvider, useAnalysis } from "./contexts/AnalysisContext";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { theme } from "./theme/theme";
 
 function AppContent() {
   const [opened, { toggle }] = useDisclosure();
   const { analysisResult } = useAnalysis();
+  const { logout, user } = useAuth();
 
   return (
     <AppShell
@@ -38,19 +43,43 @@ function AppContent() {
       footer={{ height: 60 }}
     >
       <AppShell.Header p="md">
-        <Flex align="center" gap="md" h="100%">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <Title 
-            order={1} 
-            size="h3" 
-            style={{ 
-              color: '#262626',
-              fontWeight: 800,
-              letterSpacing: '-0.025em'
-            }}
-          >
-            SpamShield
-          </Title>
+        <Flex align="center" justify="space-between" h="100%">
+          <Flex align="center" gap="md">
+            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+            <Title 
+              order={1} 
+              size="h3" 
+              style={{ 
+                color: '#262626',
+                fontWeight: 800,
+                letterSpacing: '-0.025em'
+              }}
+            >
+              SpamShield
+            </Title>
+          </Flex>
+          <Group gap="sm">
+            <Text size="sm" c="dimmed">Welcome, {user?.username}</Text>
+            <Button
+              variant="outline"
+              color="gray"
+              size="xs"
+              leftSection={<IconLogout size={14} />}
+              onClick={logout}
+              styles={{
+                root: {
+                  borderColor: "#262626",
+                  color: "#262626",
+                  backgroundColor: "#ffffff",
+                  "&:hover": {
+                    backgroundColor: "#f9fafb",
+                  },
+                },
+              }}
+            >
+              Logout
+            </Button>
+          </Group>
         </Flex>
       </AppShell.Header>
 
@@ -219,11 +248,11 @@ function AppContent() {
 
       <AppShell.Main style={{ backgroundColor: "#fafafa", height: "100vh" }}>
         <Routes>
-          <Route index element={<Upload />} />
-          <Route path="upload" element={<Upload />} />
-          <Route path="risk" element={<Risk />} />
-          <Route path="report" element={<Report />} />
-          <Route path="config" element={<Config />} />
+          <Route index element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+          <Route path="upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+          <Route path="risk" element={<ProtectedRoute><Risk /></ProtectedRoute>} />
+          <Route path="report" element={<ProtectedRoute><Report /></ProtectedRoute>} />
+          <Route path="config" element={<ProtectedRoute><Config /></ProtectedRoute>} />
         </Routes>
       </AppShell.Main>
 
@@ -241,9 +270,16 @@ function AppContent() {
 function App() {
   return (
     <MantineProvider theme={theme}>
-      <AnalysisProvider>
-        <AppContent />
-      </AnalysisProvider>
+      <AuthProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/*" element={
+            <AnalysisProvider>
+              <AppContent />
+            </AnalysisProvider>
+          } />
+        </Routes>
+      </AuthProvider>
     </MantineProvider>
   );
 }
