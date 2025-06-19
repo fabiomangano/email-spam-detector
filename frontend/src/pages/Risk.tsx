@@ -319,16 +319,6 @@ function Risk() {
       });
     }
 
-    if (technical.hasTrackingPixel) {
-      explanations.push({
-        category: 'Technical',
-        severity: 'medium',
-        title: 'Tracking Pixel Detected',
-        description: 'The email contains invisible tracking pixels (1x1 pixel images) used to monitor when and where the email is opened. This is commonly used for tracking user behavior and can indicate commercial or surveillance purposes.',
-        impact: 'Email opening tracking and privacy concerns',
-        metrics: 'Invisible tracking pixels found'
-      });
-    }
 
     if (technical.isImageHeavy) {
       explanations.push({
@@ -396,27 +386,7 @@ function Risk() {
       });
     }
 
-    if (technical.replyToDiffersFromFrom) {
-      explanations.push({
-        category: 'Technical',
-        severity: 'high',
-        title: 'Reply-To Address Mismatch',
-        description: 'The Reply-To address differs from the From address, which can indicate email spoofing, phishing attempts, or the use of compromised accounts. Legitimate emails typically use matching addresses.',
-        impact: 'Potential spoofing or phishing attempt',
-        metrics: 'From and Reply-To addresses do not match'
-      });
-    }
 
-    if (technical.uppercaseRatio > 0.3) {
-      explanations.push({
-        category: 'Technical',
-        severity: 'medium',
-        title: 'Excessive Uppercase Text',
-        description: `${(technical.uppercaseRatio * 100).toFixed(1)}% of the email content is in uppercase letters. Excessive use of capitals is often associated with spam and aggressive marketing tactics.`,
-        impact: 'Indicates aggressive marketing or spam',
-        metrics: `${(technical.uppercaseRatio * 100).toFixed(1)}% uppercase content`
-      });
-    }
 
     // If no specific issues found but risk is still elevated
     if (explanations.length === 0 && analysisResult.overallScore > 0.3) {
@@ -460,6 +430,12 @@ function Risk() {
       case 'Authentication': return <IconLock size={18} />;
       default: return <IconSettings size={18} />;
     }
+  };
+
+  const getProgressColor = (percentage: number) => {
+    if (percentage < 30) return 'green';
+    if (percentage < 70) return 'yellow';
+    return 'red';
   };
 
   if (!analysisResult) {
@@ -678,13 +654,23 @@ function Risk() {
                             (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100)}%
                       </Text>
                     </Flex>
-                    <Progress size="xs" color="gray" value={
-                      analysisResult.scores?.technicalPercentage ? 
-                        analysisResult.scores.technicalPercentage : 
-                        (analysisResult.details.technical.linkRatio + 
-                         (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
-                         (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100
-                    } />
+                    <Progress 
+                      size="xs" 
+                      color={getProgressColor(
+                        analysisResult.scores?.technicalPercentage ? 
+                          analysisResult.scores.technicalPercentage : 
+                          (analysisResult.details.technical.linkRatio + 
+                           (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
+                           (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100
+                      )}
+                      value={
+                        analysisResult.scores?.technicalPercentage ? 
+                          analysisResult.scores.technicalPercentage : 
+                          (analysisResult.details.technical.linkRatio + 
+                           (analysisResult.details.technical.hasTrackingPixel ? 0.2 : 0) + 
+                           (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100
+                      } 
+                    />
                   </div>
                   
                   <div>
@@ -696,11 +682,19 @@ function Risk() {
                           Math.round(analysisResult.details.nlp.toxicity.score * 100)}%
                       </Text>
                     </Flex>
-                    <Progress size="xs" color="red" value={
-                      analysisResult.scores?.nlpPercentage ? 
-                        analysisResult.scores.nlpPercentage : 
-                        analysisResult.details.nlp.toxicity.score * 100
-                    } />
+                    <Progress 
+                      size="xs" 
+                      color={getProgressColor(
+                        analysisResult.scores?.nlpPercentage ? 
+                          analysisResult.scores.nlpPercentage : 
+                          analysisResult.details.nlp.toxicity.score * 100
+                      )}
+                      value={
+                        analysisResult.scores?.nlpPercentage ? 
+                          analysisResult.scores.nlpPercentage : 
+                          analysisResult.details.nlp.toxicity.score * 100
+                      } 
+                    />
                   </div>
                 </Stack>
                 
