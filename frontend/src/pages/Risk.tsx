@@ -676,7 +676,7 @@ function Risk() {
                             (analysisResult.details.technical.replyToDiffersFromFrom ? 0.2 : 0)) * 100)}%
                       </Text>
                     </Flex>
-                    <Progress size="xs" color="blue" value={
+                    <Progress size="xs" color="gray" value={
                       analysisResult.scores?.technicalPercentage ? 
                         analysisResult.scores.technicalPercentage : 
                         (analysisResult.details.technical.linkRatio + 

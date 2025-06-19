@@ -73,6 +73,7 @@ export function EmailInputPanel({
           {((activeTab === "gallery" && textAreaValue.trim()) || (activeTab === "messages" && uploadedFile)) && (
             <Button
               variant="outline"
+              color="red"
               size="xs"
               leftSection={<IconTrash size={14} />}
               onClick={onClear}
@@ -92,6 +93,7 @@ export function EmailInputPanel({
           )}
           <Button
             variant="outline"
+            color="gray"
             size="xs"
             leftSection={<IconCopy size={14} />}
             disabled={
@@ -124,6 +126,7 @@ export function EmailInputPanel({
           </Button>
           <Button
             variant="filled"
+            color="green"
             size="xs"
             onClick={() => {
               onUpload();

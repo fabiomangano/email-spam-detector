@@ -52,6 +52,7 @@ export function ContentPanel({
           {parsedData && (
             <Button
               variant="outline"
+              color="gray"
               size="xs"
               leftSection={<IconCopy size={14} />}
               disabled={!bodyText}

@@ -116,6 +116,7 @@ export function MetadataPanel({
           {parsedData && (
             <Button
               variant="outline"
+              color="gray"
               size="xs"
               leftSection={<IconCopy size={14} />}
               onClick={handleCopyMetadata}

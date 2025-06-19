@@ -66,6 +66,7 @@ function Upload() {
             {parsedData && (
               <Button
                 variant="outline"
+                color="red"
                 size="xs"
                 onClick={handleFullClear}
                 styles={{
@@ -91,6 +92,7 @@ function Upload() {
             )}
             <Button
               variant="outline"
+              color="gray"
               size="xs"
               onClick={() => setIsModalOpen(true)}
               leftSection={<IconCloudUpload size={14} />}
@@ -109,6 +111,7 @@ function Upload() {
             </Button>
             <Button
               variant="filled"
+              color="green"
               size="xs"
               onClick={handleAnalyze}
               disabled={!canAnalyze}

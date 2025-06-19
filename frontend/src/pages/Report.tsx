@@ -198,7 +198,7 @@ function Report() {
         <Alert color="blue" mb="md">
           No analysis data available. Please upload and analyze an email first.
         </Alert>
-        <Button component={Link} to="/upload" leftSection={<IconArrowLeft size={16} />}>
+        <Button variant="filled" color="gray" component={Link} to="/upload" leftSection={<IconArrowLeft size={16} />}>
           Go to Upload
         </Button>
       </div>
@@ -219,6 +219,7 @@ function Report() {
         <Group gap="sm">
           <Button 
             variant="outline"
+            color="red"
             size="xs"
             onClick={handleNewAnalysis}
             leftSection={<IconRefresh size={14} />}
@@ -237,6 +238,7 @@ function Report() {
           </Button>
           <Button 
             variant="outline" 
+            color="gray"
             size="xs"
             component={Link} 
             to="/upload"
@@ -256,6 +258,7 @@ function Report() {
           </Button>
           <Button 
             variant="filled"
+            color="green"
             size="xs"
             component={Link} 
             to="/risk"
@@ -286,6 +289,7 @@ function Report() {
               </Flex>
               <Button
                 variant="outline"
+                color="gray"
                 size="xs"
                 leftSection={<IconCopy size={14} />}
                 onClick={handleCopyParsingResults}
@@ -534,6 +538,7 @@ function Report() {
               </Flex>
               <Button
                 variant="outline"
+                color="gray"
                 size="xs"
                 leftSection={<IconCopy size={14} />}
                 onClick={handleCopyTechnicalAnalysis}
@@ -884,6 +889,7 @@ function Report() {
               </Flex>
               <Button
                 variant="outline"
+                color="gray"
                 size="xs"
                 leftSection={<IconCopy size={14} />}
                 onClick={handleCopyNLPAnalysis}
