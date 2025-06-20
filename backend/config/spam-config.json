@@ -134,6 +134,36 @@
       "spamWordRatio": 0.03
     }
   },
+  "llm": {
+    "enabled": true,
+    "providers": {
+      "openai": {
+        "enabled": true,
+        "apiKey": "TUA_API_KEY_QUI",
+        "model": "gpt-4",
+        "baseUrl": "https://api.openai.com/v1"
+      },
+      "anthropic": {
+        "enabled": false,
+        "apiKey": "",
+        "model": "claude-3-sonnet-20240229",
+        "baseUrl": "https://api.anthropic.com"
+      },
+      "local": {
+        "enabled": false,
+        "model": "llama3",
+        "baseUrl": "http://localhost:11434",
+        "provider": "ollama"
+      }
+    },
+    "prompts": {
+      "spam_analysis": "Analyze this email for spam/phishing indicators. Consider: sender reputation, urgency language, financial promises, suspicious links, social engineering tactics. Respond in JSON format with: {\"is_spam\": boolean, \"confidence\": 0-100, \"reasoning\": \"explanation\", \"risk_factors\": [\"factor1\", \"factor2\"]}"
+    },
+    "weights": {
+      "llm": 0.3,
+      "traditional": 0.7
+    }
+  },
   "domains": {
     "trusted": [
       "gdg.community.dev",

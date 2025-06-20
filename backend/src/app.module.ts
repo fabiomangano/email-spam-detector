@@ -10,6 +10,7 @@ import { ConfigModule } from './modules/config/config.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PipelineModule } from './pipeline/pipeline.module';
 import { ModelModule } from './model/model.module';
+import { LLMModule } from './modules/llm/llm.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ModelModule } from './model/model.module';
     AuthModule,
     PipelineModule,
     ModelModule,
+    LLMModule,
   ],
   controllers: [AppController, UploadController],
   providers: [AppService],

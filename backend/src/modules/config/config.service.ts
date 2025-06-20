@@ -53,14 +53,47 @@ export interface SpamDetectionConfig {
     };
   };
   domains: {
+    trusted: string[];
     disposable: string[];
     suspicious: string[];
     urlShorteners: string[];
   };
   keywords: {
+    legitimateEvents: string[];
+    newsletters: string[];
     urgency: string[];
     election: string[];
     spam: string[];
+  };
+  llm?: {
+    enabled: boolean;
+    providers: {
+      openai: {
+        enabled: boolean;
+        apiKey: string;
+        model: string;
+        baseUrl: string;
+      };
+      anthropic: {
+        enabled: boolean;
+        apiKey: string;
+        model: string;
+        baseUrl: string;
+      };
+      local: {
+        enabled: boolean;
+        model: string;
+        baseUrl: string;
+        provider: string;
+      };
+    };
+    prompts: {
+      spam_analysis: string;
+    };
+    weights: {
+      llm: number;
+      traditional: number;
+    };
   };
 }
 

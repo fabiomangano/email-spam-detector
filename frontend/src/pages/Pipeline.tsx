@@ -72,7 +72,7 @@ interface SpamDetectionConfig {
   };
 }
 
-const Config: React.FC = () => {
+const Pipeline: React.FC = () => {
   const [config, setConfig] = useState<SpamDetectionConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -187,10 +187,10 @@ const Config: React.FC = () => {
       <Flex justify="space-between" align="center" mb="xl">
         <div>
           <Title order={1} size="h2" mb="xs">
-            System Configuration
+            Pipeline Configuration
           </Title>
           <Text c="dimmed" size="sm">
-            Configure spam detection parameters, thresholds, and scoring weights
+            Configure spam detection pipeline parameters, thresholds, and scoring weights
           </Text>
         </div>
         <Group gap="sm">
@@ -530,4 +530,4 @@ const Config: React.FC = () => {
   );
 };
 
-export default Config;
+export default Pipeline;

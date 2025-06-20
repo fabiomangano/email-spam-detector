@@ -19,7 +19,8 @@ import { Link } from "react-router";
 import Upload from "./pages/Upload";
 import Risk from "./pages/Risk";
 import Report from "./pages/Report";
-import Config from "./pages/Config";
+import Pipeline from "./pages/Pipeline";
+import LLM from "./pages/LLM";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AnalysisProvider, useAnalysis } from "./contexts/AnalysisContext";
@@ -186,8 +187,21 @@ function AppContent() {
             </Title>
             <NavLink
               component={Link}
-              to="/config"
-              label="Config"
+              to="/pipeline"
+              label="Pipeline"
+              leftSection={<IconSettings size={16} stroke={1.5} />}
+              style={{
+                borderRadius: '0.5rem',
+                marginBottom: '0.25rem',
+                padding: '0.625rem 0.75rem',
+                fontWeight: 500,
+                fontSize: '0.875rem'
+              }}
+            />
+            <NavLink
+              component={Link}
+              to="/llm"
+              label="LLM"
               leftSection={<IconSettings size={16} stroke={1.5} />}
               style={{
                 borderRadius: '0.5rem',
@@ -252,7 +266,8 @@ function AppContent() {
           <Route path="upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
           <Route path="risk" element={<ProtectedRoute><Risk /></ProtectedRoute>} />
           <Route path="report" element={<ProtectedRoute><Report /></ProtectedRoute>} />
-          <Route path="config" element={<ProtectedRoute><Config /></ProtectedRoute>} />
+          <Route path="pipeline" element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />
+          <Route path="llm" element={<ProtectedRoute><LLM /></ProtectedRoute>} />
         </Routes>
       </AppShell.Main>
 
