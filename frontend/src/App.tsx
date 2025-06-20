@@ -92,7 +92,7 @@ function AppContent() {
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.08)',
         }}
       >
-        <div style={{ padding: '1.5rem 1rem 1rem 1rem' }}>
+        <div style={{ padding: '1.5rem 1rem 1rem 1rem', height: '100%', overflowY: 'auto' }}>
           <Title 
             order={6} 
             c="gray.9" 
@@ -164,6 +164,51 @@ function AppContent() {
                 opacity: analysisResult ? 1 : 0.5,
                 cursor: analysisResult ? 'pointer' : 'not-allowed',
                 pointerEvents: analysisResult ? 'auto' : 'none'
+              }}
+            />
+          </div>
+          
+          <Divider color="gray.3" />
+          
+          <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+            <Title 
+              order={6} 
+              c="gray.9" 
+              mb="md" 
+              px="sm"
+              style={{ 
+                fontWeight: 600,
+                letterSpacing: '0.025em',
+                textTransform: 'uppercase',
+                fontSize: '0.7rem'
+              }}
+            >
+              LLM
+            </Title>
+            <NavLink
+              component={Link}
+              to="/llm-upload"
+              label="Upload"
+              leftSection={<IconUpload size={16} stroke={1.5} />}
+              style={{
+                borderRadius: '0.5rem',
+                marginBottom: '0.25rem',
+                padding: '0.625rem 0.75rem',
+                fontWeight: 500,
+                fontSize: '0.875rem'
+              }}
+            />
+            <NavLink
+              component={Link}
+              to="/llm-report"
+              label="Report"
+              leftSection={<IconChartBar size={16} stroke={1.5} />}
+              style={{
+                borderRadius: '0.5rem',
+                marginBottom: '0.25rem',
+                padding: '0.625rem 0.75rem',
+                fontWeight: 500,
+                fontSize: '0.875rem'
               }}
             />
           </div>
