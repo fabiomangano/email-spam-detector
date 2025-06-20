@@ -361,26 +361,28 @@ const Pipeline: React.FC = () => {
 
       {notification && (
         <Alert
-          variant="filled"
+          variant="light"
           title={notification.type === 'success' ? 'Success' : 'Error'}
           withCloseButton
           onClose={() => setNotification(null)}
           mb="md"
           styles={{
             root: {
-              backgroundColor: notification.type === 'success' ? '#22c55e' : '#ef4444',
+              backgroundColor: notification.type === 'success' ? '#f0fdf4' : '#fef2f2',
               borderColor: notification.type === 'success' ? '#22c55e' : '#ef4444',
+              borderWidth: '1px',
+              borderStyle: 'solid',
             },
             title: {
-              color: '#ffffff',
+              color: notification.type === 'success' ? '#15803d' : '#dc2626',
             },
             body: {
-              color: '#ffffff',
+              color: notification.type === 'success' ? '#166534' : '#991b1b',
             },
             closeButton: {
-              color: '#ffffff',
+              color: notification.type === 'success' ? '#15803d' : '#dc2626',
               '&:hover': {
-                backgroundColor: notification.type === 'success' ? '#16a34a' : '#dc2626',
+                backgroundColor: notification.type === 'success' ? '#dcfce7' : '#fee2e2',
               },
             },
           }}
