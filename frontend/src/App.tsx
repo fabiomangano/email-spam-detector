@@ -21,6 +21,8 @@ import Risk from "./pages/Risk";
 import Report from "./pages/Report";
 import Pipeline from "./pages/Pipeline";
 import LLM from "./pages/LLM";
+import LLMUpload from "./pages/LLMUpload";
+import LLMReport from "./pages/LLMReport";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AnalysisProvider, useAnalysis } from "./contexts/AnalysisContext";
@@ -29,7 +31,7 @@ import { theme } from "./theme/theme";
 
 function AppContent() {
   const [opened, { toggle }] = useDisclosure();
-  const { analysisResult } = useAnalysis();
+  const { analysisResult, llmAnalysisResult } = useAnalysis();
   const { logout, user } = useAuth();
 
   return (
@@ -199,16 +201,25 @@ function AppContent() {
               }}
             />
             <NavLink
-              component={Link}
-              to="/llm-report"
+              component={llmAnalysisResult ? Link : undefined}
+              to={llmAnalysisResult ? "/llm-report" : "#"}
               label="Report"
               leftSection={<IconChartBar size={16} stroke={1.5} />}
+              onClick={(e) => {
+                if (!llmAnalysisResult) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+              }}
               style={{
                 borderRadius: '0.5rem',
                 marginBottom: '0.25rem',
                 padding: '0.625rem 0.75rem',
                 fontWeight: 500,
-                fontSize: '0.875rem'
+                fontSize: '0.875rem',
+                opacity: llmAnalysisResult ? 1 : 0.5,
+                cursor: llmAnalysisResult ? 'pointer' : 'not-allowed',
+                pointerEvents: llmAnalysisResult ? 'auto' : 'none'
               }}
             />
           </div>
@@ -313,6 +324,8 @@ function AppContent() {
           <Route path="report" element={<ProtectedRoute><Report /></ProtectedRoute>} />
           <Route path="pipeline" element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />
           <Route path="llm" element={<ProtectedRoute><LLM /></ProtectedRoute>} />
+          <Route path="llm-upload" element={<ProtectedRoute><LLMUpload /></ProtectedRoute>} />
+          <Route path="llm-report" element={<ProtectedRoute><LLMReport /></ProtectedRoute>} />
         </Routes>
       </AppShell.Main>
 

@@ -5,6 +5,9 @@ import type { PipelineResult, ParsedData, TabType } from '../types/email';
 interface AnalysisContextType {
   analysisResult: PipelineResult | null;
   setAnalysisResult: (result: PipelineResult | null) => void;
+  // LLM state
+  llmAnalysisResult: any | null;
+  setLlmAnalysisResult: (result: any | null) => void;
   // Upload state
   textAreaValue: string;
   setTextAreaValue: (value: string) => void;
@@ -29,6 +32,9 @@ const AnalysisContext = createContext<AnalysisContextType | undefined>(undefined
 export function AnalysisProvider({ children }: { children: ReactNode }) {
   const [analysisResult, setAnalysisResult] = useState<PipelineResult | null>(null);
   
+  // LLM state
+  const [llmAnalysisResult, setLlmAnalysisResult] = useState<any | null>(null);
+  
   // Upload state
   const [textAreaValue, setTextAreaValue] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -43,6 +49,8 @@ export function AnalysisProvider({ children }: { children: ReactNode }) {
     <AnalysisContext.Provider value={{ 
       analysisResult, 
       setAnalysisResult,
+      llmAnalysisResult,
+      setLlmAnalysisResult,
       textAreaValue,
       setTextAreaValue,
       uploadedFile,
