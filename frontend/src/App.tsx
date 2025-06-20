@@ -105,7 +105,7 @@ function AppContent() {
               fontSize: '0.7rem'
             }}
           >
-            Email Analysis
+            Metrics & NLP
           </Title>
           
           <div style={{ marginBottom: '1.5rem' }}>

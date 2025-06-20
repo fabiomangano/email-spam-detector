@@ -18,6 +18,7 @@ import {
   ActionIcon,
   Tooltip,
   Flex,
+  Textarea,
 } from '@mantine/core';
 import { IconDeviceFloppy, IconRestore, IconInfoCircle, IconTestPipe } from '@tabler/icons-react';
 
@@ -43,6 +44,7 @@ interface LLMConfig {
     };
   };
   activeProvider: 'openai' | 'anthropic' | 'local';
+  systemPrompt?: string;
 }
 
 const LLM: React.FC = () => {
@@ -462,16 +464,21 @@ const LLM: React.FC = () => {
         <Tabs.Panel value="settings">
           <Card withBorder>
             <Card.Section withBorder inheritPadding py="xs">
-              <Text fw={500}>Global Settings</Text>
+              <Text fw={500}>System Prompt Configuration</Text>
             </Card.Section>
 
             <Stack gap="md" mt="md">
-              <Alert>
-                <Text size="sm">
-                  Global LLM settings will be available in future updates. Currently, provider-specific 
-                  settings are managed in the Providers tab.
-                </Text>
-              </Alert>
+              <Textarea
+                label="System Prompt"
+                placeholder="Enter the system prompt for LLM analysis..."
+                value={config.systemPrompt || ''}
+                onChange={(event) => updateConfig('systemPrompt', event.currentTarget.value)}
+                description="This prompt will be used to instruct the LLM on how to analyze emails for spam detection"
+                rows={8}
+                autosize
+                minRows={4}
+                maxRows={12}
+              />
             </Stack>
           </Card>
         </Tabs.Panel>
