@@ -16,7 +16,7 @@ import { Burger, MantineProvider } from "@mantine/core";
 import { Routes, Route } from "react-router";
 import { AppShell /* Burger */ } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import Upload from "./pages/Upload";
 import Risk from "./pages/Risk";
 import Report from "./pages/Report";
@@ -35,11 +35,13 @@ function AppContent() {
   const [opened, { toggle }] = useDisclosure();
   const { analysisResult, llmAnalysisResult } = useAnalysis();
   const { logout, user } = useAuth();
+  const location = useLocation();
+  const isHomePage = location.pathname === '/' || location.pathname === '/home';
 
   return (
     <AppShell
       header={{ height: 60 }}
-      navbar={{
+      navbar={isHomePage ? { width: 0, breakpoint: "md", collapsed: { desktop: true, mobile: true } } : {
         width: 200,
         breakpoint: "md",
         collapsed: { mobile: !opened },
@@ -92,7 +94,7 @@ function AppContent() {
         </Flex>
       </AppShell.Header>
 
-      <AppShell.Navbar 
+      {!isHomePage && <AppShell.Navbar 
         p={0}
         style={{ 
           backgroundColor: '#ffffff',
@@ -320,7 +322,7 @@ function AppContent() {
             />
           </div>
         </div>
-      </AppShell.Navbar>
+      </AppShell.Navbar>}
 
       <AppShell.Main style={{ backgroundColor: "#fafafa", height: "100vh" }}>
         <Routes>
