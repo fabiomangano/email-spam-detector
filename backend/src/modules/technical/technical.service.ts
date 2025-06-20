@@ -236,6 +236,12 @@ export class TechnicalService {
     const hasFakeMultipartAlternative = /multipart\/alternative/i.test(contentType) && 
       (!parsedData.plainText || parsedData.plainText.trim().length === 0);
 
+    // NUOVE METRICHE PER LEGITTIME EMAIL
+    const isFromTrustedDomain = this.isFromTrustedDomain(fromDomain);
+    const isEventEmail = this.isEventEmail(allText, parsedData.metadata?.subject || '');
+    const isNewsletterEmail = this.isNewsletterEmail(allText, parsedData);
+    const hasProperUnsubscribe = this.hasProperUnsubscribe(parsedData, allText);
+
     return {
       bodyLength,
       numLinks,
@@ -290,6 +296,11 @@ export class TechnicalService {
       mailingListSpam: this.detectMailingListSpam(parsedData, allText),
       hasSpammySubject: this.detectSpammySubject(parsedData.metadata?.subject || ''),
       hasSuspiciousFromName: this.detectSuspiciousFromName(fromAddress),
+      // New legitimate email detection metrics
+      isFromTrustedDomain,
+      isEventEmail,
+      isNewsletterEmail,
+      hasProperUnsubscribe,
     };
   }
 
@@ -431,5 +442,69 @@ export class TechnicalService {
     ];
     
     return suspiciousPatterns.some(pattern => pattern.test(namePart));
+  }
+
+  private isFromTrustedDomain(domain: string): boolean {
+    const config = this.configService.getConfig();
+    const trustedDomains = config.domains.trusted || [];
+    
+    return trustedDomains.some(trustedDomain => {
+      const normalizedDomain = domain.toLowerCase();
+      const normalizedTrusted = trustedDomain.toLowerCase();
+      
+      return normalizedDomain === normalizedTrusted || 
+             normalizedDomain.endsWith('.' + normalizedTrusted);
+    });
+  }
+
+  private isEventEmail(text: string, subject: string): boolean {
+    const config = this.configService.getConfig();
+    const eventKeywords = config.keywords.legitimateEvents || [];
+    const allContent = (text + ' ' + subject).toLowerCase();
+    
+    // Conta quante parole chiave di eventi sono presenti
+    const eventMatches = eventKeywords.filter(keyword => 
+      allContent.includes(keyword.toLowerCase())
+    ).length;
+    
+    // Se almeno 3 parole chiave di eventi sono presenti, è probabilmente legittimo
+    return eventMatches >= 3;
+  }
+
+  private isNewsletterEmail(text: string, parsedData: ParsedEmail): boolean {
+    const config = this.configService.getConfig();
+    const newsletterKeywords = config.keywords.newsletters || [];
+    const allContent = text.toLowerCase();
+    
+    // Verifica presenza di parole chiave newsletter
+    const hasNewsletterKeywords = newsletterKeywords.some(keyword => 
+      allContent.includes(keyword.toLowerCase())
+    );
+    
+    // Verifica header specifici di newsletter legittime
+    const hasNewsletterHeaders = !!(
+      parsedData.headers?.['list-id'] ||
+      parsedData.headers?.['list-unsubscribe'] ||
+      parsedData.headers?.['list']?.unsubscribe ||
+      parsedData.headers?.['x-mailman-version'] ||
+      parsedData.headers?.['precedence'] === 'bulk'
+    );
+    
+    return hasNewsletterKeywords && hasNewsletterHeaders;
+  }
+
+  private hasProperUnsubscribe(parsedData: ParsedEmail, text: string): boolean {
+    // Verifica che ci sia un link di unsubscribe corretto
+    const hasUnsubscribeHeader = !!(
+      parsedData.headers?.['list-unsubscribe'] ||
+      parsedData.headers?.['list-unsubscribe-post'] ||
+      parsedData.headers?.['list']?.unsubscribe ||
+      parsedData.headers?.['list']?.['unsubscribe-post']
+    );
+    
+    // Verifica la presenza di testo di unsubscribe nel corpo
+    const hasUnsubscribeText = /unsubscribe|remove.*list|opt.*out/i.test(text);
+    
+    return hasUnsubscribeHeader && hasUnsubscribeText;
   }
 }

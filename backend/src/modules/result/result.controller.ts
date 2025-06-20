@@ -58,6 +58,10 @@ export class ResultController {
           mailingListSpam: false,
           hasSpammySubject: false,
           hasSuspiciousFromName: false,
+          isFromTrustedDomain: false,
+          isEventEmail: false,
+          isNewsletterEmail: false,
+          hasProperUnsubscribe: false,
         },
         {
           tokens: ['test', 'email', 'content'],

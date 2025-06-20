@@ -5,8 +5,8 @@
       "medium": 0.4
     },
     "weights": {
-      "technical": 0.7,
-      "nlp": 0.3
+      "technical": 0.6,
+      "nlp": 0.4
     }
   },
   "technical": {
@@ -106,7 +106,7 @@
       },
       "text": {
         "uppercaseRatio": 0.3,
-        "linkToImageRatio": 5.0
+        "linkToImageRatio": 5
       },
       "mime": {
         "boundaryMaxLength": 50
@@ -115,12 +115,12 @@
   },
   "nlp": {
     "multipliers": {
-      "toxicity": 3.0,
+      "toxicity": 3,
       "sentiment": {
         "negative": 2.2,
         "positive": 0.3
       },
-      "spamWords": 2.0
+      "spamWords": 2
     },
     "thresholds": {
       "toxicity": {
@@ -135,6 +135,24 @@
     }
   },
   "domains": {
+    "trusted": [
+      "gdg.community.dev",
+      "meetup.com",
+      "eventbrite.com",
+      "github.com",
+      "google.com",
+      "microsoft.com",
+      "linkedin.com",
+      "university.edu",
+      "gov.it",
+      "gov.com",
+      "linux.org",
+      "apache.org",
+      "mozilla.org",
+      "wikipedia.org",
+      "stackoverflow.com",
+      "quora.com"
+    ],
     "disposable": [
       "mailinator.com",
       "10minutemail.com",
@@ -183,6 +201,55 @@
     ]
   },
   "keywords": {
+    "legitimateEvents": [
+      "event",
+      "meetup",
+      "conference",
+      "workshop",
+      "seminar",
+      "webinar",
+      "meeting",
+      "presentation",
+      "talk",
+      "rsvp",
+      "agenda",
+      "schedule",
+      "speaker",
+      "venue",
+      "location",
+      "registration",
+      "attendee",
+      "networking",
+      "community",
+      "developer",
+      "tech",
+      "technology",
+      "international women's day",
+      "iwd",
+      "gdg",
+      "google developer groups"
+    ],
+    "newsletters": [
+      "newsletter",
+      "unsubscribe",
+      "subscription",
+      "mailing list",
+      "update",
+      "announcement",
+      "notification",
+      "digest",
+      "weekly",
+      "monthly",
+      "news",
+      "community",
+      "member",
+      "membership",
+      "riassunto",
+      "consigliati",
+      "domanda",
+      "risposta",
+      "quora"
+    ],
     "urgency": [
       "urgente",
       "obbligatorio",

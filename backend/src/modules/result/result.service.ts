@@ -52,6 +52,15 @@ export class ResultService {
     if (metrics.hasTrackingPixel) score += penalties.tracking.hasTrackingPixel;
     if (metrics.replyToDiffersFromFrom) score += penalties.headers.replyToDiffers;
     if (metrics.hasAttachments) score += penalties.attachments.hasAttachments;
+    
+    // Penalità body length ridotta per domini fidati
+    if (metrics.bodyLength < thresholds.bodyLength.veryShort) {
+      const penalty = metrics.isFromTrustedDomain ? Math.round(penalties.bodyLength.veryShort * 0.3) : penalties.bodyLength.veryShort;
+      score += penalty;
+    } else if (metrics.bodyLength < thresholds.bodyLength.short) {
+      const penalty = metrics.isFromTrustedDomain ? Math.round(penalties.bodyLength.short * 0.3) : penalties.bodyLength.short;
+      score += penalty;
+    }
 
     // === AUTENTICAZIONE EMAIL ===
     if (metrics.spfResult === 'fail') score += penalties.authentication.spfFail;
@@ -75,7 +84,8 @@ export class ResultService {
     // === METRICHE TESTUALI ===
     if (metrics.uppercaseRatio > thresholds.text.uppercaseRatio) score += penalties.text.uppercaseExcessive;
     if (metrics.excessiveExclamations) score += penalties.text.excessiveExclamations;
-    if (metrics.containsUrgencyWords) score += penalties.text.urgencyWords;
+    // Non penalizzare urgency words se è un evento legittimo (eventi hanno spesso scadenze)
+    if (metrics.containsUrgencyWords && !metrics.isEventEmail) score += penalties.text.urgencyWords;
     if (metrics.containsElectionTerms) score += penalties.text.electionTerms;
 
     // === METRICHE OFFUSCAMENTO E LINK ===
@@ -102,43 +112,92 @@ export class ResultService {
     if (metrics.isImageHeavy) score += penalties.images.heavy;
     if (metrics.hasRepeatedLinks) score += penalties.spam.repeatedLinks;
 
+    // === RIDUZIONI PER EMAIL LEGITTIME ===
+    let legitimacyBonus = 0;
+    
+    // Dominio fidato riduce significativamente il punteggio
+    if (metrics.isFromTrustedDomain) {
+      legitimacyBonus += 6; // Forte riduzione per domini fidati
+    }
+    
+    // Email di eventi legittimi
+    if (metrics.isEventEmail) {
+      legitimacyBonus += 4; // Riduzione per eventi
+      // Riduci penalità per tracking pixel se è un evento legittimo
+      if (metrics.hasTrackingPixel) {
+        legitimacyBonus += 2; // Compensa la penalità tracking pixel
+      }
+    }
+    
+    // Newsletter legittima
+    if (metrics.isNewsletterEmail) {
+      legitimacyBonus += 3; // Riduzione per newsletter
+      // Riduci penalità per multipli destinatari se è newsletter
+      if (metrics.sentToMultiple) {
+        legitimacyBonus += 1; // Compensa penalità destinatari multipli
+      }
+    }
+    
+    // Unsubscribe corretto
+    if (metrics.hasProperUnsubscribe) {
+      legitimacyBonus += 2; // Piccolo bonus per unsubscribe corretto
+    }
+
     // === SUPER BONUS PER COMBINAZIONI SPAM EVIDENTI ===
     let spamIndicators = 0;
-    if (metrics.sentToMultiple) spamIndicators++;
+    if (metrics.sentToMultiple && !metrics.isNewsletterEmail) spamIndicators++;
     if (metrics.containsFinancialPromises) spamIndicators++;
     if (metrics.hasSpammySubject) spamIndicators++;
     if (metrics.hasSuspiciousFromName) spamIndicators++;
-    if (metrics.isHtmlOnly) spamIndicators++;
+    if (metrics.isHtmlOnly && !metrics.isEventEmail) spamIndicators++;
     
     // Super bonus quando 3+ indicatori spam sono presenti
     if (spamIndicators >= 3) score += 6; // Clear spam pattern
     if (spamIndicators >= 4) score += 4; // Very clear spam pattern
 
+    // Applica il bonus di legittimità (sottrae dal punteggio spam)
+    score = Math.max(0, score - legitimacyBonus);
+
     return score;
   }
 
-  private calculateNlpScore(nlpOutput: any): number {
+  private calculateNlpScore(nlpOutput: any, technicalMetrics?: EmailTechnicalMetrics): number {
     let score = 0;
     const config = this.configService.getConfig();
     const multipliers = config.nlp.multipliers;
     const thresholds = config.nlp.thresholds;
     const nlpMetrics = nlpOutput?.nlpMetrics;
 
-    // Penalizzazioni per parole spam
-    if (nlpMetrics?.spamWordRatio && nlpMetrics.spamWordRatio > thresholds.spamWordRatio) {
-      score += Math.round(nlpMetrics.spamWordRatio * 10 * multipliers.spamWords);
+    // RIDUZIONE PER EMAIL LEGITTIME - Controlla se è legittima prima di penalizzare
+    let legitimacyDetected = false;
+    if (technicalMetrics) {
+      legitimacyDetected = technicalMetrics.isFromTrustedDomain || 
+                          technicalMetrics.isEventEmail || 
+                          technicalMetrics.isNewsletterEmail ||
+                          technicalMetrics.hasProperUnsubscribe;
     }
 
-    // BONUS SIGNIFICATIVO per prediction del modello NLP
+    // Penalizzazioni per parole spam (ridotte se legittima)
+    if (nlpMetrics?.spamWordRatio && nlpMetrics.spamWordRatio > thresholds.spamWordRatio) {
+      const spamWordPenalty = Math.round(nlpMetrics.spamWordRatio * 10 * multipliers.spamWords);
+      score += legitimacyDetected ? Math.round(spamWordPenalty * 0.3) : spamWordPenalty;
+    }
+
+    // BONUS SIGNIFICATIVO per prediction del modello NLP (ridotto per legittime)
     if (nlpOutput?.prediction === 'spam') {
-      score += 10; // Base bonus for spam prediction
-      
-      // Bonus aggiuntivo basato su confidence del sentiment o toxicity
-      if (nlpOutput?.toxicity?.score > thresholds.toxicity.medium) {
-        score += Math.round(nlpOutput.toxicity.score * 10 * multipliers.toxicity);
-      }
-      if (nlpOutput?.sentiment?.score < thresholds.sentiment.negative) {
-        score += Math.round(Math.abs(nlpOutput.sentiment.score) * 10 * multipliers.sentiment.negative);
+      if (legitimacyDetected) {
+        // Se è da dominio fidato o evento, riduci drasticamente il punteggio NLP
+        score += 2; // Molto ridotto invece di 10
+      } else {
+        score += 10; // Base bonus for spam prediction
+        
+        // Bonus aggiuntivo basato su confidence del sentiment o toxicity
+        if (nlpOutput?.toxicity?.score > thresholds.toxicity.medium) {
+          score += Math.round(nlpOutput.toxicity.score * 10 * multipliers.toxicity);
+        }
+        if (nlpOutput?.sentiment?.score < thresholds.sentiment.negative) {
+          score += Math.round(Math.abs(nlpOutput.sentiment.score) * 10 * multipliers.sentiment.negative);
+        }
       }
     }
 
@@ -153,7 +212,7 @@ export class ResultService {
 
     // Calcola i punteggi
     const techScore = this.calculateTechnicalScore(technicalMetrics);
-    const nlpScore = this.calculateNlpScore(nlpOutput);
+    const nlpScore = this.calculateNlpScore(nlpOutput, technicalMetrics);
 
     const config = this.configService.getConfig();
     const weights = config.scoring.weights;

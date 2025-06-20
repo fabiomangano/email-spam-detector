@@ -85,6 +85,11 @@ export interface EmailTechnicalMetrics {
   mailingListSpam: boolean;
   hasSpammySubject: boolean;
   hasSuspiciousFromName: boolean;
+  // Legitimate email detection metrics
+  isFromTrustedDomain: boolean;
+  isEventEmail: boolean;
+  isNewsletterEmail: boolean;
+  hasProperUnsubscribe: boolean;
 }
 
 export interface NlpAnalysisResult {
