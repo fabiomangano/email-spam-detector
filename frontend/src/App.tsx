@@ -9,6 +9,7 @@ import {
   IconUpload,
   IconUserQuestion,
   IconLogout,
+  IconShield,
 } from "@tabler/icons-react";
 
 import { Burger, MantineProvider } from "@mantine/core";
@@ -50,21 +51,21 @@ function AppContent() {
         <Flex align="center" justify="space-between" h="100%">
           <Flex align="center" gap="md">
             <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-            <Title 
-              component={Link}
-              to="/"
-              order={1} 
-              size="h3" 
-              style={{ 
-                color: '#262626',
-                fontWeight: 800,
-                letterSpacing: '-0.025em',
-                textDecoration: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              SpamShield
-            </Title>
+            <Flex align="center" gap="xs" component={Link} to="/" style={{ textDecoration: 'none' }}>
+              <IconShield size={28} color="#262626" />
+              <Title 
+                order={1} 
+                size="h3" 
+                style={{ 
+                  color: '#262626',
+                  fontWeight: 800,
+                  letterSpacing: '-0.025em',
+                  cursor: 'pointer'
+                }}
+              >
+                SpamShield
+              </Title>
+            </Flex>
           </Flex>
           <Group gap="sm">
             <Text size="sm" c="dimmed">Welcome, {user?.username}</Text>
