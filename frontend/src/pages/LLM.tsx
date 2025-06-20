@@ -61,9 +61,12 @@ const LLM: React.FC = () => {
       const response = await fetch('/api/llm/config');
       if (!response.ok) throw new Error('Failed to load LLM configuration');
       const data = await response.json();
-      // Add activeProvider based on which provider is enabled
-      const activeProvider = data.providers.openai.enabled ? 'openai' : 
-                           data.providers.anthropic.enabled ? 'anthropic' : 'local';
+      // Add activeProvider - default to openai and set default states
+      const activeProvider = 'openai';
+      // Set OpenAI enabled by default, others disabled
+      data.providers.openai.enabled = true;
+      data.providers.anthropic.enabled = false;
+      data.providers.local.enabled = false;
       setConfig({ ...data, activeProvider });
     } catch (error) {
       setNotification({ type: 'error', message: 'Failed to load LLM configuration' });
@@ -197,18 +200,18 @@ const LLM: React.FC = () => {
         <Group gap="sm">
           <Button
             variant="outline"
-            color="blue"
+            color="gray"
             size="xs"
             leftSection={<IconTestPipe size={14} />}
             onClick={testConnection}
             loading={testing}
             styles={{
               root: {
-                borderColor: "#3b82f6",
-                color: "#3b82f6",
+                borderColor: "#262626",
+                color: "#262626",
                 backgroundColor: "#ffffff",
                 "&:hover": {
-                  backgroundColor: "#eff6ff",
+                  backgroundColor: "#f9fafb",
                 },
               },
             }}
@@ -330,6 +333,12 @@ const LLM: React.FC = () => {
                   <Switch
                     checked={config.providers.openai.enabled}
                     onChange={(event) => updateConfig('providers.openai.enabled', event.currentTarget.checked)}
+                    styles={{
+                      track: {
+                        backgroundColor: config.providers.openai.enabled ? '#262626' : '#e9ecef',
+                        borderColor: config.providers.openai.enabled ? '#262626' : '#e9ecef',
+                      },
+                    }}
                   />
                 </Group>
               </Card.Section>
@@ -369,6 +378,12 @@ const LLM: React.FC = () => {
                   <Switch
                     checked={config.providers.anthropic.enabled}
                     onChange={(event) => updateConfig('providers.anthropic.enabled', event.currentTarget.checked)}
+                    styles={{
+                      track: {
+                        backgroundColor: config.providers.anthropic.enabled ? '#262626' : '#e9ecef',
+                        borderColor: config.providers.anthropic.enabled ? '#262626' : '#e9ecef',
+                      },
+                    }}
                   />
                 </Group>
               </Card.Section>
@@ -408,6 +423,12 @@ const LLM: React.FC = () => {
                   <Switch
                     checked={config.providers.local.enabled}
                     onChange={(event) => updateConfig('providers.local.enabled', event.currentTarget.checked)}
+                    styles={{
+                      track: {
+                        backgroundColor: config.providers.local.enabled ? '#262626' : '#e9ecef',
+                        borderColor: config.providers.local.enabled ? '#262626' : '#e9ecef',
+                      },
+                    }}
                   />
                 </Group>
               </Card.Section>
