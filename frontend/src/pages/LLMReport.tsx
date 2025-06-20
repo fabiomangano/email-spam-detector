@@ -178,14 +178,27 @@ const LLMReport: React.FC = () => {
   return (
     <Container size="lg">
       <Flex justify="space-between" align="center" mb="xl">
-        <div>
-          <Title order={1} size="h2" mb="xs">
-            LLM Analysis Report
-          </Title>
-          <Text c="dimmed" size="sm">
-            Advanced spam detection results using {result.provider} ({result.model})
-          </Text>
-        </div>
+        <Group gap="md" align="flex-start">
+          <ThemeIcon
+            size={48}
+            radius="md"
+            color="teal"
+            style={{
+              backgroundColor: 'var(--mantine-color-teal-0)',
+              color: 'var(--mantine-color-teal-6)',
+            }}
+          >
+            <IconBrain size={24} />
+          </ThemeIcon>
+          <div>
+            <Title order={1} size="h2" mb="xs">
+              LLM Analysis Report
+            </Title>
+            <Text c="dimmed" size="sm">
+              Advanced spam detection results using {result.provider} ({result.model})
+            </Text>
+          </div>
+        </Group>
         <Button
           variant="outline"
           color="gray"

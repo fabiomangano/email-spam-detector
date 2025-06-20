@@ -13,6 +13,7 @@ import {
   Group,
   Divider,
   ScrollArea,
+  ThemeIcon,
 } from "@mantine/core";
 import { 
   IconArrowLeft, 
@@ -454,14 +455,27 @@ function Risk() {
   return (
     <div style={{ padding: "20px", paddingBottom: "120px", minHeight: "100vh" }}>
       <Flex justify="space-between" align="center" mb="xl">
-        <div>
-          <Title order={1} size="h2" mb="xs">
-            Security Risk Analysis
-          </Title>
-          <Text c="dimmed" size="sm">
-            Detailed risk assessment and security recommendations for your email
-          </Text>
-        </div>
+        <Group gap="md" align="flex-start">
+          <ThemeIcon
+            size={48}
+            radius="md"
+            color="red"
+            style={{
+              backgroundColor: 'var(--mantine-color-red-0)',
+              color: 'var(--mantine-color-red-6)',
+            }}
+          >
+            <IconShield size={24} />
+          </ThemeIcon>
+          <div>
+            <Title order={1} size="h2" mb="xs">
+              Security Risk Analysis
+            </Title>
+            <Text c="dimmed" size="sm">
+              Detailed risk assessment and security recommendations for your email
+            </Text>
+          </div>
+        </Group>
         <Group gap="sm">
           <Button 
             variant="outline"

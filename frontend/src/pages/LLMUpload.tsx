@@ -11,6 +11,7 @@ import {
   LoadingOverlay,
   Group,
   Flex,
+  ThemeIcon,
 } from '@mantine/core';
 import { IconUpload, IconRobot, IconAlertCircle, IconFileText, IconInfoCircle } from '@tabler/icons-react';
 import { useAnalysis } from '../contexts/AnalysisContext';
@@ -93,14 +94,27 @@ const LLMUpload: React.FC = () => {
         {analyzing && <LoadingOverlay visible />}
         
         <Flex justify="space-between" align="center" mb="xl">
-          <div>
-            <Title order={1} size="h2" mb="xs">
-              LLM Email Analysis
-            </Title>
-            <Text c="dimmed" size="sm">
-              Analyze emails using Large Language Models for advanced spam detection
-            </Text>
-          </div>
+          <Group gap="md" align="flex-start">
+            <ThemeIcon
+              size={48}
+              radius="md"
+              color="grape"
+              style={{
+                backgroundColor: 'var(--mantine-color-grape-0)',
+                color: 'var(--mantine-color-grape-6)',
+              }}
+            >
+              <IconRobot size={24} />
+            </ThemeIcon>
+            <div>
+              <Title order={1} size="h2" mb="xs">
+                LLM Email Analysis
+              </Title>
+              <Text c="dimmed" size="sm">
+                Analyze emails using Large Language Models for advanced spam detection
+              </Text>
+            </div>
+          </Group>
           <Group gap="sm">
             <Button
               variant="outline"

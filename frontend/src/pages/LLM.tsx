@@ -19,8 +19,9 @@ import {
   Tooltip,
   Flex,
   Textarea,
+  ThemeIcon,
 } from '@mantine/core';
-import { IconDeviceFloppy, IconRestore, IconInfoCircle, IconTestPipe } from '@tabler/icons-react';
+import { IconDeviceFloppy, IconRestore, IconInfoCircle, IconTestPipe, IconBrain } from '@tabler/icons-react';
 
 interface LLMConfig {
   providers: {
@@ -191,14 +192,27 @@ const LLM: React.FC = () => {
         `}
       </style>
       <Flex justify="space-between" align="center" mb="xl">
-        <div>
-          <Title order={1} size="h2" mb="xs">
-            LLM Configuration
-          </Title>
-          <Text c="dimmed" size="sm">
-            Configure Large Language Model providers and settings for email analysis
-          </Text>
-        </div>
+        <Group gap="md" align="flex-start">
+          <ThemeIcon
+            size={48}
+            radius="md"
+            color="orange"
+            style={{
+              backgroundColor: 'var(--mantine-color-orange-0)',
+              color: 'var(--mantine-color-orange-6)',
+            }}
+          >
+            <IconBrain size={24} />
+          </ThemeIcon>
+          <div>
+            <Title order={1} size="h2" mb="xs">
+              LLM Configuration
+            </Title>
+            <Text c="dimmed" size="sm">
+              Configure Large Language Model providers and settings for email analysis
+            </Text>
+          </div>
+        </Group>
         <Group gap="sm">
           <Button
             variant="outline"

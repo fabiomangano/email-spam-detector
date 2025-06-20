@@ -17,6 +17,7 @@ import {
   ActionIcon,
   Tooltip,
   Flex,
+  ThemeIcon,
 } from '@mantine/core';
 import { IconSettings, IconDeviceFloppy, IconRestore, IconInfoCircle } from '@tabler/icons-react';
 
@@ -185,14 +186,27 @@ const Pipeline: React.FC = () => {
         `}
       </style>
       <Flex justify="space-between" align="center" mb="xl">
-        <div>
-          <Title order={1} size="h2" mb="xs">
-            Pipeline Configuration
-          </Title>
-          <Text c="dimmed" size="sm">
-            Configure spam detection pipeline parameters, thresholds, and scoring weights
-          </Text>
-        </div>
+        <Group gap="md" align="flex-start">
+          <ThemeIcon
+            size={48}
+            radius="md"
+            color="green"
+            style={{
+              backgroundColor: 'var(--mantine-color-green-0)',
+              color: 'var(--mantine-color-green-6)',
+            }}
+          >
+            <IconSettings size={24} />
+          </ThemeIcon>
+          <div>
+            <Title order={1} size="h2" mb="xs">
+              Pipeline Configuration
+            </Title>
+            <Text c="dimmed" size="sm">
+              Configure spam detection pipeline parameters, thresholds, and scoring weights
+            </Text>
+          </div>
+        </Group>
         <Group gap="sm">
           <Button
             variant="outline"

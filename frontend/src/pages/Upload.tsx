@@ -7,6 +7,7 @@ import {
   Group,
   Button,
   Modal,
+  ThemeIcon,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { IconShield, IconCloudUpload } from "@tabler/icons-react";
@@ -53,14 +54,27 @@ function Upload() {
       <Stack gap="lg" style={{ flex: 1, height: 0 }}>
         {/* Header con titolo e azioni */}
         <Flex justify="space-between" align="center" mb="lg">
-          <div>
-            <Title order={1} size="h2" mb="xs">
-              Email Security Analysis
-            </Title>
-            <Text c="dimmed" size="sm">
-              Upload an email to analyze its security and detect potential threats
-            </Text>
-          </div>
+          <Group gap="md" align="flex-start">
+            <ThemeIcon
+              size={48}
+              radius="md"
+              color="blue"
+              style={{
+                backgroundColor: 'var(--mantine-color-blue-0)',
+                color: 'var(--mantine-color-blue-6)',
+              }}
+            >
+              <IconCloudUpload size={24} />
+            </ThemeIcon>
+            <div>
+              <Title order={1} size="h2" mb="xs">
+                Email Security Analysis
+              </Title>
+              <Text c="dimmed" size="sm">
+                Upload an email to analyze its security and detect potential threats
+              </Text>
+            </div>
+          </Group>
           
           <Group gap="sm">
             {parsedData && (

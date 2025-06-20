@@ -12,6 +12,7 @@ import {
   Stack,
   ScrollArea,
   Divider,
+  ThemeIcon,
 } from "@mantine/core";
 import { 
   IconArrowLeft, 
@@ -21,6 +22,7 @@ import {
   IconCode,
   IconRefresh,
   IconCopy,
+  IconChartBar,
 } from "@tabler/icons-react";
 import { useAnalysis } from "../contexts/AnalysisContext";
 import { Link, useNavigate } from "react-router";
@@ -208,14 +210,27 @@ function Report() {
   return (
     <div style={{ padding: "20px", paddingBottom: "80px", height: "100vh", display: "flex", flexDirection: "column" }}>
       <Flex justify="space-between" align="center" mb="xl">
-        <div>
-          <Title order={1} size="h2" mb="xs">
-            Analysis Report
-          </Title>
-          <Text c="dimmed" size="sm">
-            Comprehensive security analysis results and technical details of your email
-          </Text>
-        </div>
+        <Group gap="md" align="flex-start">
+          <ThemeIcon
+            size={48}
+            radius="md"
+            color="violet"
+            style={{
+              backgroundColor: 'var(--mantine-color-violet-0)',
+              color: 'var(--mantine-color-violet-6)',
+            }}
+          >
+            <IconChartBar size={24} />
+          </ThemeIcon>
+          <div>
+            <Title order={1} size="h2" mb="xs">
+              Analysis Report
+            </Title>
+            <Text c="dimmed" size="sm">
+              Comprehensive security analysis results and technical details of your email
+            </Text>
+          </div>
+        </Group>
         <Group gap="sm">
           <Button 
             variant="outline"
