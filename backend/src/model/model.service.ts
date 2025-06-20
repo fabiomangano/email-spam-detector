@@ -23,7 +23,7 @@ export interface TrainingResult {
 
 export interface TrainingSession {
   id: string;
-  status: 'training' | 'completed' | 'error';
+  status: 'uploading' | 'training' | 'completed' | 'error';
   progress: number;
   message: string;
   error?: string;
@@ -77,7 +77,7 @@ export class ModelService {
     // Create training session
     const session: TrainingSession = {
       id: trainingId,
-      status: 'training',
+      status: 'uploading',
       progress: 0,
       message: 'Starting training process...',
       startTime: new Date(),

@@ -19,7 +19,6 @@ import {
   Flex,
   ThemeIcon,
   FileInput,
-  Progress,
   Badge,
 } from '@mantine/core';
 import { IconSettings, IconDeviceFloppy, IconRestore, IconInfoCircle, IconBrain, IconUpload, IconFileZip, IconProgress, IconPlayerPlay, IconCheck, IconX } from '@tabler/icons-react';
@@ -85,8 +84,22 @@ const Pipeline: React.FC = () => {
   // Model training state
   const [spamFile, setSpamFile] = useState<File | null>(null);
   const [hamFile, setHamFile] = useState<File | null>(null);
+  
+  // Handle file uploads with notifications
+  const handleSpamFileChange = (file: File | null) => {
+    setSpamFile(file);
+    if (file) {
+      setNotification({ type: 'success', message: `Spam file uploaded: ${file.name}` });
+    }
+  };
+  
+  const handleHamFileChange = (file: File | null) => {
+    setHamFile(file);
+    if (file) {
+      setNotification({ type: 'success', message: `Ham file uploaded: ${file.name}` });
+    }
+  };
   const [isTraining, setIsTraining] = useState(false);
-  const [trainingProgress, setTrainingProgress] = useState(0);
   const [trainingStatus, setTrainingStatus] = useState<'idle' | 'uploading' | 'training' | 'completed' | 'error'>('idle');
   const [trainingMessage, setTrainingMessage] = useState('');
 
@@ -163,7 +176,6 @@ const Pipeline: React.FC = () => {
 
     setIsTraining(true);
     setTrainingStatus('uploading');
-    setTrainingProgress(0);
     setTrainingMessage('Starting training process...');
 
     try {
@@ -185,15 +197,10 @@ const Pipeline: React.FC = () => {
 
       // Start polling for progress
       pollTrainingProgress(trainingId);
-      
-      setTrainingStatus('training');
-      setTrainingMessage('Model training started...');
-      setNotification({ type: 'success', message: 'Training started successfully' });
 
     } catch (error) {
       setTrainingStatus('error');
       setTrainingMessage('Failed to start training');
-      setNotification({ type: 'error', message: 'Failed to start model training' });
       setIsTraining(false);
     }
   };
@@ -205,8 +212,8 @@ const Pipeline: React.FC = () => {
         if (!response.ok) throw new Error('Failed to get training status');
         
         const status = await response.json();
+        console.log('Training status received:', status); // Debug log
         
-        setTrainingProgress(status.progress || 0);
         setTrainingMessage(status.message || 'Training in progress...');
         
         if (status.status === 'completed') {
@@ -214,31 +221,28 @@ const Pipeline: React.FC = () => {
           setTrainingMessage('Model training completed successfully!');
           setIsTraining(false);
           clearInterval(pollInterval);
-          setNotification({ type: 'success', message: 'Model training completed' });
         } else if (status.status === 'error') {
           setTrainingStatus('error');
           setTrainingMessage(status.error || 'Training failed');
           setIsTraining(false);
           clearInterval(pollInterval);
-          setNotification({ type: 'error', message: 'Model training failed' });
         }
       } catch (error) {
         setTrainingStatus('error');
         setTrainingMessage('Failed to get training status');
         setIsTraining(false);
         clearInterval(pollInterval);
-        setNotification({ type: 'error', message: 'Lost connection to training process' });
       }
-    }, 2000); // Poll every 2 seconds
+    }, 500); // Poll every 500ms for better responsiveness
   };
 
   const resetTraining = () => {
     setSpamFile(null);
     setHamFile(null);
     setIsTraining(false);
-    setTrainingProgress(0);
     setTrainingStatus('idle');
     setTrainingMessage('');
+    setNotification({ type: 'success', message: 'Training data cleared' });
   };
 
   const getTrainingStatusBadge = () => {
@@ -659,24 +663,15 @@ const Pipeline: React.FC = () => {
             {/* Training Status Card */}
             <Card withBorder>
               <Card.Section withBorder inheritPadding py="xs">
-                <Group justify="space-between">
-                  <Text fw={500}>Model Training Status</Text>
-                  {getTrainingStatusBadge()}
-                </Group>
+                <Text fw={500}>Model Training Status</Text>
               </Card.Section>
               <Stack gap="md" p="lg">
                 {isTraining && (
-                  <>
-                    <Progress 
-                      value={trainingProgress} 
-                      color={trainingStatus === 'error' ? 'red' : 'blue'}
-                      size="lg"
-                      animated={trainingStatus === 'training'}
-                    />
-                    <Text size="sm" c="dimmed" ta="center">
-                      {trainingMessage} ({trainingProgress}%)
+                  <Group justify="center" align="center" gap="sm">
+                    <Text size="sm" fw={500} c="blue">
+                      Status: {trainingMessage || 'Training in progress...'}
                     </Text>
-                  </>
+                  </Group>
                 )}
                 {!isTraining && trainingStatus === 'idle' && (
                   <Text size="sm" c="dimmed" ta="center">
@@ -719,7 +714,7 @@ const Pipeline: React.FC = () => {
                       placeholder="Select ZIP file..."
                       accept=".zip"
                       value={spamFile}
-                      onChange={setSpamFile}
+                      onChange={handleSpamFileChange}
                       leftSection={<IconUpload size={16} />}
                       disabled={isTraining}
                       styles={{
@@ -755,7 +750,7 @@ const Pipeline: React.FC = () => {
                       placeholder="Select ZIP file..."
                       accept=".zip"
                       value={hamFile}
-                      onChange={setHamFile}
+                      onChange={handleHamFileChange}
                       leftSection={<IconUpload size={16} />}
                       disabled={isTraining}
                       styles={{
