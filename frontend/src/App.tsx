@@ -24,6 +24,7 @@ import LLM from "./pages/LLM";
 import LLMUpload from "./pages/LLMUpload";
 import LLMReport from "./pages/LLMReport";
 import Login from "./pages/Login";
+import Home from "./pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AnalysisProvider, useAnalysis } from "./contexts/AnalysisContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
@@ -50,12 +51,16 @@ function AppContent() {
           <Flex align="center" gap="md">
             <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
             <Title 
+              component={Link}
+              to="/"
               order={1} 
               size="h3" 
               style={{ 
                 color: '#262626',
                 fontWeight: 800,
-                letterSpacing: '-0.025em'
+                letterSpacing: '-0.025em',
+                textDecoration: 'none',
+                cursor: 'pointer'
               }}
             >
               SpamShield
@@ -318,7 +323,8 @@ function AppContent() {
 
       <AppShell.Main style={{ backgroundColor: "#fafafa", height: "100vh" }}>
         <Routes>
-          <Route index element={<ProtectedRoute><Upload /></ProtectedRoute>} />
+          <Route index element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="upload" element={<ProtectedRoute><Upload /></ProtectedRoute>} />
           <Route path="risk" element={<ProtectedRoute><Risk /></ProtectedRoute>} />
           <Route path="report" element={<ProtectedRoute><Report /></ProtectedRoute>} />
@@ -326,6 +332,8 @@ function AppContent() {
           <Route path="llm" element={<ProtectedRoute><LLM /></ProtectedRoute>} />
           <Route path="llm-upload" element={<ProtectedRoute><LLMUpload /></ProtectedRoute>} />
           <Route path="llm-report" element={<ProtectedRoute><LLMReport /></ProtectedRoute>} />
+          <Route path="guides" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="about" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         </Routes>
       </AppShell.Main>
 

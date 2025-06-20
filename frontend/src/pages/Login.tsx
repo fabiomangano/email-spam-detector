@@ -53,7 +53,7 @@ const Login: React.FC = () => {
 
     const success = await login(username, password);
     if (success) {
-      navigate('/upload');
+      navigate('/');
     }
   };
 
