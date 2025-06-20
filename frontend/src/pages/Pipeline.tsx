@@ -18,8 +18,11 @@ import {
   Tooltip,
   Flex,
   ThemeIcon,
+  FileInput,
+  Progress,
+  Badge,
 } from '@mantine/core';
-import { IconSettings, IconDeviceFloppy, IconRestore, IconInfoCircle } from '@tabler/icons-react';
+import { IconSettings, IconDeviceFloppy, IconRestore, IconInfoCircle, IconBrain, IconUpload, IconFileZip, IconProgress, IconPlayerPlay, IconCheck, IconX } from '@tabler/icons-react';
 
 interface SpamDetectionConfig {
   scoring: {
@@ -78,6 +81,14 @@ const Pipeline: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  
+  // Model training state
+  const [spamFile, setSpamFile] = useState<File | null>(null);
+  const [hamFile, setHamFile] = useState<File | null>(null);
+  const [isTraining, setIsTraining] = useState(false);
+  const [trainingProgress, setTrainingProgress] = useState(0);
+  const [trainingStatus, setTrainingStatus] = useState<'idle' | 'uploading' | 'training' | 'completed' | 'error'>('idle');
+  const [trainingMessage, setTrainingMessage] = useState('');
 
   useEffect(() => {
     loadConfig();
@@ -145,6 +156,106 @@ const Pipeline: React.FC = () => {
     
     current[keys[keys.length - 1]] = value;
     setConfig(newConfig);
+  };
+
+  // Model training functions
+  const startTraining = async () => {
+
+    setIsTraining(true);
+    setTrainingStatus('uploading');
+    setTrainingProgress(0);
+    setTrainingMessage('Starting training process...');
+
+    try {
+      const formData = new FormData();
+      if (spamFile) formData.append('spam_file', spamFile);
+      if (hamFile) formData.append('ham_file', hamFile);
+
+      const response = await fetch('/api/train-model', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to start training');
+      }
+
+      const result = await response.json();
+      const trainingId = result.training_id;
+
+      // Start polling for progress
+      pollTrainingProgress(trainingId);
+      
+      setTrainingStatus('training');
+      setTrainingMessage('Model training started...');
+      setNotification({ type: 'success', message: 'Training started successfully' });
+
+    } catch (error) {
+      setTrainingStatus('error');
+      setTrainingMessage('Failed to start training');
+      setNotification({ type: 'error', message: 'Failed to start model training' });
+      setIsTraining(false);
+    }
+  };
+
+  const pollTrainingProgress = async (trainingId: string) => {
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/train-model/status/${trainingId}`);
+        if (!response.ok) throw new Error('Failed to get training status');
+        
+        const status = await response.json();
+        
+        setTrainingProgress(status.progress || 0);
+        setTrainingMessage(status.message || 'Training in progress...');
+        
+        if (status.status === 'completed') {
+          setTrainingStatus('completed');
+          setTrainingMessage('Model training completed successfully!');
+          setIsTraining(false);
+          clearInterval(pollInterval);
+          setNotification({ type: 'success', message: 'Model training completed' });
+        } else if (status.status === 'error') {
+          setTrainingStatus('error');
+          setTrainingMessage(status.error || 'Training failed');
+          setIsTraining(false);
+          clearInterval(pollInterval);
+          setNotification({ type: 'error', message: 'Model training failed' });
+        }
+      } catch (error) {
+        setTrainingStatus('error');
+        setTrainingMessage('Failed to get training status');
+        setIsTraining(false);
+        clearInterval(pollInterval);
+        setNotification({ type: 'error', message: 'Lost connection to training process' });
+      }
+    }, 2000); // Poll every 2 seconds
+  };
+
+  const resetTraining = () => {
+    setSpamFile(null);
+    setHamFile(null);
+    setIsTraining(false);
+    setTrainingProgress(0);
+    setTrainingStatus('idle');
+    setTrainingMessage('');
+  };
+
+  const getTrainingStatusBadge = () => {
+    switch (trainingStatus) {
+      case 'idle':
+        return <Badge color="gray" variant="light">Ready</Badge>;
+      case 'uploading':
+        return <Badge color="blue" variant="light">Uploading</Badge>;
+      case 'training':
+        return <Badge color="yellow" variant="light">Training</Badge>;
+      case 'completed':
+        return <Badge color="green" variant="light">Completed</Badge>;
+      case 'error':
+        return <Badge color="red" variant="light">Error</Badge>;
+      default:
+        return <Badge color="gray" variant="light">Unknown</Badge>;
+    }
   };
 
   if (loading) {
@@ -288,6 +399,7 @@ const Pipeline: React.FC = () => {
           <Tabs.Tab value="technical">Technical Penalties</Tabs.Tab>
           <Tabs.Tab value="thresholds">Technical Thresholds</Tabs.Tab>
           <Tabs.Tab value="nlp">NLP Configuration</Tabs.Tab>
+          <Tabs.Tab value="training" leftSection={<IconBrain size={16} />}>Model Training</Tabs.Tab>
         </Tabs.List>
 
         <Tabs.Panel value="scoring">
@@ -538,6 +650,194 @@ const Pipeline: React.FC = () => {
               </Card>
             </Stack>
           </ScrollArea>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="training">
+          <Stack gap="lg">
+            {/* Training Status Card */}
+            <Card withBorder>
+              <Card.Section withBorder inheritPadding py="xs">
+                <Group justify="space-between">
+                  <Text fw={500}>Model Training Status</Text>
+                  {getTrainingStatusBadge()}
+                </Group>
+              </Card.Section>
+              <Stack gap="md" p="lg">
+                {isTraining && (
+                  <>
+                    <Progress 
+                      value={trainingProgress} 
+                      color={trainingStatus === 'error' ? 'red' : 'blue'}
+                      size="lg"
+                      animated={trainingStatus === 'training'}
+                    />
+                    <Text size="sm" c="dimmed" ta="center">
+                      {trainingMessage} ({trainingProgress}%)
+                    </Text>
+                  </>
+                )}
+                {!isTraining && trainingStatus === 'idle' && (
+                  <Text size="sm" c="dimmed" ta="center">
+                    Ready to start model training. Optionally upload new training data or use existing datasets.
+                  </Text>
+                )}
+                {!isTraining && trainingStatus === 'completed' && (
+                  <Group justify="center">
+                    <IconCheck size={24} color="green" />
+                    <Text size="sm" c="green" fw={500}>
+                      Model training completed successfully!
+                    </Text>
+                  </Group>
+                )}
+                {!isTraining && trainingStatus === 'error' && (
+                  <Group justify="center">
+                    <IconX size={24} color="red" />
+                    <Text size="sm" c="red" fw={500}>
+                      Training failed: {trainingMessage}
+                    </Text>
+                  </Group>
+                )}
+              </Stack>
+            </Card>
+
+            {/* File Upload Cards */}
+            <Grid>
+              <Grid.Col span={6}>
+                <Card withBorder>
+                  <Card.Section withBorder inheritPadding py="xs">
+                    <Group>
+                      <IconFileZip size={20} color="red" />
+                      <Text fw={500}>Spam Emails</Text>
+                    </Group>
+                  </Card.Section>
+                  <Stack gap="md" p="lg">
+                    <FileInput
+                      label="Upload Spam Training Data"
+                      description="ZIP file containing spam email samples"
+                      placeholder="Select ZIP file..."
+                      accept=".zip"
+                      value={spamFile}
+                      onChange={setSpamFile}
+                      leftSection={<IconUpload size={16} />}
+                      disabled={isTraining}
+                      styles={{
+                        input: {
+                          borderColor: spamFile ? '#22c55e' : undefined,
+                        },
+                      }}
+                    />
+                    {spamFile && (
+                      <Group gap="xs">
+                        <IconCheck size={16} color="green" />
+                        <Text size="sm" c="green">
+                          {spamFile.name} ({(spamFile.size / 1024 / 1024).toFixed(1)} MB)
+                        </Text>
+                      </Group>
+                    )}
+                  </Stack>
+                </Card>
+              </Grid.Col>
+
+              <Grid.Col span={6}>
+                <Card withBorder>
+                  <Card.Section withBorder inheritPadding py="xs">
+                    <Group>
+                      <IconFileZip size={20} color="green" />
+                      <Text fw={500}>Ham Emails</Text>
+                    </Group>
+                  </Card.Section>
+                  <Stack gap="md" p="lg">
+                    <FileInput
+                      label="Upload Ham Training Data"
+                      description="ZIP file containing legitimate email samples"
+                      placeholder="Select ZIP file..."
+                      accept=".zip"
+                      value={hamFile}
+                      onChange={setHamFile}
+                      leftSection={<IconUpload size={16} />}
+                      disabled={isTraining}
+                      styles={{
+                        input: {
+                          borderColor: hamFile ? '#22c55e' : undefined,
+                        },
+                      }}
+                    />
+                    {hamFile && (
+                      <Group gap="xs">
+                        <IconCheck size={16} color="green" />
+                        <Text size="sm" c="green">
+                          {hamFile.name} ({(hamFile.size / 1024 / 1024).toFixed(1)} MB)
+                        </Text>
+                      </Group>
+                    )}
+                  </Stack>
+                </Card>
+              </Grid.Col>
+            </Grid>
+
+            {/* Training Controls */}
+            <Card withBorder>
+              <Card.Section withBorder inheritPadding py="xs">
+                <Group justify="space-between">
+                  <Text fw={500}>Training Controls</Text>
+                  <Tooltip label="Start model training with uploaded data">
+                    <ActionIcon variant="subtle" size="sm">
+                      <IconInfoCircle size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                </Group>
+              </Card.Section>
+              <Group justify="space-between" p="lg">
+                <Text size="sm" c="dimmed">
+                  Start the model training process. Upload new email datasets if available, or use existing data.
+                  Training is asynchronous and progress will be monitored automatically.
+                </Text>
+                <Group gap="sm">
+                  <Button
+                    variant="outline"
+                    color="gray"
+                    size="sm"
+                    onClick={resetTraining}
+                    disabled={isTraining}
+                    styles={{
+                      root: {
+                        borderColor: "#262626",
+                        color: "#262626",
+                        backgroundColor: "#ffffff",
+                        "&:hover": {
+                          backgroundColor: "#f9fafb",
+                        },
+                      },
+                    }}
+                  >
+                    Reset
+                  </Button>
+                  <Button
+                    variant="filled"
+                    size="sm"
+                    leftSection={<IconPlayerPlay size={16} />}
+                    onClick={startTraining}
+                    loading={isTraining}
+                    styles={{
+                      root: {
+                        backgroundColor: "#262626",
+                        color: "#ffffff",
+                        "&:hover": {
+                          backgroundColor: "#404040",
+                        },
+                        "&:disabled": {
+                          backgroundColor: "#d1d5db",
+                          color: "#9ca3af",
+                        },
+                      },
+                    }}
+                  >
+                    {isTraining ? 'Training...' : 'Start Training'}
+                  </Button>
+                </Group>
+              </Group>
+            </Card>
+          </Stack>
         </Tabs.Panel>
       </Tabs>
     </Container>
