@@ -26,6 +26,7 @@ import LLMUpload from "./pages/LLMUpload";
 import LLMReport from "./pages/LLMReport";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import About from "./pages/About";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AnalysisProvider, useAnalysis } from "./contexts/AnalysisContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
@@ -309,7 +310,7 @@ function AppContent() {
             />
             <NavLink
               component={Link}
-              to="/dashboard"
+              to="/about"
               label="About"
               leftSection={<IconInfoHexagon size={16} stroke={1.5} />}
               style={{
@@ -336,7 +337,7 @@ function AppContent() {
           <Route path="llm-upload" element={<ProtectedRoute><LLMUpload /></ProtectedRoute>} />
           <Route path="llm-report" element={<ProtectedRoute><LLMReport /></ProtectedRoute>} />
           <Route path="guides" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-          <Route path="about" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+          <Route path="about" element={<ProtectedRoute><About /></ProtectedRoute>} />
         </Routes>
       </AppShell.Main>
 
