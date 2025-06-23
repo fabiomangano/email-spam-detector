@@ -1,5 +1,6 @@
 import "@mantine/core/styles.css";
 import "@mantine/dropzone/styles.css";
+import "@mantine/notifications/styles.css";
 import { Divider, NavLink, Title, Flex, Text, Button, Group } from "@mantine/core";
 import {
   IconChartBar,
@@ -13,6 +14,7 @@ import {
 } from "@tabler/icons-react";
 
 import { Burger, MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
 import { Routes, Route } from "react-router";
 import { AppShell /* Burger */ } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -355,6 +357,7 @@ function AppContent() {
 function App() {
   return (
     <MantineProvider theme={theme}>
+      <Notifications />
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />

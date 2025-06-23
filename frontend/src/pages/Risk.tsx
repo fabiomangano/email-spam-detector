@@ -14,6 +14,8 @@ import {
   Divider,
   ScrollArea,
   ThemeIcon,
+  Modal,
+  Paper,
 } from "@mantine/core";
 import { 
   IconArrowLeft, 
@@ -26,9 +28,17 @@ import {
   IconEye,
   IconLock,
   IconExclamationCircle,
+  IconThumbUp,
+  IconThumbDown,
+  IconMessageCircle,
+  IconCheck,
+  IconX,
 } from "@tabler/icons-react";
+import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import { useAnalysis } from "../contexts/AnalysisContext";
 import { Link, useNavigate } from "react-router";
+import { useState } from "react";
 
 function Risk() {
   const { 
@@ -41,9 +51,12 @@ function Risk() {
     setActiveTab,
     setError,
     setLoading,
-    setAnalyzing
+    setAnalyzing,
+    uploadedFilename
   } = useAnalysis();
   const navigate = useNavigate();
+  const [feedbackModalOpened, { open: openFeedbackModal, close: closeFeedbackModal }] = useDisclosure(false);
+  const [submittingFeedback, setSubmittingFeedback] = useState(false);
 
   const handleNewAnalysis = () => {
     // Reset all analysis and upload data
@@ -57,6 +70,56 @@ function Risk() {
     setLoading(false);
     setAnalyzing(false);
     navigate('/upload');
+  };
+
+  const handleFeedback = async (isSpam: boolean) => {
+    if (!uploadedFilename) {
+      notifications.show({
+        title: "Error",
+        message: "No file available for feedback",
+        color: "red",
+      });
+      return;
+    }
+
+    setSubmittingFeedback(true);
+    try {
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          filename: uploadedFilename,
+          isSpam: isSpam,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit feedback');
+      }
+
+      const result = await response.json();
+      
+      notifications.show({
+        title: "Feedback Submitted",
+        message: `Email moved to ${isSpam ? 'spam' : 'ham'} folder for training. Thank you for your feedback!`,
+        color: "green",
+        icon: <IconCheck size={16} />,
+      });
+
+      closeFeedbackModal();
+    } catch (error) {
+      console.error('Error submitting feedback:', error);
+      notifications.show({
+        title: "Error",
+        message: "Failed to submit feedback. Please try again.",
+        color: "red",
+        icon: <IconX size={16} />,
+      });
+    } finally {
+      setSubmittingFeedback(false);
+    }
   };
 
   const getRiskColor = (riskLevel: string) => {
@@ -480,6 +543,24 @@ function Risk() {
           <Button 
             variant="outline"
             size="xs"
+            onClick={openFeedbackModal}
+            leftSection={<IconMessageCircle size={14} />}
+            styles={{
+              root: {
+                borderColor: "#2563eb",
+                color: "#2563eb",
+                backgroundColor: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#eff6ff",
+                },
+              },
+            }}
+          >
+            Provide Feedback
+          </Button>
+          <Button 
+            variant="outline"
+            size="xs"
             onClick={handleNewAnalysis}
             leftSection={<IconRefresh size={14} />}
             styles={{
@@ -772,6 +853,87 @@ function Risk() {
             </Stack>
           </Grid.Col>
         </Grid>
+        
+        {/* Feedback Modal */}
+        <Modal
+          opened={feedbackModalOpened}
+          onClose={closeFeedbackModal}
+          title="Provide Email Classification Feedback"
+          size="md"
+          centered
+        >
+          <Stack gap="lg">
+            <Text size="sm" c="dimmed">
+              Help improve our spam detection by providing feedback on this email analysis.
+              Your feedback will be used to enhance the model's accuracy.
+            </Text>
+            
+            <Paper p="md" style={{ backgroundColor: '#f8f9fa', border: '1px solid #e9ecef' }}>
+              <Text size="sm" fw={500} mb="xs">Current Analysis:</Text>
+              <Group gap="xs" align="center">
+                {getRiskIcon(analysisResult?.riskLevel || 'low')}
+                <Badge 
+                  color={getRiskColor(analysisResult?.riskLevel || 'low')}
+                  size="sm"
+                >
+                  {(analysisResult?.riskLevel || 'low').toUpperCase()} RISK
+                </Badge>
+                <Text size="sm" c="dimmed">
+                  ({Math.round((analysisResult?.overallScore || 0) * 100)}% spam probability)
+                </Text>
+              </Group>
+            </Paper>
+            
+            <div>
+              <Text size="sm" fw={600} mb="md">
+                In your opinion, is this email spam or legitimate?
+              </Text>
+              
+              <Group gap="md" grow>
+                <Button
+                  color="red"
+                  leftSection={<IconThumbDown size={16} />}
+                  onClick={() => handleFeedback(true)}
+                  loading={submittingFeedback}
+                  disabled={submittingFeedback}
+                  styles={{
+                    root: {
+                      backgroundColor: '#ef4444',
+                      "&:hover": {
+                        backgroundColor: '#dc2626',
+                      },
+                    },
+                  }}
+                >
+                  This is SPAM
+                </Button>
+                
+                <Button
+                  color="green"
+                  leftSection={<IconThumbUp size={16} />}
+                  onClick={() => handleFeedback(false)}
+                  loading={submittingFeedback}
+                  disabled={submittingFeedback}
+                  styles={{
+                    root: {
+                      backgroundColor: '#22c55e',
+                      "&:hover": {
+                        backgroundColor: '#16a34a',
+                      },
+                    },
+                  }}
+                >
+                  This is LEGITIMATE
+                </Button>
+              </Group>
+            </div>
+            
+            <Text size="xs" c="dimmed" style={{ fontStyle: 'italic' }}>
+              Note: The email file will be moved to the appropriate training folder 
+              (spam or ham) in the SpamAssassin dataset for future model training.
+            </Text>
+          </Stack>
+        </Modal>
     </div>
   );
 }

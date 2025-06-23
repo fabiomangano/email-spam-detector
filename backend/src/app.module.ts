@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { PipelineModule } from './pipeline/pipeline.module';
 import { ModelModule } from './model/model.module';
 import { LLMModule } from './modules/llm/llm.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { LLMModule } from './modules/llm/llm.module';
     PipelineModule,
     ModelModule,
     LLMModule,
+    FeedbackModule,
   ],
   controllers: [AppController, UploadController],
   providers: [AppService],
