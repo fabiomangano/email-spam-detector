@@ -33,6 +33,7 @@ import {
   IconMessageCircle,
   IconCheck,
   IconX,
+  IconClock,
 } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
@@ -158,6 +159,7 @@ function Risk() {
     const explanations = [];
     const technical = analysisResult.details.technical;
     const nlp = analysisResult.details.nlp;
+    const behavioral = analysisResult.details.behavioral;
 
     // Technical Risk Factors
     if (technical.linkRatio > 0.3) {
@@ -303,6 +305,109 @@ function Risk() {
         impact: 'Spam-like formatting patterns',
         metrics: 'Multiple exclamation marks detected'
       });
+    }
+
+    // Behavioral Risk Factors
+    if (behavioral) {
+      if (behavioral.isNewSender) {
+        explanations.push({
+          category: 'Behavioral',
+          severity: 'medium',
+          title: 'New Sender Account',
+          description: 'This sender has no previous email history in our system. New accounts are sometimes used by spammers to avoid reputation-based filtering. While many legitimate senders are also new, this factor contributes to overall risk assessment.',
+          impact: 'Increased scrutiny required for new senders',
+          metrics: behavioral.firstSeenDate ? `First seen: ${new Date(behavioral.firstSeenDate).toLocaleDateString()}` : 'No previous email history'
+        });
+      }
+
+      if (behavioral.emailCountLast24h > 20) {
+        explanations.push({
+          category: 'Behavioral',
+          severity: behavioral.emailCountLast24h > 50 ? 'high' : 'medium',
+          title: 'High Volume Email Activity',
+          description: `This sender has sent ${behavioral.emailCountLast24h} emails in the last 24 hours, which is ${behavioral.emailCountLast24h > 50 ? 'extremely' : 'significantly'} higher than typical personal communication patterns. High-volume sending is characteristic of automated spam campaigns or bulk email operations.`,
+          impact: 'Strong indicator of mass mailing or spam operation',
+          metrics: `${behavioral.emailCountLast24h} emails sent in last 24h, ${behavioral.emailCountLast7d} in last 7 days`
+        });
+      }
+
+      if (behavioral.burstRatio > 3) {
+        explanations.push({
+          category: 'Behavioral',
+          severity: behavioral.burstRatio > 10 ? 'high' : behavioral.burstRatio > 5 ? 'medium' : 'low',
+          title: 'Burst Sending Pattern Detected',
+          description: `The sender shows a burst ratio of ${behavioral.burstRatio.toFixed(2)}x, indicating irregular sending patterns with sudden spikes in email volume. This behavior is typical of automated bot systems or compromised accounts used for spam distribution.`,
+          impact: 'Potential automated or compromised account activity',
+          metrics: `Burst ratio: ${behavioral.burstRatio.toFixed(2)}x above normal patterns`
+        });
+      }
+
+      if (behavioral.contentSimilarityRate > 0.7) {
+        explanations.push({
+          category: 'Behavioral',
+          severity: behavioral.contentSimilarityRate > 0.9 ? 'high' : 'medium',
+          title: 'High Content Similarity Rate',
+          description: `${Math.round(behavioral.contentSimilarityRate * 100)}% of this sender's recent emails contain very similar content. This pattern indicates potential mass mailing campaigns where the same or nearly identical messages are sent to multiple recipients, which is characteristic of spam operations.`,
+          impact: 'Strong evidence of mass mailing or spam campaign',
+          metrics: `Content similarity: ${Math.round(behavioral.contentSimilarityRate * 100)}% across recent emails`
+        });
+      }
+
+      if (behavioral.timeAnomalyScore > 0.5) {
+        explanations.push({
+          category: 'Behavioral',
+          severity: behavioral.timeAnomalyScore > 0.8 ? 'high' : 'medium',
+          title: 'Unusual Sending Time Pattern',
+          description: `This email was sent at an unusual time (${behavioral.hourOfDay}:00 on ${behavioral.dayOfWeek}) with an anomaly score of ${Math.round(behavioral.timeAnomalyScore * 100)}%. Automated spam systems often send emails at irregular hours or follow non-human timing patterns.`,
+          impact: 'Potential automated or non-human sending pattern',
+          metrics: `Time anomaly score: ${Math.round(behavioral.timeAnomalyScore * 100)}% (sent at ${behavioral.hourOfDay}:00, ${behavioral.dayOfWeek})`
+        });
+      }
+
+      if (behavioral.subjectChangeRate > 0.7) {
+        explanations.push({
+          category: 'Behavioral',
+          severity: behavioral.subjectChangeRate > 0.9 ? 'medium' : 'low',
+          title: 'High Subject Line Variation',
+          description: `${Math.round(behavioral.subjectChangeRate * 100)}% of this sender's recent emails have different subject lines. While legitimate senders can have varied subjects, extremely high variation rates can indicate attempts to evade spam filters through subject line randomization.`,
+          impact: 'Potential spam filter evasion technique',
+          metrics: `Subject change rate: ${Math.round(behavioral.subjectChangeRate * 100)}% variation across recent emails`
+        });
+      }
+
+      if (behavioral.massMailingIndicator) {
+        explanations.push({
+          category: 'Behavioral',
+          severity: 'high',
+          title: 'Mass Mailing Operation Detected',
+          description: 'Our behavioral analysis has identified this sender as operating a mass mailing system based on volume patterns, timing analysis, and content similarity. This is a strong indicator of commercial bulk email or spam operations.',
+          impact: 'High probability of unsolicited bulk email (spam)',
+          metrics: 'Multiple mass mailing indicators detected'
+        });
+      }
+
+      if (behavioral.reputationScore < 0.4) {
+        explanations.push({
+          category: 'Behavioral',
+          severity: behavioral.reputationScore < 0.2 ? 'high' : 'medium',
+          title: 'Low Sender Reputation Score',
+          description: `This sender has a reputation score of ${(behavioral.reputationScore * 100).toFixed(0)}%, which is ${behavioral.reputationScore < 0.2 ? 'very low' : 'below average'}. The reputation score considers factors like sending consistency, recipient engagement, and compliance with email best practices.`,
+          impact: 'Increased likelihood of spam or unwanted email',
+          metrics: `Reputation score: ${(behavioral.reputationScore * 100).toFixed(0)}% (based on historical sending patterns)`
+        });
+      }
+
+      // Average recipients warning for potential mass mailing
+      if (behavioral.avgRecipients > 5) {
+        explanations.push({
+          category: 'Behavioral',
+          severity: behavioral.avgRecipients > 10 ? 'medium' : 'low',
+          title: 'High Average Recipient Count',
+          description: `This sender typically sends emails to an average of ${behavioral.avgRecipients.toFixed(1)} recipients per email. High recipient counts are characteristic of mailing lists, newsletters, or spam campaigns rather than personal communication.`,
+          impact: 'Indicates bulk email or mailing list operation',
+          metrics: `Average recipients per email: ${behavioral.avgRecipients.toFixed(1)}`
+        });
+      }
     }
 
     // New enhanced spam detection metrics
@@ -492,6 +597,7 @@ function Risk() {
       case 'Technical': return <IconCode size={18} />;
       case 'Content Analysis': return <IconBrain size={18} />;
       case 'Authentication': return <IconLock size={18} />;
+      case 'Behavioral': return <IconClock size={18} />;
       default: return <IconSettings size={18} />;
     }
   };
@@ -791,12 +897,59 @@ function Risk() {
                       } 
                     />
                   </div>
+                  
+                  {analysisResult.details.behavioral && (
+                    <div>
+                      <Flex justify="space-between" align="center" mb="xs">
+                        <Text size="xs" fw={600} c="gray.7">Behavioral Risk</Text>
+                        <Text size="xs" fw={500} c="gray.9">
+                          {analysisResult.scores?.behavioralPercentage ? 
+                            Math.round(analysisResult.scores.behavioralPercentage) : 
+                            Math.round((
+                              (analysisResult.details.behavioral.isNewSender ? 0.2 : 0) +
+                              (analysisResult.details.behavioral.emailCountLast24h > 20 ? 0.3 : 0) +
+                              (analysisResult.details.behavioral.burstRatio > 3 ? 0.2 : 0) +
+                              (analysisResult.details.behavioral.massMailingIndicator ? 0.3 : 0)
+                            ) * 100)}%
+                        </Text>
+                      </Flex>
+                      <Progress 
+                        size="xs" 
+                        color={getProgressColor(
+                          analysisResult.scores?.behavioralPercentage ? 
+                            analysisResult.scores.behavioralPercentage : 
+                            (
+                              (analysisResult.details.behavioral.isNewSender ? 0.2 : 0) +
+                              (analysisResult.details.behavioral.emailCountLast24h > 20 ? 0.3 : 0) +
+                              (analysisResult.details.behavioral.burstRatio > 3 ? 0.2 : 0) +
+                              (analysisResult.details.behavioral.massMailingIndicator ? 0.3 : 0)
+                            ) * 100
+                        )}
+                        value={
+                          analysisResult.scores?.behavioralPercentage ? 
+                            analysisResult.scores.behavioralPercentage : 
+                            (
+                              (analysisResult.details.behavioral.isNewSender ? 0.2 : 0) +
+                              (analysisResult.details.behavioral.emailCountLast24h > 20 ? 0.3 : 0) +
+                              (analysisResult.details.behavioral.burstRatio > 3 ? 0.2 : 0) +
+                              (analysisResult.details.behavioral.massMailingIndicator ? 0.3 : 0)
+                            ) * 100
+                        } 
+                      />
+                    </div>
+                  )}
                 </Stack>
                 
                 <Text size="xs" c="gray.7" mt="md" style={{ lineHeight: 1.4 }}>
                   Technical risk analyzes email headers, authentication, and infrastructure patterns.
                   <br />
                   Content risk evaluates language, sentiment, and spam indicators using natural language processing.
+                  {analysisResult.details.behavioral && (
+                    <>
+                      <br />
+                      Behavioral risk assesses sender patterns over time including volume, timing, and content similarity.
+                    </>
+                  )}
                 </Text>
               </Card>
               
