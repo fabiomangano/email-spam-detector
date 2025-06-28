@@ -23,6 +23,7 @@ import {
   IconRefresh,
   IconCopy,
   IconChartBar,
+  IconClock,
 } from "@tabler/icons-react";
 import { useAnalysis } from "../contexts/AnalysisContext";
 import { Link, useNavigate } from "react-router";
@@ -194,6 +195,52 @@ function Report() {
     navigator.clipboard.writeText(sections.join('\n'));
   };
 
+  const handleCopyBehavioralAnalysis = () => {
+    const sections: string[] = [];
+    
+    sections.push("=== BEHAVIORAL ANALYSIS ===");
+    sections.push("");
+    
+    const behavioral = analysisResult?.details?.behavioral;
+    if (!behavioral) {
+      sections.push("No behavioral data available");
+      navigator.clipboard.writeText(sections.join('\n'));
+      return;
+    }
+    
+    sections.push("Sender Profile:");
+    sections.push(`Sender: ${behavioral.from}`);
+    sections.push(`Is New Sender: ${behavioral.isNewSender ? 'Yes' : 'No'}`);
+    if (behavioral.firstSeenDate) {
+      sections.push(`First Seen: ${new Date(behavioral.firstSeenDate).toLocaleDateString()}`);
+    }
+    sections.push("");
+    
+    sections.push("Volume Metrics:");
+    sections.push(`Emails Last 24h: ${behavioral.emailCountLast24h}`);
+    sections.push(`Emails Last 7d: ${behavioral.emailCountLast7d}`);
+    sections.push(`Average Recipients: ${behavioral.avgRecipients.toFixed(1)}`);
+    sections.push(`Burst Ratio: ${behavioral.burstRatio.toFixed(2)}`);
+    sections.push("");
+    
+    sections.push("Timing Analysis:");
+    sections.push(`Hour of Day: ${behavioral.hourOfDay}:00`);
+    sections.push(`Day of Week: ${behavioral.dayOfWeek}`);
+    sections.push(`Time Anomaly Score: ${Math.round(behavioral.timeAnomalyScore * 100)}%`);
+    sections.push("");
+    
+    sections.push("Content Patterns:");
+    sections.push(`Content Similarity: ${Math.round(behavioral.contentSimilarityRate * 100)}%`);
+    sections.push(`Subject Change Rate: ${Math.round(behavioral.subjectChangeRate * 100)}%`);
+    sections.push("");
+    
+    sections.push("Risk Assessment:");
+    sections.push(`Mass Mailing: ${behavioral.massMailingIndicator ? 'Yes' : 'No'}`);
+    sections.push(`Reputation Score: ${behavioral.reputationScore.toFixed(2)}`);
+    
+    navigator.clipboard.writeText(sections.join('\n'));
+  };
+
   if (!analysisResult) {
     return (
       <div style={{ padding: "20px" }}>
@@ -295,7 +342,7 @@ function Report() {
 
       <Grid style={{ flex: 1, height: 0 }}>
         {/* Parsing Results Card */}
-        <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
+        <Grid.Col span={{ base: 12, md: 6, lg: 3 }} style={{ display: "flex" }}>
           <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
             <Flex justify="space-between" align="center" mb="md">
               <Flex align="center" gap="xs">
@@ -544,7 +591,7 @@ function Report() {
         </Grid.Col>
 
         {/* Technical Module Results Card */}
-        <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
+        <Grid.Col span={{ base: 12, md: 6, lg: 3 }} style={{ display: "flex" }}>
           <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
             <Flex justify="space-between" align="center" mb="md">
               <Flex align="center" gap="xs">
@@ -894,8 +941,223 @@ function Report() {
           </Card>
         </Grid.Col>
 
+        {/* Behavioral Analysis Card */}
+        <Grid.Col span={{ base: 12, md: 6, lg: 3 }} style={{ display: "flex" }}>
+          <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
+            <Flex justify="space-between" align="center" mb="md">
+              <Flex align="center" gap="xs">
+                <IconClock size={20} />
+                <Title order={2} size="h3">Behavioral Analysis</Title>
+              </Flex>
+              <Button
+                variant="outline"
+                color="gray"
+                size="xs"
+                leftSection={<IconCopy size={14} />}
+                onClick={handleCopyBehavioralAnalysis}
+                styles={{
+                  root: {
+                    borderColor: '#262626',
+                    color: '#262626',
+                    backgroundColor: '#ffffff',
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    },
+                  },
+                }}
+              >
+                Copy
+              </Button>
+            </Flex>
+            <Divider mb="md" />
+            <ScrollArea 
+              scrollbars="y" 
+              style={{ flex: 1, height: "calc(100vh - 400px)" }}
+              styles={{
+                scrollbar: {
+                  display: 'none'
+                },
+                thumb: {
+                  display: 'none'
+                }
+              }}
+            >
+              <Stack gap="sm">
+                {analysisResult?.details?.behavioral ? (
+                  <>
+                    {/* Sender Profile */}
+                    <div>
+                      <Text size="sm" fw={700} mb="xs" c="gray.9">Sender Profile</Text>
+                      <Stack gap={4}>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Sender:</Text>
+                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right", wordBreak: "break-all" }}>
+                            {analysisResult.details.behavioral.from}
+                          </Text>
+                        </Group>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Status:</Text>
+                          <Badge 
+                            color={analysisResult.details.behavioral.isNewSender ? "red" : "green"} 
+                            variant="light"
+                            size="xs"
+                          >
+                            {analysisResult.details.behavioral.isNewSender ? "New Sender" : "Known Sender"}
+                          </Badge>
+                        </Group>
+                        {analysisResult.details.behavioral.firstSeenDate && (
+                          <Group justify="space-between" align="flex-start">
+                            <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>First Seen:</Text>
+                            <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                              {new Date(analysisResult.details.behavioral.firstSeenDate).toLocaleDateString()}
+                            </Text>
+                          </Group>
+                        )}
+                      </Stack>
+                    </div>
+
+                    <Divider size="xs" />
+
+                    {/* Volume Metrics */}
+                    <div>
+                      <Text size="sm" fw={700} mb="xs" c="gray.9">Volume Metrics</Text>
+                      <Stack gap={4}>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Last 24h:</Text>
+                          <Badge 
+                            color={analysisResult.details.behavioral.emailCountLast24h > 20 ? "red" : analysisResult.details.behavioral.emailCountLast24h > 10 ? "yellow" : "green"} 
+                            variant="light"
+                            size="xs"
+                          >
+                            {analysisResult.details.behavioral.emailCountLast24h} emails
+                          </Badge>
+                        </Group>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Last 7 days:</Text>
+                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                            {analysisResult.details.behavioral.emailCountLast7d} emails
+                          </Text>
+                        </Group>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Avg Recipients:</Text>
+                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                            {analysisResult.details.behavioral.avgRecipients.toFixed(1)}
+                          </Text>
+                        </Group>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Burst Ratio:</Text>
+                          <Badge 
+                            color={analysisResult.details.behavioral.burstRatio > 5 ? "red" : analysisResult.details.behavioral.burstRatio > 3 ? "yellow" : "green"} 
+                            variant="light"
+                            size="xs"
+                          >
+                            {analysisResult.details.behavioral.burstRatio.toFixed(2)}x
+                          </Badge>
+                        </Group>
+                      </Stack>
+                    </div>
+
+                    <Divider size="xs" />
+
+                    {/* Timing Analysis */}
+                    <div>
+                      <Text size="sm" fw={700} mb="xs" c="gray.9">Timing Analysis</Text>
+                      <Stack gap={4}>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Hour of Day:</Text>
+                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                            {analysisResult.details.behavioral.hourOfDay}:00
+                          </Text>
+                        </Group>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Day of Week:</Text>
+                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                            {analysisResult.details.behavioral.dayOfWeek}
+                          </Text>
+                        </Group>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Time Anomaly:</Text>
+                          <Badge 
+                            color={analysisResult.details.behavioral.timeAnomalyScore > 0.7 ? "red" : analysisResult.details.behavioral.timeAnomalyScore > 0.4 ? "yellow" : "green"} 
+                            variant="light"
+                            size="xs"
+                          >
+                            {Math.round(analysisResult.details.behavioral.timeAnomalyScore * 100)}%
+                          </Badge>
+                        </Group>
+                      </Stack>
+                    </div>
+
+                    <Divider size="xs" />
+
+                    {/* Content Patterns */}
+                    <div>
+                      <Text size="sm" fw={700} mb="xs" c="gray.9">Content Patterns</Text>
+                      <Stack gap={4}>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Content Similarity:</Text>
+                          <Badge 
+                            color={analysisResult.details.behavioral.contentSimilarityRate > 0.8 ? "red" : analysisResult.details.behavioral.contentSimilarityRate > 0.5 ? "yellow" : "green"} 
+                            variant="light"
+                            size="xs"
+                          >
+                            {Math.round(analysisResult.details.behavioral.contentSimilarityRate * 100)}%
+                          </Badge>
+                        </Group>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Subject Variation:</Text>
+                          <Badge 
+                            color={analysisResult.details.behavioral.subjectChangeRate > 0.8 ? "red" : analysisResult.details.behavioral.subjectChangeRate > 0.5 ? "yellow" : "green"} 
+                            variant="light"
+                            size="xs"
+                          >
+                            {Math.round(analysisResult.details.behavioral.subjectChangeRate * 100)}%
+                          </Badge>
+                        </Group>
+                      </Stack>
+                    </div>
+
+                    <Divider size="xs" />
+
+                    {/* Risk Assessment */}
+                    <div>
+                      <Text size="sm" fw={700} mb="xs" c="gray.9">Risk Assessment</Text>
+                      <Stack gap={4}>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Mass Mailing:</Text>
+                          <Badge 
+                            color={analysisResult.details.behavioral.massMailingIndicator ? "red" : "green"} 
+                            variant="light"
+                            size="xs"
+                          >
+                            {analysisResult.details.behavioral.massMailingIndicator ? "Detected" : "None"}
+                          </Badge>
+                        </Group>
+                        <Group justify="space-between" align="flex-start">
+                          <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Reputation:</Text>
+                          <Badge 
+                            color={analysisResult.details.behavioral.reputationScore < 0.3 ? "red" : analysisResult.details.behavioral.reputationScore < 0.6 ? "yellow" : "green"} 
+                            variant="light"
+                            size="xs"
+                          >
+                            {(analysisResult.details.behavioral.reputationScore * 100).toFixed(0)}%
+                          </Badge>
+                        </Group>
+                      </Stack>
+                    </div>
+                  </>
+                ) : (
+                  <Text size="sm" c="dimmed" ta="center">
+                    No behavioral analysis data available
+                  </Text>
+                )}
+              </Stack>
+            </ScrollArea>
+          </Card>
+        </Grid.Col>
+
         {/* NLP Module Results Card */}
-        <Grid.Col span={{ base: 12, md: 6, lg: 4 }} style={{ display: "flex" }}>
+        <Grid.Col span={{ base: 12, md: 6, lg: 3 }} style={{ display: "flex" }}>
           <Card padding="lg" radius="md" style={{ height: "calc(100vh - 280px)", flex: 1 }}>
             <Flex justify="space-between" align="center" mb="md">
               <Flex align="center" gap="xs">

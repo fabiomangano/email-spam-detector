@@ -31,6 +31,7 @@ interface SpamDetectionConfig {
     weights: {
       technical: number;
       nlp: number;
+      behavioral: number;
     };
   };
   technical: {
@@ -491,7 +492,7 @@ const Pipeline: React.FC = () => {
             <Stack gap="md" mt="md">
               <Text size="sm" fw={500}>Module Weights (must sum to 1.0)</Text>
               <Grid>
-                <Grid.Col span={6}>
+                <Grid.Col span={4}>
                   <NumberInput
                     label={
                       <Group gap={6} align="center">
@@ -511,7 +512,7 @@ const Pipeline: React.FC = () => {
                     decimalScale={1}
                   />
                 </Grid.Col>
-                <Grid.Col span={6}>
+                <Grid.Col span={4}>
                   <NumberInput
                     label={
                       <Group gap={6} align="center">
@@ -525,6 +526,26 @@ const Pipeline: React.FC = () => {
                     }
                     value={config.scoring.weights.nlp}
                     onChange={(value) => updateConfig('scoring.weights.nlp', value as number)}
+                    min={0}
+                    max={1}
+                    step={0.1}
+                    decimalScale={1}
+                  />
+                </Grid.Col>
+                <Grid.Col span={4}>
+                  <NumberInput
+                    label={
+                      <Group gap={6} align="center">
+                        <Text size="sm" fw={500}>Behavioral Module Weight</Text>
+                        <Tooltip label="Behavioral analysis evaluates sender patterns over time including email volume, timing anomalies, content similarity, and reputation scoring to identify suspicious mass mailing behaviors.">
+                          <ActionIcon variant="transparent" size="xs" color="gray.6">
+                            <IconInfoCircle size={12} />
+                          </ActionIcon>
+                        </Tooltip>
+                      </Group>
+                    }
+                    value={config.scoring.weights.behavioral}
+                    onChange={(value) => updateConfig('scoring.weights.behavioral', value as number)}
                     min={0}
                     max={1}
                     step={0.1}

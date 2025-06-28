@@ -360,8 +360,8 @@ export class ResultService {
     const config = this.configService.getConfig();
     const weights = config.scoring.weights;
 
-    // Calcola il punteggio finale usando i pesi configurati (behavioral è separato per ora)
-    const finalScore = techScore * weights.technical + nlpScore * weights.nlp + behavioralScore * 0.2;
+    // Calcola il punteggio finale usando i pesi configurati
+    const finalScore = techScore * weights.technical + nlpScore * weights.nlp + behavioralScore * (weights.behavioral || 0.2);
 
     // Soglia di decisione (ridotta per essere più sensibile)
     const isSpam =

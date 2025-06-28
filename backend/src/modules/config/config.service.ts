@@ -11,6 +11,7 @@ export interface SpamDetectionConfig {
     weights: {
       technical: number;
       nlp: number;
+      behavioral: number;
     };
   };
   technical: {

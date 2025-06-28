@@ -5,8 +5,9 @@
       "medium": 0.4
     },
     "weights": {
-      "technical": 0.7,
-      "nlp": 0.3
+      "technical": 0.6,
+      "nlp": 0.25,
+      "behavioral": 0.15
     }
   },
   "technical": {

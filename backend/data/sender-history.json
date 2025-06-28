@@ -7,6 +7,44 @@
       "contentHash": "a706d08f",
       "hourOfDay": 13,
       "dayOfWeek": "Monday"
+    },
+    {
+      "date": "2025-06-09T11:25:35.000Z",
+      "subject": "PROMEMORIA - Istruzioni di voto elezioni per il rinnovo dell’Assemblea dei Delegati del Fondo Metasalute",
+      "recipientsCount": 1,
+      "contentHash": "a706d08f",
+      "hourOfDay": 13,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "\"john p. looney\" <valen@tuatha.org>": [
+    {
+      "date": "2002-08-22T16:36:41.000Z",
+      "subject": "Re: [ILUG] Sun Solaris..",
+      "recipientsCount": 1,
+      "contentHash": "cf74ad2b",
+      "hourOfDay": 18,
+      "dayOfWeek": "Thursday"
+    }
+  ],
+  "\"owen byrne\" <owen@permafrost.net>": [
+    {
+      "date": "2002-08-22T19:30:07.000Z",
+      "subject": "Re: lifegem",
+      "recipientsCount": 1,
+      "contentHash": "347b3428",
+      "hourOfDay": 21,
+      "dayOfWeek": "Thursday"
+    }
+  ],
+  "\"matthew french\" <mfrench42@yahoo.co.uk>": [
+    {
+      "date": "2002-08-22T21:58:39.000Z",
+      "subject": "Re: [ILUG] Re: Sun Solaris",
+      "recipientsCount": 1,
+      "contentHash": "74ad5dd7",
+      "hourOfDay": 23,
+      "dayOfWeek": "Thursday"
     }
   ]
 }
