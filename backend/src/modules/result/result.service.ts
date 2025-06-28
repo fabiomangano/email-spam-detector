@@ -6,6 +6,7 @@ import {
   DecisionMetrics,
 } from '../../utils/types';
 import { ConfigService } from '../config/config.service';
+import { BehavioralAnalysisResult } from '../behavioral/behavioral.service';
 
 @Injectable()
 export class ResultService {
@@ -13,11 +14,12 @@ export class ResultService {
   generateResult(
     technicalResult: EmailTechnicalMetrics,
     nlpResult: NlpAnalysisResult,
+    behavioralResult?: BehavioralAnalysisResult,
   ): SpamAnalysisResult {
-    // Usa il nuovo sistema di calcolo
-    const decisionMetrics = this.calculateResult(technicalResult, nlpResult);
+    // Usa il nuovo sistema di calcolo con analisi comportamentale
+    const decisionMetrics = this.calculateResult(technicalResult, nlpResult, behavioralResult);
 
-    // Il punteggio finale è basato solo su technical e NLP
+    // Il punteggio finale include technical, NLP e behavioral
     // Normalizzazione per il nuovo range di punteggi (soglia più bassa)
     const overallScore = Math.min(decisionMetrics.finalScore / 12, 1);
 
@@ -28,16 +30,19 @@ export class ResultService {
       details: {
         technical: technicalResult,
         nlp: nlpResult,
+        behavioral: behavioralResult,
       },
       recommendations: this.generateRecommendations(overallScore),
       scores: {
         technicalScore: decisionMetrics.techScore,
         nlpScore: decisionMetrics.nlpScore,
+        behavioralScore: decisionMetrics.behavioralScore || 0,
         technicalPercentage: Math.min(
           (decisionMetrics.techScore / 12) * 100,
           100,
         ),
         nlpPercentage: Math.min((decisionMetrics.nlpScore / 12) * 100, 100),
+        behavioralPercentage: Math.min(((decisionMetrics.behavioralScore || 0) / 12) * 100, 100),
       },
     };
   }
@@ -252,21 +257,111 @@ export class ResultService {
     return score;
   }
 
+  private calculateBehavioralScore(behavioral: BehavioralAnalysisResult): number {
+    console.log('🎭 === BEHAVIORAL SCORING STARTED ===');
+    let score = 0;
+
+    // New sender penalty (0-3 points)
+    if (behavioral.isNewSender) {
+      score += 2;
+      console.log('🆕 New sender penalty: +2');
+    }
+
+    // High volume sending penalty (0-4 points)
+    if (behavioral.emailCountLast24h > 50) {
+      score += 4;
+      console.log('📧 Very high volume (>50 emails/24h): +4');
+    } else if (behavioral.emailCountLast24h > 20) {
+      score += 3;
+      console.log('📧 High volume (>20 emails/24h): +3');
+    } else if (behavioral.emailCountLast24h > 10) {
+      score += 2;
+      console.log('📧 Medium volume (>10 emails/24h): +2');
+    }
+
+    // Burst ratio penalty (0-3 points)
+    if (behavioral.burstRatio > 10) {
+      score += 3;
+      console.log('⚡ Very high burst ratio (>10): +3');
+    } else if (behavioral.burstRatio > 5) {
+      score += 2;
+      console.log('⚡ High burst ratio (>5): +2');
+    } else if (behavioral.burstRatio > 3) {
+      score += 1;
+      console.log('⚡ Medium burst ratio (>3): +1');
+    }
+
+    // Content similarity penalty for mass mailing (0-3 points)
+    if (behavioral.contentSimilarityRate > 0.9) {
+      score += 3;
+      console.log('📄 Very high content similarity (>90%): +3');
+    } else if (behavioral.contentSimilarityRate > 0.7) {
+      score += 2;
+      console.log('📄 High content similarity (>70%): +2');
+    } else if (behavioral.contentSimilarityRate > 0.5) {
+      score += 1;
+      console.log('📄 Medium content similarity (>50%): +1');
+    }
+
+    // Time anomaly penalty (0-2 points)
+    if (behavioral.timeAnomalyScore > 0.8) {
+      score += 2;
+      console.log('🕐 High time anomaly (unusual sending time): +2');
+    } else if (behavioral.timeAnomalyScore > 0.5) {
+      score += 1;
+      console.log('🕐 Medium time anomaly: +1');
+    }
+
+    // Subject change rate penalty for randomized subjects (0-2 points)
+    if (behavioral.subjectChangeRate > 0.9) {
+      score += 2;
+      console.log('📝 Very high subject change rate (randomized): +2');
+    } else if (behavioral.subjectChangeRate > 0.7) {
+      score += 1;
+      console.log('📝 High subject change rate: +1');
+    }
+
+    // Mass mailing indicator (0-2 points)
+    if (behavioral.massMailingIndicator) {
+      score += 2;
+      console.log('📮 Mass mailing indicator: +2');
+    }
+
+    // Low reputation penalty (0-3 points)
+    if (behavioral.reputationScore < 0.2) {
+      score += 3;
+      console.log('⭐ Very low reputation (<0.2): +3');
+    } else if (behavioral.reputationScore < 0.4) {
+      score += 2;
+      console.log('⭐ Low reputation (<0.4): +2');
+    } else if (behavioral.reputationScore < 0.6) {
+      score += 1;
+      console.log('⭐ Medium-low reputation (<0.6): +1');
+    }
+
+    console.log('🎭 Total Behavioral Score:', score);
+    console.log('🎭 === BEHAVIORAL SCORING ENDED ===');
+    
+    return score;
+  }
+
   private calculateResult(
     technicalMetrics: EmailTechnicalMetrics,
     nlpOutput: any,
+    behavioralResult?: BehavioralAnalysisResult,
   ): DecisionMetrics {
     console.log('### STEP 5 - Decision Layer Started ###');
 
     // Calcola i punteggi
     const techScore = this.calculateTechnicalScore(technicalMetrics);
     const nlpScore = this.calculateNlpScore(nlpOutput, technicalMetrics);
+    const behavioralScore = behavioralResult ? this.calculateBehavioralScore(behavioralResult) : 0;
 
     const config = this.configService.getConfig();
     const weights = config.scoring.weights;
 
-    // Calcola il punteggio finale usando i pesi configurati
-    const finalScore = techScore * weights.technical + nlpScore * weights.nlp;
+    // Calcola il punteggio finale usando i pesi configurati (behavioral è separato per ora)
+    const finalScore = techScore * weights.technical + nlpScore * weights.nlp + behavioralScore * 0.2;
 
     // Soglia di decisione (ridotta per essere più sensibile)
     const isSpam =
@@ -276,6 +371,7 @@ export class ResultService {
 
     console.log('📦 Technical Score:', techScore);
     console.log('🧠 NLP Score:', nlpScore);
+    console.log('🎭 Behavioral Score:', behavioralScore);
     console.log('📊 Final Score:', finalScore);
     console.log('📌 Final Prediction:', finalPrediction);
     console.log('📈 Overall Score (normalized):', finalScore / 12);
@@ -289,6 +385,7 @@ export class ResultService {
     return {
       techScore,
       nlpScore,
+      behavioralScore,
       finalScore,
       finalPrediction,
     };

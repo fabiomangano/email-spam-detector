@@ -5,9 +5,10 @@ import { ParsingModule } from '../modules/parsing/parsing.module';
 import { TechnicalModule } from '../modules/technical/technical.module';
 import { NlpModule } from '../modules/nlp/nlp.module';
 import { ResultModule } from '../modules/result/result.module';
+import { BehavioralModule } from '../modules/behavioral/behavioral.module';
 
 @Module({
-  imports: [ParsingModule, TechnicalModule, NlpModule, ResultModule],
+  imports: [ParsingModule, TechnicalModule, NlpModule, ResultModule, BehavioralModule],
   controllers: [PipelineController],
   providers: [PipelineService],
   exports: [PipelineService],

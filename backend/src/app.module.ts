@@ -12,6 +12,7 @@ import { PipelineModule } from './pipeline/pipeline.module';
 import { ModelModule } from './model/model.module';
 import { LLMModule } from './modules/llm/llm.module';
 import { FeedbackModule } from './feedback/feedback.module';
+import { BehavioralModule } from './modules/behavioral/behavioral.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { FeedbackModule } from './feedback/feedback.module';
     ModelModule,
     LLMModule,
     FeedbackModule,
+    BehavioralModule,
   ],
   controllers: [AppController, UploadController],
   providers: [AppService],

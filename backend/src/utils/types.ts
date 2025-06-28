@@ -1,4 +1,5 @@
 import { ParsedMail } from 'mailparser';
+import { BehavioralAnalysisResult } from '../modules/behavioral/behavioral.service';
 
 export interface EmailMetadata {
   subject?: string;
@@ -122,6 +123,7 @@ export interface NlpAnalysisResult {
 export interface DecisionMetrics {
   techScore: number;
   nlpScore: number;
+  behavioralScore?: number;
   finalScore: number;
   finalPrediction: string;
 }
@@ -133,12 +135,15 @@ export interface SpamAnalysisResult {
   details: {
     technical: EmailTechnicalMetrics;
     nlp: NlpAnalysisResult;
+    behavioral?: BehavioralAnalysisResult;
   };
   recommendations: string[];
   scores: {
     technicalScore: number;
     nlpScore: number;
+    behavioralScore?: number;
     technicalPercentage: number;
     nlpPercentage: number;
+    behavioralPercentage?: number;
   };
 }
