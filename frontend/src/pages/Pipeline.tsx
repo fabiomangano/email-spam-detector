@@ -21,7 +21,7 @@ import {
   FileInput,
   Badge,
 } from '@mantine/core';
-import { IconSettings, IconDeviceFloppy, IconRestore, IconInfoCircle, IconBrain, IconUpload, IconFileZip, IconProgress, IconPlayerPlay, IconCheck, IconX } from '@tabler/icons-react';
+import { IconSettings, IconDeviceFloppy, IconRestore, IconInfoCircle, IconBrain, IconUpload, IconFileZip, IconProgress, IconPlayerPlay, IconCheck, IconX, IconDownload } from '@tabler/icons-react';
 
 interface SpamDetectionConfig {
   scoring: {
@@ -73,6 +73,19 @@ interface SpamDetectionConfig {
       spamWordRatio: number;
     };
   };
+  domains: {
+    trusted: string[];
+    disposable: string[];
+    suspicious: string[];
+    urlShorteners: string[];
+  };
+  keywords: {
+    legitimateEvents: string[];
+    newsletters: string[];
+    urgency: string[];
+    election: string[];
+    spam: string[];
+  };
 }
 
 const Pipeline: React.FC = () => {
@@ -84,6 +97,11 @@ const Pipeline: React.FC = () => {
   // Model training state
   const [spamFile, setSpamFile] = useState<File | null>(null);
   const [hamFile, setHamFile] = useState<File | null>(null);
+  
+  // Import data state
+  const [domainsFile, setDomainsFile] = useState<File | null>(null);
+  const [spamWordsFile, setSpamWordsFile] = useState<File | null>(null);
+  const [importing, setImporting] = useState(false);
   
   // Handle file uploads with notifications
   const handleSpamFileChange = (file: File | null) => {
@@ -262,6 +280,71 @@ const Pipeline: React.FC = () => {
     }
   };
 
+  // Import data functions
+  const handleDomainsFileChange = (file: File | null) => {
+    setDomainsFile(file);
+    if (file) {
+      setNotification({ type: 'success', message: `Domains file uploaded: ${file.name}` });
+    }
+  };
+
+  const handleSpamWordsFileChange = (file: File | null) => {
+    setSpamWordsFile(file);
+    if (file) {
+      setNotification({ type: 'success', message: `Spam words file uploaded: ${file.name}` });
+    }
+  };
+
+  const importData = async () => {
+    if (!domainsFile && !spamWordsFile) {
+      setNotification({ type: 'error', message: 'Please select at least one file to import' });
+      return;
+    }
+
+    setImporting(true);
+    try {
+      const formData = new FormData();
+      if (domainsFile) formData.append('domains_file', domainsFile);
+      if (spamWordsFile) formData.append('spam_words_file', spamWordsFile);
+
+      const response = await fetch('/api/config/import', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(error);
+      }
+
+      const result = await response.json();
+      setNotification({ 
+        type: 'success', 
+        message: `Import successful: ${result.domains_imported || 0} domains, ${result.words_imported || 0} spam words imported` 
+      });
+      
+      // Reload config to show updated data
+      await loadConfig();
+      
+      // Clear files
+      setDomainsFile(null);
+      setSpamWordsFile(null);
+    } catch (error) {
+      setNotification({ 
+        type: 'error', 
+        message: 'Failed to import data' 
+      });
+    } finally {
+      setImporting(false);
+    }
+  };
+
+  const resetImportData = () => {
+    setDomainsFile(null);
+    setSpamWordsFile(null);
+    setNotification({ type: 'success', message: 'Import data cleared' });
+  };
+
   if (loading) {
     return (
       <Container size="lg" style={{ position: 'relative', minHeight: '400px' }}>
@@ -405,6 +488,7 @@ const Pipeline: React.FC = () => {
           <Tabs.Tab value="technical">Technical Penalties</Tabs.Tab>
           <Tabs.Tab value="thresholds">Technical Thresholds</Tabs.Tab>
           <Tabs.Tab value="nlp">NLP Configuration</Tabs.Tab>
+          <Tabs.Tab value="import" leftSection={<IconDownload size={16} />}>Import Data</Tabs.Tab>
           <Tabs.Tab value="training" leftSection={<IconBrain size={16} />}>Model Training</Tabs.Tab>
         </Tabs.List>
 
@@ -656,6 +740,162 @@ const Pipeline: React.FC = () => {
               </Card>
             </Stack>
           </ScrollArea>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="import">
+          <Stack gap="lg">
+            {/* Import Description Card */}
+            <Card withBorder>
+              <Card.Section withBorder inheritPadding py="xs">
+                <Text fw={500}>Import Suspicious Domains and Spam Words</Text>
+              </Card.Section>
+              <Stack gap="md" p="lg">
+                <Text size="sm" c="dimmed">
+                  Upload text files containing suspicious domains or spam-related keywords to enhance the spam detection pipeline.
+                  Each line in the file should contain one domain or word.
+                </Text>
+              </Stack>
+            </Card>
+
+            {/* File Upload Cards */}
+            <Grid>
+              <Grid.Col span={6}>
+                <Card withBorder>
+                  <Card.Section withBorder inheritPadding py="xs">
+                    <Group>
+                      <IconUpload size={20} color="orange" />
+                      <Text fw={500}>Suspicious Domains</Text>
+                    </Group>
+                  </Card.Section>
+                  <Stack gap="md" p="lg">
+                    <FileInput
+                      label="Upload Domains File"
+                      description="Text file with one domain per line (e.g., suspicious-domain.com)"
+                      placeholder="Select text file..."
+                      accept=".txt,.csv"
+                      value={domainsFile}
+                      onChange={handleDomainsFileChange}
+                      leftSection={<IconUpload size={16} />}
+                      disabled={importing}
+                      styles={{
+                        input: {
+                          borderColor: domainsFile ? '#22c55e' : undefined,
+                        },
+                      }}
+                    />
+                    {domainsFile && (
+                      <Group gap="xs">
+                        <IconCheck size={16} color="green" />
+                        <Text size="sm" c="green">
+                          {domainsFile.name} ({(domainsFile.size / 1024).toFixed(1)} KB)
+                        </Text>
+                      </Group>
+                    )}
+                  </Stack>
+                </Card>
+              </Grid.Col>
+
+              <Grid.Col span={6}>
+                <Card withBorder>
+                  <Card.Section withBorder inheritPadding py="xs">
+                    <Group>
+                      <IconUpload size={20} color="red" />
+                      <Text fw={500}>Spam Keywords</Text>
+                    </Group>
+                  </Card.Section>
+                  <Stack gap="md" p="lg">
+                    <FileInput
+                      label="Upload Spam Words File"
+                      description="Text file with one keyword/phrase per line"
+                      placeholder="Select text file..."
+                      accept=".txt,.csv"
+                      value={spamWordsFile}
+                      onChange={handleSpamWordsFileChange}
+                      leftSection={<IconUpload size={16} />}
+                      disabled={importing}
+                      styles={{
+                        input: {
+                          borderColor: spamWordsFile ? '#22c55e' : undefined,
+                        },
+                      }}
+                    />
+                    {spamWordsFile && (
+                      <Group gap="xs">
+                        <IconCheck size={16} color="green" />
+                        <Text size="sm" c="green">
+                          {spamWordsFile.name} ({(spamWordsFile.size / 1024).toFixed(1)} KB)
+                        </Text>
+                      </Group>
+                    )}
+                  </Stack>
+                </Card>
+              </Grid.Col>
+            </Grid>
+
+            {/* Import Controls */}
+            <Card withBorder>
+              <Card.Section withBorder inheritPadding py="xs">
+                <Group justify="space-between">
+                  <Text fw={500}>Import Controls</Text>
+                  <Tooltip label="Import domains and keywords into the configuration">
+                    <ActionIcon variant="subtle" size="sm">
+                      <IconInfoCircle size={16} />
+                    </ActionIcon>
+                  </Tooltip>
+                </Group>
+              </Card.Section>
+              <Group justify="space-between" p="lg">
+                <Text size="sm" c="dimmed">
+                  Import the uploaded files into the spam detection configuration. 
+                  The data will be merged with existing domains and keywords.
+                </Text>
+                <Group gap="sm">
+                  <Button
+                    variant="outline"
+                    color="gray"
+                    size="sm"
+                    onClick={resetImportData}
+                    disabled={importing}
+                    styles={{
+                      root: {
+                        borderColor: "#262626",
+                        color: "#262626",
+                        backgroundColor: "#ffffff",
+                        "&:hover": {
+                          backgroundColor: "#f9fafb",
+                        },
+                      },
+                    }}
+                  >
+                    Clear Files
+                  </Button>
+                  <Button
+                    variant="filled"
+                    size="sm"
+                    leftSection={<IconDownload size={16} />}
+                    onClick={importData}
+                    loading={importing}
+                    disabled={!domainsFile && !spamWordsFile}
+                    styles={{
+                      root: {
+                        backgroundColor: "#262626",
+                        color: "#ffffff",
+                        "&:hover": {
+                          backgroundColor: "#404040",
+                        },
+                        "&:disabled": {
+                          backgroundColor: "#d1d5db",
+                          color: "#9ca3af",
+                        },
+                      },
+                    }}
+                  >
+                    {importing ? 'Importing...' : 'Import Data'}
+                  </Button>
+                </Group>
+              </Group>
+            </Card>
+          </Stack>
         </Tabs.Panel>
 
         <Tabs.Panel value="training">
