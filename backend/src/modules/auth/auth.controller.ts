@@ -1,4 +1,13 @@
-import { Controller, Post, Body, HttpException, HttpStatus, Get, Headers, UnauthorizedException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpException,
+  HttpStatus,
+  Get,
+  Headers,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService, LoginDto, AuthResponse } from './auth.service';
 
 @Controller('auth')
@@ -11,7 +20,7 @@ export class AuthController {
       if (!loginDto.username || !loginDto.password) {
         throw new HttpException(
           'Username and password are required',
-          HttpStatus.BAD_REQUEST
+          HttpStatus.BAD_REQUEST,
         );
       }
 
@@ -20,18 +29,17 @@ export class AuthController {
       if (error instanceof UnauthorizedException) {
         throw new HttpException(
           'Invalid username or password',
-          HttpStatus.UNAUTHORIZED
+          HttpStatus.UNAUTHORIZED,
         );
       }
-      throw new HttpException(
-        'Login failed',
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
+      throw new HttpException('Login failed', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
   @Get('verify')
-  async verifyToken(@Headers('authorization') authorization: string): Promise<{ valid: boolean; user?: any }> {
+  async verifyToken(
+    @Headers('authorization') authorization: string,
+  ): Promise<{ valid: boolean; user?: any }> {
     try {
       if (!authorization || !authorization.startsWith('Bearer ')) {
         throw new UnauthorizedException('No token provided');
@@ -39,7 +47,7 @@ export class AuthController {
 
       const token = authorization.substring(7);
       const user = await this.authService.validateToken(token);
-      
+
       return {
         valid: true,
         user,

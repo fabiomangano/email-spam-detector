@@ -25,9 +25,9 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = this.users.find(
-      u => u.username === username && u.password === password
+      (u) => u.username === username && u.password === password,
     );
-    
+
     if (user) {
       const { password, ...result } = user;
       return result;
@@ -37,7 +37,7 @@ export class AuthService {
 
   async login(loginDto: LoginDto): Promise<AuthResponse> {
     const { username, password } = loginDto;
-    
+
     const user = await this.validateUser(username, password);
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -59,8 +59,8 @@ export class AuthService {
     try {
       const decoded = Buffer.from(token, 'base64').toString();
       const [username] = decoded.split(':');
-      
-      const user = this.users.find(u => u.username === username);
+
+      const user = this.users.find((u) => u.username === username);
       if (!user) {
         throw new UnauthorizedException('Invalid token');
       }

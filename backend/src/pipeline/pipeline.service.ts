@@ -23,7 +23,7 @@ export class PipelineService {
       parsedData.parsed,
     );
 
-    console.log(technicalResult, "techincal result")
+    console.log(technicalResult, 'techincal result');
 
     // Step 3: NLP Analysis
     const nlpResult = await this.nlpService.analyzeNlp(parsedData.parsed);

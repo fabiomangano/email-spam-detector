@@ -20,15 +20,52 @@ export interface SpamDetectionConfig {
       images: { excessive: number; heavy: number };
       tracking: { hasTrackingPixel: number };
       attachments: { hasAttachments: number; excessive: number };
-      authentication: { spfFail: number; spfSoftfail: number; dkimFail: number; dmarcFail: number };
+      authentication: {
+        spfFail: number;
+        spfSoftfail: number;
+        dkimFail: number;
+        dmarcFail: number;
+      };
       domains: { excessive: number; externalExcessive: number };
-      headers: { replyToDiffers: number; missingDate: number; excessiveReceived: number; suspiciousXMailer: number };
-      sender: { fromNameSuspicious: number; fromDomainDisposable: number; sentToMultiple: number };
+      headers: {
+        replyToDiffers: number;
+        missingDate: number;
+        excessiveReceived: number;
+        suspiciousXMailer: number;
+      };
+      sender: {
+        fromNameSuspicious: number;
+        fromDomainDisposable: number;
+        sentToMultiple: number;
+      };
       campaign: { campaignIdentifier: number; feedbackLoopHeader: number };
-      text: { uppercaseExcessive: number; excessiveExclamations: number; urgencyWords: number; electionTerms: number };
-      obfuscation: { obfuscatedText: number; linkDisplayMismatch: number; shortenedUrls: number; encodedUrls: number };
-      mime: { mixedContentTypes: number; nestedMultipart: number; boundaryAnomaly: number; fakeMultipartAlternative: number };
-      spam: { financialPromises: number; nonStandardPorts: number; suspiciousDomains: number; mailingListSpam: number; spammySubject: number; suspiciousFromName: number; repeatedLinks: number };
+      text: {
+        uppercaseExcessive: number;
+        excessiveExclamations: number;
+        urgencyWords: number;
+        electionTerms: number;
+      };
+      obfuscation: {
+        obfuscatedText: number;
+        linkDisplayMismatch: number;
+        shortenedUrls: number;
+        encodedUrls: number;
+      };
+      mime: {
+        mixedContentTypes: number;
+        nestedMultipart: number;
+        boundaryAnomaly: number;
+        fakeMultipartAlternative: number;
+      };
+      spam: {
+        financialPromises: number;
+        nonStandardPorts: number;
+        suspiciousDomains: number;
+        mailingListSpam: number;
+        spammySubject: number;
+        suspiciousFromName: number;
+        repeatedLinks: number;
+      };
     };
     thresholds: {
       bodyLength: { short: number; veryShort: number };
@@ -100,7 +137,11 @@ export interface SpamDetectionConfig {
 @Injectable()
 export class ConfigService {
   private configPath = path.join(process.cwd(), 'config', 'spam-config.json');
-  private defaultConfigPath = path.join(process.cwd(), 'config', 'default-config.json');
+  private defaultConfigPath = path.join(
+    process.cwd(),
+    'config',
+    'default-config.json',
+  );
   private config: SpamDetectionConfig;
 
   constructor() {
@@ -136,7 +177,7 @@ export class ConfigService {
       if (!fs.existsSync(configDir)) {
         fs.mkdirSync(configDir, { recursive: true });
       }
-      
+
       fs.writeFileSync(this.configPath, JSON.stringify(newConfig, null, 2));
       this.config = newConfig;
     } catch (error) {

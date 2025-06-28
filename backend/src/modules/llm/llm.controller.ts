@@ -13,14 +13,16 @@ export class LLMController {
   async analyzeEmailContent(@Body() body: { content: string }) {
     try {
       // Parse l'email dal contenuto grezzo
-      const parseResult = await this.parsingService.parseEmailContent(body.content);
+      const parseResult = await this.parsingService.parseEmailContent(
+        body.content,
+      );
       const parsedEmail = parseResult.parsed;
-      
+
       if (!parsedEmail.parsingOk) {
         return {
           success: false,
           error: 'Failed to parse email content',
-          warnings: parsedEmail.warnings
+          warnings: parsedEmail.warnings,
         };
       }
 
@@ -32,14 +34,15 @@ export class LLMController {
         parsing: {
           subject: parsedEmail.metadata?.subject,
           from: parsedEmail.metadata?.from,
-          contentLength: (parsedEmail.plainText || parsedEmail.htmlText || '').length
+          contentLength: (parsedEmail.plainText || parsedEmail.htmlText || '')
+            .length,
         },
-        llmAnalysis: llmResult
+        llmAnalysis: llmResult,
       };
     } catch (error: any) {
       return {
         success: false,
-        error: error.message || 'Unknown error occurred'
+        error: error.message || 'Unknown error occurred',
       };
     }
   }
@@ -50,12 +53,12 @@ export class LLMController {
       // Parse l'email dal file
       const parseResult = await this.parsingService.parseEmailFile(filename);
       const parsedEmail = parseResult.parsed;
-      
+
       if (!parsedEmail.parsingOk) {
         return {
           success: false,
           error: 'Failed to parse email file',
-          warnings: parsedEmail.warnings
+          warnings: parsedEmail.warnings,
         };
       }
 
@@ -68,14 +71,15 @@ export class LLMController {
         parsing: {
           subject: parsedEmail.metadata?.subject,
           from: parsedEmail.metadata?.from,
-          contentLength: (parsedEmail.plainText || parsedEmail.htmlText || '').length
+          contentLength: (parsedEmail.plainText || parsedEmail.htmlText || '')
+            .length,
         },
-        llmAnalysis: llmResult
+        llmAnalysis: llmResult,
       };
     } catch (error: any) {
       return {
         success: false,
-        error: error.message || 'Unknown error occurred'
+        error: error.message || 'Unknown error occurred',
       };
     }
   }
@@ -87,8 +91,8 @@ export class LLMController {
       providers: {
         openai: { enabled: false, model: 'gpt-4' },
         anthropic: { enabled: false, model: 'claude-3-sonnet-20240229' },
-        local: { enabled: true, model: 'llama3', provider: 'ollama' }
-      }
+        local: { enabled: true, model: 'llama3', provider: 'ollama' },
+      },
     };
   }
 }

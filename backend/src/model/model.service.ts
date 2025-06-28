@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import * as path from 'path';
 import { BayesClassifier } from 'natural';
-import { readFileSync, readdirSync, existsSync, writeFileSync, mkdirSync } from 'fs';
+import {
+  readFileSync,
+  readdirSync,
+  existsSync,
+  writeFileSync,
+  mkdirSync,
+} from 'fs';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -71,9 +77,12 @@ export class ModelService {
   }
 
   // New methods for enhanced training API
-  async startTrainingWithFiles(spamFile?: Express.Multer.File, hamFile?: Express.Multer.File): Promise<{ training_id: string }> {
+  async startTrainingWithFiles(
+    spamFile?: Express.Multer.File,
+    hamFile?: Express.Multer.File,
+  ): Promise<{ training_id: string }> {
     const trainingId = uuidv4();
-    
+
     // Create training session
     const session: TrainingSession = {
       id: trainingId,
@@ -82,12 +91,12 @@ export class ModelService {
       message: 'Starting training process...',
       startTime: new Date(),
     };
-    
+
     this.trainingSessions.set(trainingId, session);
-    
+
     // Start training in background
     this.runEnhancedTraining(trainingId, spamFile, hamFile);
-    
+
     return { training_id: trainingId };
   }
 
@@ -95,7 +104,11 @@ export class ModelService {
     return this.trainingSessions.get(trainingId) || null;
   }
 
-  private async runEnhancedTraining(trainingId: string, spamFile?: Express.Multer.File, hamFile?: Express.Multer.File): Promise<void> {
+  private async runEnhancedTraining(
+    trainingId: string,
+    spamFile?: Express.Multer.File,
+    hamFile?: Express.Multer.File,
+  ): Promise<void> {
     const session = this.trainingSessions.get(trainingId);
     if (!session) return;
 
@@ -139,7 +152,11 @@ export class ModelService {
       session.message = 'Training model...';
 
       // Train the model
-      const result = await this.trainModelWithData(spamEmails, hamEmails, session);
+      const result = await this.trainModelWithData(
+        spamEmails,
+        hamEmails,
+        session,
+      );
 
       if (result.success) {
         session.status = 'completed';
@@ -152,7 +169,6 @@ export class ModelService {
         session.error = result.error;
         session.endTime = new Date();
       }
-
     } catch (error) {
       session.status = 'error';
       session.message = 'Training failed';
@@ -161,22 +177,29 @@ export class ModelService {
     }
   }
 
-  private async extractZipFile(file: Express.Multer.File, extractPath: string): Promise<void> {
+  private async extractZipFile(
+    file: Express.Multer.File,
+    extractPath: string,
+  ): Promise<void> {
     // For now, just save the file - you can implement ZIP extraction here
     // This is a placeholder that assumes the file is already processed
     if (!existsSync(extractPath)) {
       mkdirSync(extractPath, { recursive: true });
     }
-    
+
     // Save the uploaded file
     const filePath = join(extractPath, file.originalname);
     writeFileSync(filePath, file.buffer);
-    
+
     // TODO: Implement actual ZIP extraction using a library like 'adm-zip'
     console.log(`File saved to: ${filePath}`);
   }
 
-  private async trainModelWithData(spamEmails: string[], hamEmails: string[], session: TrainingSession): Promise<TrainingResult> {
+  private async trainModelWithData(
+    spamEmails: string[],
+    hamEmails: string[],
+    session: TrainingSession,
+  ): Promise<TrainingResult> {
     try {
       console.log('📦 Starting enhanced model training...');
 
@@ -185,7 +208,9 @@ export class ModelService {
       session.message = 'Initializing classifier...';
 
       if (spamEmails.length === 0 || hamEmails.length === 0) {
-        throw new Error('Insufficient training data: need both spam and ham emails');
+        throw new Error(
+          'Insufficient training data: need both spam and ham emails',
+        );
       }
 
       // Initialize classifier
@@ -266,7 +291,9 @@ export class ModelService {
       console.log('📂 Ham emails trovate:', hamEmails.length);
 
       if (spamEmails.length === 0 || hamEmails.length === 0) {
-        throw new Error('Insufficient training data: need both spam and ham emails');
+        throw new Error(
+          'Insufficient training data: need both spam and ham emails',
+        );
       }
 
       // Inizializza il classificatore
@@ -304,7 +331,7 @@ export class ModelService {
         },
       };
     } catch (error) {
-      console.error('❌ Errore nell\'addestramento del modello:', error);
+      console.error("❌ Errore nell'addestramento del modello:", error);
       return {
         success: false,
         message: 'Model training failed',

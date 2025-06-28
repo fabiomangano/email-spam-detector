@@ -29,7 +29,7 @@ export class ParsingService {
   private async parseSingleEmail(filePath: string): Promise<ParsedEmail> {
     try {
       const raw = fs.readFileSync(filePath, 'utf8');
-      const parsed = await simpleParser(raw) as ParsedMail;
+      const parsed = (await simpleParser(raw)) as ParsedMail;
 
       const html = parsed.html?.toString() ?? '';
       const plain = parsed.text?.toString() ?? '';
@@ -71,7 +71,7 @@ export class ParsingService {
 
   private async parseEmailFromContent(content: string): Promise<ParsedEmail> {
     try {
-      const parsed = await simpleParser(content) as ParsedMail;
+      const parsed = (await simpleParser(content)) as ParsedMail;
 
       const html = parsed.html?.toString() ?? '';
       const plain = parsed.text?.toString() ?? '';

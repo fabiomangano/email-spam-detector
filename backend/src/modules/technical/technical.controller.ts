@@ -8,10 +8,7 @@ export class TechnicalController {
   constructor(private readonly technicalService: TechnicalService) {}
 
   @Post('analyze')
-  analyzeTechnical(
-    @Body() parsedEmail: ParsedEmail,
-    @Res() res: Response,
-  ) {
+  analyzeTechnical(@Body() parsedEmail: ParsedEmail, @Res() res: Response) {
     try {
       const result = this.technicalService.analyzeTechnical(parsedEmail);
       return res.json(result);

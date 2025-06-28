@@ -19,9 +19,8 @@ import {
   Flex,
   ThemeIcon,
   FileInput,
-  Badge,
 } from '@mantine/core';
-import { IconSettings, IconDeviceFloppy, IconRestore, IconInfoCircle, IconBrain, IconUpload, IconFileZip, IconProgress, IconPlayerPlay, IconCheck, IconX, IconDownload } from '@tabler/icons-react';
+import { IconSettings, IconDeviceFloppy, IconRestore, IconInfoCircle, IconBrain, IconUpload, IconFileZip, IconPlayerPlay, IconCheck, IconX, IconDownload } from '@tabler/icons-react';
 
 interface SpamDetectionConfig {
   scoring: {
@@ -263,22 +262,6 @@ const Pipeline: React.FC = () => {
     setNotification({ type: 'success', message: 'Training data cleared' });
   };
 
-  const getTrainingStatusBadge = () => {
-    switch (trainingStatus) {
-      case 'idle':
-        return <Badge color="gray" variant="light">Ready</Badge>;
-      case 'uploading':
-        return <Badge color="blue" variant="light">Uploading</Badge>;
-      case 'training':
-        return <Badge color="yellow" variant="light">Training</Badge>;
-      case 'completed':
-        return <Badge color="green" variant="light">Completed</Badge>;
-      case 'error':
-        return <Badge color="red" variant="light">Error</Badge>;
-      default:
-        return <Badge color="gray" variant="light">Unknown</Badge>;
-    }
-  };
 
   // Import data functions
   const handleDomainsFileChange = (file: File | null) => {
@@ -510,24 +493,42 @@ const Pipeline: React.FC = () => {
               <Grid>
                 <Grid.Col span={6}>
                   <NumberInput
-                    label="Technical Module Weight"
+                    label={
+                      <Group gap={6} align="center">
+                        <Text size="sm" fw={500}>Technical Module Weight</Text>
+                        <Tooltip label="Technical analysis examines email headers, authentication records (SPF, DKIM, DMARC), link patterns, and structural anomalies to detect spam indicators.">
+                          <ActionIcon variant="transparent" size="xs" color="gray.6">
+                            <IconInfoCircle size={12} />
+                          </ActionIcon>
+                        </Tooltip>
+                      </Group>
+                    }
                     value={config.scoring.weights.technical}
                     onChange={(value) => updateConfig('scoring.weights.technical', value as number)}
                     min={0}
                     max={1}
                     step={0.1}
-                    precision={1}
+                    decimalScale={1}
                   />
                 </Grid.Col>
                 <Grid.Col span={6}>
                   <NumberInput
-                    label="NLP Module Weight"
+                    label={
+                      <Group gap={6} align="center">
+                        <Text size="sm" fw={500}>NLP Module Weight</Text>
+                        <Tooltip label="NLP analysis uses natural language processing to evaluate email content for spam keywords, sentiment analysis, toxicity levels, and language patterns commonly associated with spam.">
+                          <ActionIcon variant="transparent" size="xs" color="gray.6">
+                            <IconInfoCircle size={12} />
+                          </ActionIcon>
+                        </Tooltip>
+                      </Group>
+                    }
                     value={config.scoring.weights.nlp}
                     onChange={(value) => updateConfig('scoring.weights.nlp', value as number)}
                     min={0}
                     max={1}
                     step={0.1}
-                    precision={1}
+                    decimalScale={1}
                   />
                 </Grid.Col>
               </Grid>
@@ -538,25 +539,43 @@ const Pipeline: React.FC = () => {
               <Grid>
                 <Grid.Col span={6}>
                   <NumberInput
-                    label="Low Risk Threshold"
+                    label={
+                      <Group gap={6} align="center">
+                        <Text size="sm" fw={500}>Low Risk Threshold</Text>
+                        <Tooltip label="Emails with spam scores below this threshold are classified as low risk (legitimate). Lower values = more sensitive detection.">
+                          <ActionIcon variant="transparent" size="xs" color="gray.6">
+                            <IconInfoCircle size={12} />
+                          </ActionIcon>
+                        </Tooltip>
+                      </Group>
+                    }
                     value={config.scoring.riskLevels.low}
                     onChange={(value) => updateConfig('scoring.riskLevels.low', value as number)}
                     min={0}
                     max={1}
                     step={0.1}
-                    precision={1}
+                    decimalScale={1}
                     description="Below this threshold = low risk"
                   />
                 </Grid.Col>
                 <Grid.Col span={6}>
                   <NumberInput
-                    label="Medium Risk Threshold"
+                    label={
+                      <Group gap={6} align="center">
+                        <Text size="sm" fw={500}>Medium Risk Threshold</Text>
+                        <Tooltip label="Emails with spam scores above this threshold are classified as high risk (likely spam). Between low and medium = suspicious emails requiring manual review.">
+                          <ActionIcon variant="transparent" size="xs" color="gray.6">
+                            <IconInfoCircle size={12} />
+                          </ActionIcon>
+                        </Tooltip>
+                      </Group>
+                    }
                     value={config.scoring.riskLevels.medium}
                     onChange={(value) => updateConfig('scoring.riskLevels.medium', value as number)}
                     min={0}
                     max={1}
                     step={0.1}
-                    precision={1}
+                    decimalScale={1}
                     description="Above this threshold = high risk"
                   />
                 </Grid.Col>
@@ -570,9 +589,9 @@ const Pipeline: React.FC = () => {
             <Stack gap="md">
               {Object.entries(config.technical.penalties).map(([category, penalties]) => (
                 <Card key={category} withBorder>
-                  <Card.Section withBorder inheritPadding py="xs">
-                    <Text fw={500} tt="capitalize">{category.replace(/([A-Z])/g, ' $1').trim()}</Text>
-                  </Card.Section>
+                    <Card.Section withBorder inheritPadding py="xs">
+                      <Text fw={500} tt="capitalize">{category.replace(/([A-Z])/g, ' $1').trim()}</Text>
+                    </Card.Section>
 
                   <Grid mt="md">
                     {Object.entries(penalties as Record<string, number>).map(([penalty, value]) => (
@@ -612,7 +631,7 @@ const Pipeline: React.FC = () => {
                           onChange={(newValue) => updateConfig(`technical.thresholds.${category}.${threshold}`, newValue as number)}
                           min={0}
                           step={threshold.includes('Ratio') ? 0.01 : 1}
-                          precision={threshold.includes('Ratio') ? 2 : 0}
+                          decimalScale={threshold.includes('Ratio') ? 2 : 0}
                         />
                       </Grid.Col>
                     ))}
@@ -634,42 +653,78 @@ const Pipeline: React.FC = () => {
                 <Grid mt="md">
                   <Grid.Col span={4}>
                     <NumberInput
-                      label="Toxicity Multiplier"
+                      label={
+                        <Group gap={6} align="center">
+                          <Text size="sm" fw={500}>Toxicity Multiplier</Text>
+                          <Tooltip label="Multiplier for toxic language detection. Higher values penalize emails with harmful, abusive, or offensive content more severely.">
+                            <ActionIcon variant="transparent" size="xs" color="gray.6">
+                              <IconInfoCircle size={12} />
+                            </ActionIcon>
+                          </Tooltip>
+                        </Group>
+                      }
                       value={config.nlp.multipliers.toxicity}
                       onChange={(value) => updateConfig('nlp.multipliers.toxicity', value as number)}
                       min={0}
                       step={0.1}
-                      precision={1}
+                      decimalScale={1}
                     />
                   </Grid.Col>
                   <Grid.Col span={4}>
                     <NumberInput
-                      label="Negative Sentiment"
+                      label={
+                        <Group gap={6} align="center">
+                          <Text size="sm" fw={500}>Negative Sentiment</Text>
+                          <Tooltip label="Multiplier for negative sentiment. Higher values increase spam score for emails with negative emotional tone, often associated with fear-mongering or aggressive marketing.">
+                            <ActionIcon variant="transparent" size="xs" color="gray.6">
+                              <IconInfoCircle size={12} />
+                            </ActionIcon>
+                          </Tooltip>
+                        </Group>
+                      }
                       value={config.nlp.multipliers.sentiment.negative}
                       onChange={(value) => updateConfig('nlp.multipliers.sentiment.negative', value as number)}
                       min={0}
                       step={0.1}
-                      precision={1}
+                      decimalScale={1}
                     />
                   </Grid.Col>
                   <Grid.Col span={4}>
                     <NumberInput
-                      label="Positive Sentiment"
+                      label={
+                        <Group gap={6} align="center">
+                          <Text size="sm" fw={500}>Positive Sentiment</Text>
+                          <Tooltip label="Multiplier for positive sentiment. Typically lower than negative, as overly positive language can indicate promotional spam or scam attempts.">
+                            <ActionIcon variant="transparent" size="xs" color="gray.6">
+                              <IconInfoCircle size={12} />
+                            </ActionIcon>
+                          </Tooltip>
+                        </Group>
+                      }
                       value={config.nlp.multipliers.sentiment.positive}
                       onChange={(value) => updateConfig('nlp.multipliers.sentiment.positive', value as number)}
                       min={0}
                       step={0.1}
-                      precision={1}
+                      decimalScale={1}
                     />
                   </Grid.Col>
                   <Grid.Col span={4}>
                     <NumberInput
-                      label="Spam Words"
+                      label={
+                        <Group gap={6} align="center">
+                          <Text size="sm" fw={500}>Spam Words</Text>
+                          <Tooltip label="Multiplier for spam keywords detection. Higher values increase penalties for emails containing words commonly found in spam (e.g., 'free', 'urgent', 'limited time').">
+                            <ActionIcon variant="transparent" size="xs" color="gray.6">
+                              <IconInfoCircle size={12} />
+                            </ActionIcon>
+                          </Tooltip>
+                        </Group>
+                      }
                       value={config.nlp.multipliers.spamWords}
                       onChange={(value) => updateConfig('nlp.multipliers.spamWords', value as number)}
                       min={0}
                       step={0.1}
-                      precision={1}
+                      decimalScale={1}
                     />
                   </Grid.Col>
                 </Grid>
@@ -689,7 +744,7 @@ const Pipeline: React.FC = () => {
                       min={0}
                       max={1}
                       step={0.1}
-                      precision={1}
+                      decimalScale={1}
                     />
                   </Grid.Col>
                   <Grid.Col span={6}>
@@ -700,7 +755,7 @@ const Pipeline: React.FC = () => {
                       min={0}
                       max={1}
                       step={0.1}
-                      precision={1}
+                      decimalScale={1}
                     />
                   </Grid.Col>
                   <Grid.Col span={6}>
@@ -711,7 +766,7 @@ const Pipeline: React.FC = () => {
                       min={-1}
                       max={1}
                       step={0.1}
-                      precision={1}
+                      decimalScale={1}
                     />
                   </Grid.Col>
                   <Grid.Col span={6}>
@@ -722,7 +777,7 @@ const Pipeline: React.FC = () => {
                       min={-1}
                       max={1}
                       step={0.1}
-                      precision={1}
+                      decimalScale={1}
                     />
                   </Grid.Col>
                   <Grid.Col span={6}>
@@ -733,7 +788,7 @@ const Pipeline: React.FC = () => {
                       min={0}
                       max={1}
                       step={0.01}
-                      precision={2}
+                      decimalScale={2}
                     />
                   </Grid.Col>
                 </Grid>
@@ -769,7 +824,16 @@ const Pipeline: React.FC = () => {
                   </Card.Section>
                   <Stack gap="md" p="lg">
                     <FileInput
-                      label="Upload Domains File"
+                      label={
+                        <Group gap={6} align="center">
+                          <Text size="sm" fw={500}>Upload Domains File</Text>
+                          <Tooltip label="Upload a text file with suspicious domains (one per line). These domains will be flagged during email analysis to detect phishing attempts and malicious links.">
+                            <ActionIcon variant="transparent" size="xs" color="gray.6">
+                              <IconInfoCircle size={12} />
+                            </ActionIcon>
+                          </Tooltip>
+                        </Group>
+                      }
                       description="Text file with one domain per line (e.g., suspicious-domain.com)"
                       placeholder="Select text file..."
                       accept=".txt,.csv"
@@ -805,7 +869,16 @@ const Pipeline: React.FC = () => {
                   </Card.Section>
                   <Stack gap="md" p="lg">
                     <FileInput
-                      label="Upload Spam Words File"
+                      label={
+                        <Group gap={6} align="center">
+                          <Text size="sm" fw={500}>Upload Spam Words File</Text>
+                          <Tooltip label="Upload a text file with spam-related keywords and phrases (one per line). These words will be used by NLP analysis to identify promotional, scam, or unwanted content.">
+                            <ActionIcon variant="transparent" size="xs" color="gray.6">
+                              <IconInfoCircle size={12} />
+                            </ActionIcon>
+                          </Tooltip>
+                        </Group>
+                      }
                       description="Text file with one keyword/phrase per line"
                       placeholder="Select text file..."
                       accept=".txt,.csv"

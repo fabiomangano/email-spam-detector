@@ -7,12 +7,7 @@ import { NlpModule } from '../modules/nlp/nlp.module';
 import { ResultModule } from '../modules/result/result.module';
 
 @Module({
-  imports: [
-    ParsingModule,
-    TechnicalModule,
-    NlpModule,
-    ResultModule,
-  ],
+  imports: [ParsingModule, TechnicalModule, NlpModule, ResultModule],
   controllers: [PipelineController],
   providers: [PipelineService],
   exports: [PipelineService],
