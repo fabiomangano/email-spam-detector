@@ -43,6 +43,13 @@ function Report() {
   } = useAnalysis();
   const navigate = useNavigate();
 
+  // Helper function for metric badge colors
+  const getMetricBadgeColor = (value: number, thresholds: {low: number, medium: number}) => {
+    if (value > thresholds.medium) return "#ef4444"; // red
+    if (value > thresholds.low) return "#fbbf24"; // yellow
+    return "#22c55e"; // green
+  };
+
   const handleNewAnalysis = () => {
     // Reset all analysis and upload data
     setAnalysisResult(null);
@@ -638,27 +645,52 @@ function Report() {
                   <Stack gap={4}>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Body Length:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={getMetricBadgeColor(analysisResult.details.technical.bodyLength < 100 ? 100 - analysisResult.details.technical.bodyLength : 0, {low: 30, medium: 50})} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.bodyLength}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Links:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
-                        {analysisResult.details.technical.numLinks} (Ratio: {analysisResult.details.technical.linkRatio})
-                      </Text>
+                      <Group gap="xs">
+                        <Badge 
+                          color={getMetricBadgeColor(analysisResult.details.technical.numLinks, {low: 5, medium: 10})} 
+                          variant="light"
+                          size="xs"
+                        >
+                          {analysisResult.details.technical.numLinks}
+                        </Badge>
+                        <Text size="xs" c="gray.9">
+                          (Ratio: {analysisResult.details.technical.linkRatio})
+                        </Text>
+                      </Group>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Images:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={getMetricBadgeColor(analysisResult.details.technical.numImages, {low: 3, medium: 8})} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.numImages}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>External Domains:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
-                        {analysisResult.details.technical.numExternalDomains || 'N/A'}
-                      </Text>
+                      {analysisResult.details.technical.numExternalDomains !== undefined ? (
+                        <Badge 
+                          color={getMetricBadgeColor(analysisResult.details.technical.numExternalDomains, {low: 2, medium: 5})} 
+                          variant="light"
+                          size="xs"
+                        >
+                          {analysisResult.details.technical.numExternalDomains}
+                        </Badge>
+                      ) : (
+                        <Text size="xs" c="gray.9">N/A</Text>
+                      )}
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Link/Image Ratio:</Text>
@@ -677,9 +709,17 @@ function Report() {
                   <Stack gap={4}>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Received Headers:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
-                        {analysisResult.details.technical.numReceivedHeaders ?? 'N/A'}
-                      </Text>
+                      {analysisResult.details.technical.numReceivedHeaders !== undefined ? (
+                        <Badge 
+                          color={getMetricBadgeColor(analysisResult.details.technical.numReceivedHeaders, {low: 5, medium: 10})} 
+                          variant="light"
+                          size="xs"
+                        >
+                          {analysisResult.details.technical.numReceivedHeaders}
+                        </Badge>
+                      ) : (
+                        <Text size="xs" c="gray.9">N/A</Text>
+                      )}
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>X-Mailer:</Text>
@@ -695,9 +735,13 @@ function Report() {
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Date Header:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.missingDateHeader ? "#ef4444" : "#22c55e"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.missingDateHeader ? 'Missing' : 'Present'}
-                      </Text>
+                      </Badge>
                     </Group>
                   </Stack>
                 </div>
@@ -710,21 +754,33 @@ function Report() {
                   <Stack gap={4}>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>SPF:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.spfResult === 'pass' ? "#22c55e" : analysisResult.details.technical.spfResult === 'fail' ? "#ef4444" : "#fbbf24"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.spfResult || 'Unknown'}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>DKIM:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.dkimResult === 'pass' ? "#22c55e" : analysisResult.details.technical.dkimResult === 'fail' ? "#ef4444" : "#fbbf24"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.dkimResult || 'Unknown'}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>DMARC:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.dmarcResult === 'pass' ? "#22c55e" : analysisResult.details.technical.dmarcResult === 'fail' ? "#ef4444" : "#fbbf24"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.dmarcResult || 'Unknown'}
-                      </Text>
+                      </Badge>
                     </Group>
                   </Stack>
                 </div>
@@ -737,21 +793,33 @@ function Report() {
                   <Stack gap={4}>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>From Name:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.fromNameSuspicious ? "#ef4444" : "#22c55e"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.fromNameSuspicious ? 'Suspicious' : 'Normal'}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Domain:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.fromDomainIsDisposable ? "#ef4444" : "#22c55e"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.fromDomainIsDisposable ? 'Disposable' : 'Regular'}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Recipients:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.sentToMultiple ? "#fbbf24" : "#22c55e"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.sentToMultiple ? 'Multiple' : 'Single'}
-                      </Text>
+                      </Badge>
                     </Group>
                   </Stack>
                 </div>
@@ -764,21 +832,33 @@ function Report() {
                   <Stack gap={4}>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Uppercase Ratio:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={getMetricBadgeColor((analysisResult.details.technical.uppercaseRatio || 0) * 100, {low: 20, medium: 40})} 
+                        variant="light"
+                        size="xs"
+                      >
                         {((analysisResult.details.technical.uppercaseRatio || 0) * 100).toFixed(1)}%
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Exclamations:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.excessiveExclamations ? "#ef4444" : "#22c55e"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.excessiveExclamations ? 'Excessive' : 'Normal'}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Urgency Words:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.containsUrgencyWords ? "#fbbf24" : "#22c55e"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.containsUrgencyWords ? 'Present' : 'None'}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Election Terms:</Text>
@@ -797,9 +877,13 @@ function Report() {
                   <Stack gap={4}>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Tracking Pixel:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.hasTrackingPixel ? "#ef4444" : "#22c55e"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.hasTrackingPixel ? 'Present' : 'None'}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Content Type:</Text>
@@ -809,9 +893,13 @@ function Report() {
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Reply-To:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.replyToDiffersFromFrom ? "#ef4444" : "#22c55e"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.replyToDiffersFromFrom ? 'Spoofed' : 'Normal'}
-                      </Text>
+                      </Badge>
                     </Group>
                   </Stack>
                 </div>
@@ -836,9 +924,13 @@ function Report() {
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Obfuscated Text:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.containsObfuscatedText ? "#ef4444" : "#22c55e"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.containsObfuscatedText ? 'Present' : 'None'}
-                      </Text>
+                      </Badge>
                     </Group>
                   </Stack>
                 </div>
@@ -851,9 +943,13 @@ function Report() {
                   <Stack gap={4}>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Link Display:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details.technical.linkDisplayMismatch ? "#ef4444" : "#22c55e"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details.technical.linkDisplayMismatch ? 'Mismatch' : 'Normal'}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Shortened URLs:</Text>
@@ -1025,7 +1121,7 @@ function Report() {
                         <Group justify="space-between" align="flex-start">
                           <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Last 24h:</Text>
                           <Badge 
-                            color={analysisResult.details.behavioral.emailCountLast24h > 20 ? "red" : analysisResult.details.behavioral.emailCountLast24h > 10 ? "yellow" : "green"} 
+                            color={getMetricBadgeColor(analysisResult.details.behavioral.emailCountLast24h, {low: 10, medium: 20})} 
                             variant="light"
                             size="xs"
                           >
@@ -1047,7 +1143,7 @@ function Report() {
                         <Group justify="space-between" align="flex-start">
                           <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Burst Ratio:</Text>
                           <Badge 
-                            color={analysisResult.details.behavioral.burstRatio > 5 ? "red" : analysisResult.details.behavioral.burstRatio > 3 ? "yellow" : "green"} 
+                            color={getMetricBadgeColor(analysisResult.details.behavioral.burstRatio, {low: 3, medium: 5})} 
                             variant="light"
                             size="xs"
                           >
@@ -1078,7 +1174,7 @@ function Report() {
                         <Group justify="space-between" align="flex-start">
                           <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Time Anomaly:</Text>
                           <Badge 
-                            color={analysisResult.details.behavioral.timeAnomalyScore > 0.7 ? "red" : analysisResult.details.behavioral.timeAnomalyScore > 0.4 ? "yellow" : "green"} 
+                            color={getMetricBadgeColor(analysisResult.details.behavioral.timeAnomalyScore, {low: 0.4, medium: 0.7})} 
                             variant="light"
                             size="xs"
                           >
@@ -1097,7 +1193,7 @@ function Report() {
                         <Group justify="space-between" align="flex-start">
                           <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Content Similarity:</Text>
                           <Badge 
-                            color={analysisResult.details.behavioral.contentSimilarityRate > 0.8 ? "red" : analysisResult.details.behavioral.contentSimilarityRate > 0.5 ? "yellow" : "green"} 
+                            color={getMetricBadgeColor(analysisResult.details.behavioral.contentSimilarityRate, {low: 0.5, medium: 0.8})} 
                             variant="light"
                             size="xs"
                           >
@@ -1107,7 +1203,7 @@ function Report() {
                         <Group justify="space-between" align="flex-start">
                           <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Subject Variation:</Text>
                           <Badge 
-                            color={analysisResult.details.behavioral.subjectChangeRate > 0.8 ? "red" : analysisResult.details.behavioral.subjectChangeRate > 0.5 ? "yellow" : "green"} 
+                            color={getMetricBadgeColor(analysisResult.details.behavioral.subjectChangeRate, {low: 0.5, medium: 0.8})} 
                             variant="light"
                             size="xs"
                           >
@@ -1136,7 +1232,7 @@ function Report() {
                         <Group justify="space-between" align="flex-start">
                           <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Reputation:</Text>
                           <Badge 
-                            color={analysisResult.details.behavioral.reputationScore < 0.3 ? "red" : analysisResult.details.behavioral.reputationScore < 0.6 ? "yellow" : "green"} 
+                            color={getMetricBadgeColor(1 - analysisResult.details.behavioral.reputationScore, {low: 0.4, medium: 0.7})} 
                             variant="light"
                             size="xs"
                           >
@@ -1221,27 +1317,43 @@ function Report() {
                       <Stack gap={4}>
                         <Group justify="space-between" align="flex-start">
                           <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Spam Words:</Text>
-                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                          <Badge 
+                            color={getMetricBadgeColor(analysisResult.details.nlp.nlpMetrics.numSpammyWords, {low: 3, medium: 8})} 
+                            variant="light"
+                            size="xs"
+                          >
                             {analysisResult.details.nlp.nlpMetrics.numSpammyWords}
-                          </Text>
+                          </Badge>
                         </Group>
                         <Group justify="space-between" align="flex-start">
                           <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Spam Word Ratio:</Text>
-                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                          <Badge 
+                            color={getMetricBadgeColor(analysisResult.details.nlp.nlpMetrics.spamWordRatio * 100, {low: 3, medium: 7})} 
+                            variant="light"
+                            size="xs"
+                          >
                             {(analysisResult.details.nlp.nlpMetrics.spamWordRatio * 100).toFixed(1)}%
-                          </Text>
+                          </Badge>
                         </Group>
                         <Group justify="space-between" align="flex-start">
                           <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>All Caps Count:</Text>
-                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                          <Badge 
+                            color={getMetricBadgeColor(analysisResult.details.nlp.nlpMetrics.allCapsCount, {low: 2, medium: 5})} 
+                            variant="light"
+                            size="xs"
+                          >
                             {analysisResult.details.nlp.nlpMetrics.allCapsCount}
-                          </Text>
+                          </Badge>
                         </Group>
                         <Group justify="space-between" align="flex-start">
                           <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Exclamation Count:</Text>
-                          <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                          <Badge 
+                            color={getMetricBadgeColor(analysisResult.details.nlp.nlpMetrics.exclamationCount, {low: 2, medium: 5})} 
+                            variant="light"
+                            size="xs"
+                          >
                             {analysisResult.details.nlp.nlpMetrics.exclamationCount}
-                          </Text>
+                          </Badge>
                         </Group>
                       </Stack>
                     </div>
@@ -1298,9 +1410,13 @@ function Report() {
                   <Stack gap={4}>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Toxicity Score:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={getMetricBadgeColor(analysisResult.details.nlp.toxicity.score * 100, {low: 20, medium: 50})} 
+                        variant="light"
+                        size="xs"
+                      >
                         {Math.round(analysisResult.details.nlp.toxicity.score * 100)}%
-                      </Text>
+                      </Badge>
                     </Group>
                     {analysisResult.details.nlp.toxicity.categories && analysisResult.details.nlp.toxicity.categories.length > 0 && (
                       <Group justify="space-between" align="flex-start">

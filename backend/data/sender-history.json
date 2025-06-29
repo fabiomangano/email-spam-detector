@@ -961,6 +961,14 @@
       "contentHash": "030e9ed8",
       "hourOfDay": 22,
       "dayOfWeek": "Sunday"
+    },
+    {
+      "date": "2002-09-22T20:32:08.000Z",
+      "subject": "Earn 100.000$ in one year working at home",
+      "recipientsCount": 1,
+      "contentHash": "030e9ed8",
+      "hourOfDay": 22,
+      "dayOfWeek": "Sunday"
     }
   ]
 }
