@@ -135,7 +135,7 @@ function Risk() {
   const getRiskColorHex = (riskLevel: string) => {
     switch (riskLevel) {
       case 'low': return '#22c55e';
-      case 'medium': return '#eab308';
+      case 'medium': return '#fbbf24';
       case 'high': return '#ef4444';
       default: return '#6b7280';
     }
@@ -603,9 +603,9 @@ function Risk() {
   };
 
   const getProgressColor = (percentage: number) => {
-    if (percentage < 30) return 'green';
-    if (percentage < 70) return 'yellow';
-    return 'red';
+    if (percentage < 30) return '#22c55e';
+    if (percentage < 70) return '#fbbf24';
+    return '#ef4444';
   };
 
   if (!analysisResult) {
