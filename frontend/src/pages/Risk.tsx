@@ -622,7 +622,7 @@ function Risk() {
   }
 
   return (
-    <div style={{ padding: "20px", paddingBottom: "120px", minHeight: "100vh" }}>
+    <div style={{ padding: "20px", paddingBottom: "140px", minHeight: "calc(100vh - 60px)" }}>
       <Flex justify="space-between" align="center" mb="xl">
         <Group gap="md" align="flex-start">
           <ThemeIcon
@@ -647,17 +647,16 @@ function Risk() {
         </Group>
         <Group gap="sm">
           <Button 
-            variant="outline"
             size="xs"
             onClick={openFeedbackModal}
             leftSection={<IconMessageCircle size={14} />}
             styles={{
               root: {
-                borderColor: "#2563eb",
-                color: "#2563eb",
-                backgroundColor: "#ffffff",
+                backgroundColor: "#262626",
+                color: "#ffffff",
+                border: "none",
                 "&:hover": {
-                  backgroundColor: "#eff6ff",
+                  backgroundColor: "#404040",
                 },
               },
             }}
@@ -1012,8 +1011,19 @@ function Risk() {
           opened={feedbackModalOpened}
           onClose={closeFeedbackModal}
           title="Provide Email Classification Feedback"
-          size="md"
+          size="lg"
           centered
+          styles={{
+            body: {
+              padding: "24px",
+            },
+            header: {
+              paddingBottom: "16px",
+            },
+          }}
+          style={{
+            maxHeight: "70vh",
+          }}
         >
           <Stack gap="lg">
             <Text size="sm" c="dimmed">
@@ -1044,16 +1054,18 @@ function Risk() {
               
               <Group gap="md" grow>
                 <Button
-                  color="red"
+                  variant="outline"
                   leftSection={<IconThumbDown size={16} />}
                   onClick={() => handleFeedback(true)}
                   loading={submittingFeedback}
                   disabled={submittingFeedback}
                   styles={{
                     root: {
-                      backgroundColor: '#ef4444',
+                      borderColor: '#ef4444',
+                      color: '#ef4444',
+                      backgroundColor: '#ffffff',
                       "&:hover": {
-                        backgroundColor: '#dc2626',
+                        backgroundColor: '#fef2f2',
                       },
                     },
                   }}
@@ -1062,16 +1074,17 @@ function Risk() {
                 </Button>
                 
                 <Button
-                  color="green"
                   leftSection={<IconThumbUp size={16} />}
                   onClick={() => handleFeedback(false)}
                   loading={submittingFeedback}
                   disabled={submittingFeedback}
                   styles={{
                     root: {
-                      backgroundColor: '#22c55e',
+                      backgroundColor: '#262626',
+                      color: '#ffffff',
+                      border: 'none',
                       "&:hover": {
-                        backgroundColor: '#16a34a',
+                        backgroundColor: '#404040',
                       },
                     },
                   }}
