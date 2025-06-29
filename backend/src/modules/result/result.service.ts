@@ -23,9 +23,12 @@ export class ResultService {
     // Normalizzazione che permette la distinzione tra diversi livelli di spam
     const overallScore = Math.min(decisionMetrics.finalScore / 22, 1);
 
+    const riskLevel = this.determineRiskLevel(overallScore);
+    console.log('🎯 Final riskLevel determined:', riskLevel);
+    
     return {
       overallScore,
-      riskLevel: this.determineRiskLevel(overallScore),
+      riskLevel,
       summary: this.generateSummary(overallScore),
       details: {
         technical: technicalResult,
@@ -396,6 +399,9 @@ export class ResultService {
   private determineRiskLevel(score: number): 'low' | 'medium' | 'high' {
     const config = this.configService.getConfig();
     const riskLevels = config.scoring.riskLevels;
+
+    console.log('🎯 Risk level thresholds:', riskLevels);
+    console.log('🎯 Score to evaluate:', score);
 
     if (score < riskLevels.low) return 'low';
     if (score < riskLevels.medium) return 'medium';

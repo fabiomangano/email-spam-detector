@@ -1,8 +1,8 @@
 {
   "scoring": {
     "riskLevels": {
-      "low": 0.15,
-      "medium": 0.4
+      "low": 0.3,
+      "medium": 0.5
     },
     "weights": {
       "technical": 0.6,
