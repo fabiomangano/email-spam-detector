@@ -622,7 +622,7 @@ function Risk() {
   }
 
   return (
-    <div style={{ padding: "20px", paddingBottom: "160px", minHeight: "calc(100vh - 60px)" }}>
+    <div style={{ padding: "20px", paddingBottom: "200px", minHeight: "calc(100vh - 60px)" }}>
       <Flex justify="space-between" align="center" mb="xl">
         <Group gap="md" align="flex-start">
           <ThemeIcon
@@ -953,7 +953,7 @@ function Risk() {
               </Card>
               
               {/* Security Recommendations */}
-              <Card padding="lg" radius="md">
+              <Card padding="lg" radius="md" style={{ maxHeight: "calc(100vh - 400px)", display: "flex", flexDirection: "column" }}>
                 <Flex align="center" gap="xs" mb="md">
                   <IconShield size={20} />
                   <Title order={2} size="h3">Recommendations</Title>
@@ -961,11 +961,20 @@ function Risk() {
                 <Divider mb="md" />
                 
                 <ScrollArea.Autosize 
-                  mah={{ base: "calc(100vh - 400px)", md: "calc(100vh - 500px)" }}
+                  mah={{ base: "300px", sm: "400px", md: "500px" }}
                   scrollbars="y"
+                  offsetScrollbars
                   styles={{
+                    root: {
+                      flex: 1,
+                    },
                     thumb: {
-                      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                      backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                    },
+                    scrollbar: {
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                      },
                     },
                   }}
                 >
