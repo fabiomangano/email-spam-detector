@@ -576,10 +576,10 @@ function Risk() {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'high': return 'red';
-      case 'medium': return 'yellow';
-      case 'low': return 'orange';
-      default: return 'gray';
+      case 'high': return '#ef4444';
+      case 'medium': return '#fbbf24';
+      case 'low': return '#22c55e';
+      default: return '#6b7280';
     }
   };
 
@@ -622,7 +622,7 @@ function Risk() {
   }
 
   return (
-    <div style={{ padding: "20px", paddingBottom: "140px", minHeight: "calc(100vh - 60px)" }}>
+    <div style={{ padding: "20px", paddingBottom: "160px", minHeight: "calc(100vh - 60px)" }}>
       <Flex justify="space-between" align="center" mb="xl">
         <Group gap="md" align="flex-start">
           <ThemeIcon
@@ -961,7 +961,7 @@ function Risk() {
                 <Divider mb="md" />
                 
                 <ScrollArea.Autosize 
-                  mah="30vh"
+                  mah={{ base: "calc(100vh - 400px)", md: "calc(100vh - 500px)" }}
                   scrollbars="y"
                   styles={{
                     thumb: {
