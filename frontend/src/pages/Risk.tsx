@@ -953,7 +953,7 @@ function Risk() {
               </Card>
               
               {/* Security Recommendations */}
-              <Card padding="lg" radius="md" style={{ maxHeight: "calc(100vh - 400px)", display: "flex", flexDirection: "column" }}>
+              <Card padding="lg" radius="md" style={{ maxHeight: "calc(100vh - 770px)", display: "flex", flexDirection: "column" }}>
                 <Flex align="center" gap="xs" mb="md">
                   <IconShield size={20} />
                   <Title order={2} size="h3">Recommendations</Title>
