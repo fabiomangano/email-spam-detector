@@ -50,6 +50,22 @@ function Report() {
     return "#22c55e"; // green
   };
 
+  // Helper function for authentication result colors
+  const getAuthBadgeColor = (value: string) => {
+    if (!value || value === 'N/A') return "#6b7280"; // gray
+    const lowerValue = value.toLowerCase();
+    if (lowerValue.includes('pass') || lowerValue.includes('none')) return "#22c55e"; // green
+    if (lowerValue.includes('fail') || lowerValue.includes('invalid')) return "#ef4444"; // red
+    if (lowerValue.includes('softfail') || lowerValue.includes('neutral')) return "#fbbf24"; // yellow
+    return "#6b7280"; // gray for unknown
+  };
+
+  // Helper function to check if header exists and is meaningful
+  const getHeaderPresenceBadgeColor = (value: string) => {
+    if (!value || value === 'N/A' || value.trim() === '') return "#ef4444"; // red - missing
+    return "#22c55e"; // green - present
+  };
+
   const handleNewAnalysis = () => {
     // Reset all analysis and upload data
     setAnalysisResult(null);
@@ -429,9 +445,13 @@ function Report() {
                   <Stack gap={4}>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Message-ID:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right", wordBreak: "break-all" }}>
-                        {getHeaderValue('message-id')}
-                      </Text>
+                      <Badge 
+                        color={getHeaderPresenceBadgeColor(getHeaderValue('message-id'))} 
+                        variant="light"
+                        size="xs"
+                      >
+                        {getHeaderValue('message-id') ? 'Present' : 'Missing'}
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Reply-To:</Text>
@@ -489,21 +509,33 @@ function Report() {
                   <Stack gap={4}>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Has HTML:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details?.parsing?.parsed?.htmlText ? "#22c55e" : "#fbbf24"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details?.parsing?.parsed?.htmlText ? 'Yes' : 'No'}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Has Plain Text:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={analysisResult.details?.parsing?.parsed?.plainText ? "#22c55e" : "#ef4444"} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details?.parsing?.parsed?.plainText ? 'Yes' : 'No'}
-                      </Text>
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "100px" }}>Attachments:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
+                      <Badge 
+                        color={getMetricBadgeColor(analysisResult.details?.parsing?.parsed?.attachments?.length || 0, {low: 1, medium: 3})} 
+                        variant="light"
+                        size="xs"
+                      >
                         {analysisResult.details?.parsing?.parsed?.attachments?.length || 0}
-                      </Text>
+                      </Badge>
                     </Group>
                   </Stack>
                 </div>
@@ -516,15 +548,23 @@ function Report() {
                   <Stack gap={4}>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Received-SPF:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
-                        {getHeaderValue('received-spf')}
-                      </Text>
+                      <Badge 
+                        color={getAuthBadgeColor(getHeaderValue('received-spf'))} 
+                        variant="light"
+                        size="xs"
+                      >
+                        {getHeaderValue('received-spf') || 'Missing'}
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>DKIM-Signature:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right", wordBreak: "break-all" }}>
-                        {getHeaderValue('dkim-signature')}
-                      </Text>
+                      <Badge 
+                        color={getHeaderValue('dkim-signature') && getHeaderValue('dkim-signature') !== 'N/A' ? "#22c55e" : "#ef4444"} 
+                        variant="light"
+                        size="xs"
+                      >
+                        {getHeaderValue('dkim-signature') && getHeaderValue('dkim-signature') !== 'N/A' ? 'Present' : 'Missing'}
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Feedback-ID:</Text>
@@ -534,15 +574,23 @@ function Report() {
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>Auto-Submitted:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
-                        {getHeaderValue('auto-submitted')}
-                      </Text>
+                      <Badge 
+                        color={getHeaderValue('auto-submitted') && getHeaderValue('auto-submitted') !== 'N/A' ? "#fbbf24" : "#22c55e"} 
+                        variant="light"
+                        size="xs"
+                      >
+                        {getHeaderValue('auto-submitted') && getHeaderValue('auto-submitted') !== 'N/A' ? 'Auto' : 'Manual'}
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>X-Mailer:</Text>
-                      <Text size="xs" c="gray.9" style={{ flex: 1, textAlign: "right" }}>
-                        {getHeaderValue('x-mailer')}
-                      </Text>
+                      <Badge 
+                        color={getHeaderPresenceBadgeColor(getHeaderValue('x-mailer'))} 
+                        variant="light"
+                        size="xs"
+                      >
+                        {getHeaderValue('x-mailer') ? 'Present' : 'Missing'}
+                      </Badge>
                     </Group>
                     <Group justify="space-between" align="flex-start">
                       <Text size="xs" fw={600} c="gray.7" style={{ minWidth: "120px" }}>X-Abuse:</Text>
