@@ -19,9 +19,9 @@ export class ResultService {
     // Usa il nuovo sistema di calcolo con analisi comportamentale
     const decisionMetrics = this.calculateResult(technicalResult, nlpResult, behavioralResult);
 
-    // Il punteggio finale include technical, NLP e behavioral
-    // Normalizzazione per il nuovo range di punteggi (soglia più bassa)
-    const overallScore = Math.min(decisionMetrics.finalScore / 12, 1);
+    // Il punteggio finale include technical, NLP e behavioral usando i pesi configurati
+    // Normalizzazione che permette la distinzione tra diversi livelli di spam
+    const overallScore = Math.min(decisionMetrics.finalScore / 22, 1);
 
     return {
       overallScore,
@@ -38,11 +38,11 @@ export class ResultService {
         nlpScore: decisionMetrics.nlpScore,
         behavioralScore: decisionMetrics.behavioralScore || 0,
         technicalPercentage: Math.min(
-          (decisionMetrics.techScore / 12) * 100,
+          (decisionMetrics.techScore / 20) * 100,
           100,
         ),
-        nlpPercentage: Math.min((decisionMetrics.nlpScore / 12) * 100, 100),
-        behavioralPercentage: Math.min(((decisionMetrics.behavioralScore || 0) / 12) * 100, 100),
+        nlpPercentage: Math.min((decisionMetrics.nlpScore / 25) * 100, 100),
+        behavioralPercentage: Math.min(((decisionMetrics.behavioralScore || 0) / 10) * 100, 100),
       },
     };
   }
@@ -363,9 +363,9 @@ export class ResultService {
     // Calcola il punteggio finale usando i pesi configurati
     const finalScore = techScore * weights.technical + nlpScore * weights.nlp + behavioralScore * (weights.behavioral || 0.2);
 
-    // Soglia di decisione (ridotta per essere più sensibile)
-    const isSpam =
-      finalScore > 10 || (nlpOutput && nlpOutput.prediction === 'spam');
+    // Soglia di decisione basata solo sul punteggio finale pesato
+    // Rimossa la regola di override che forzava spam prediction
+    const isSpam = finalScore > 8; // Soglia più bilanciata
 
     const finalPrediction = isSpam ? 'spam' : 'ham';
 
@@ -374,10 +374,12 @@ export class ResultService {
     console.log('🎭 Behavioral Score:', behavioralScore);
     console.log('📊 Final Score:', finalScore);
     console.log('📌 Final Prediction:', finalPrediction);
-    console.log('📈 Overall Score (normalized):', finalScore / 12);
+    console.log('📈 Overall Score (normalized):', finalScore / 22);
+    console.log('🔍 Detailed calculation: (' + techScore + ' × 0.6) + (' + nlpScore + ' × 0.25) + (' + behavioralScore + ' × 0.15) = ' + finalScore);
+    console.log('🔍 Final calculation: ' + finalScore + ' / 22 = ' + (finalScore / 22));
     console.log(
       '🎯 Risk Level:',
-      finalScore / 12 < 0.3 ? 'LOW' : finalScore / 12 < 0.7 ? 'MEDIUM' : 'HIGH',
+      finalScore / 22 < 0.3 ? 'LOW' : finalScore / 22 < 0.7 ? 'MEDIUM' : 'HIGH',
     );
 
     console.log('### STEP 5 - Decision Layer Ended ###');
