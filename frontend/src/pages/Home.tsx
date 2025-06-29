@@ -107,7 +107,7 @@ const Home: React.FC = () => {
       title: 'Guides',
       description: 'Browse documentation and usage guides',
       icon: <IconUserQuestion size={24} />,
-      to: '/guides',
+      to: '/guide',
       color: 'teal',
     },
     {
