@@ -16,6 +16,7 @@ import {
   Button,
 } from '@mantine/core';
 import { useAnalysis } from '../contexts/AnalysisContext';
+import { useNavigate } from 'react-router';
 import { 
   IconRobot, 
   IconAlertTriangle, 
@@ -25,6 +26,7 @@ import {
   IconTarget,
   IconPercentage,
   IconRefresh,
+  IconArrowLeft,
 } from '@tabler/icons-react';
 
 interface LLMAnalysisResult {
@@ -50,6 +52,7 @@ const LLMReport: React.FC = () => {
   const [result, setResult] = useState<LLMAnalysisResult | null>(null);
   const [loading, setLoading] = useState(true);
   const { llmAnalysisResult } = useAnalysis();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadResults();
@@ -202,7 +205,7 @@ const LLMReport: React.FC = () => {
   const confidenceColor = getConfidenceColor(analysis.confidence);
 
   return (
-    <Container size="lg">
+    <Container size="lg" style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <Flex justify="space-between" align="center" mb="xl">
         <Group gap="md" align="flex-start">
           <ThemeIcon
@@ -235,28 +238,50 @@ const LLMReport: React.FC = () => {
             </Text>
           </div>
         </Group>
-        <Button
-          variant="outline"
-          color="gray"
-          size="xs"
-          leftSection={<IconRefresh size={14} />}
-          onClick={loadResults}
-          styles={{
-            root: {
-              borderColor: "#262626",
-              color: "#262626",
-              backgroundColor: "#ffffff",
-              "&:hover": {
-                backgroundColor: "#f9fafb",
+        <Group gap="xs">
+          <Button
+            variant="outline"
+            color="blue"
+            size="xs"
+            leftSection={<IconArrowLeft size={14} />}
+            onClick={() => navigate('/llm-upload')}
+            styles={{
+              root: {
+                borderColor: "#2563eb",
+                color: "#2563eb",
+                backgroundColor: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#eff6ff",
+                },
               },
-            },
-          }}
-        >
-          Refresh
-        </Button>
+            }}
+          >
+            Back to Upload
+          </Button>
+          <Button
+            variant="outline"
+            color="gray"
+            size="xs"
+            leftSection={<IconRefresh size={14} />}
+            onClick={loadResults}
+            styles={{
+              root: {
+                borderColor: "#262626",
+                color: "#262626",
+                backgroundColor: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#f9fafb",
+                },
+              },
+            }}
+          >
+            Refresh
+          </Button>
+        </Group>
       </Flex>
 
-      <Stack gap="md">
+      <div style={{ flex: 1, overflow: 'auto', paddingBottom: '2rem' }}>
+        <Stack gap="md">
         {/* Main Results Card */}
         <Card withBorder>
           <Card.Section withBorder inheritPadding py="xs">
@@ -305,8 +330,12 @@ const LLMReport: React.FC = () => {
               <Progress 
                 value={analysis.confidence * 100} 
                 color={confidenceColor}
-                size="md"
+                size="lg"
+                mb="xs"
               />
+              <Text size="sm" ta="center" fw={600}>
+                {(analysis.confidence * 100).toFixed(1)}%
+              </Text>
             </div>
           </Stack>
         </Card>
@@ -426,7 +455,8 @@ const LLMReport: React.FC = () => {
             </Group>
           </Stack>
         </Card>
-      </Stack>
+        </Stack>
+      </div>
     </Container>
   );
 };

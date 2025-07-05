@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Title,
@@ -12,6 +12,7 @@ import {
   Group,
   Flex,
   ThemeIcon,
+  Grid,
 } from '@mantine/core';
 import { IconUpload, IconRobot, IconAlertCircle, IconFileText, IconInfoCircle } from '@tabler/icons-react';
 import { useAnalysis } from '../contexts/AnalysisContext';
@@ -36,6 +37,19 @@ const LLMUpload: React.FC = () => {
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const { setLlmAnalysisResult } = useAnalysis();
   const navigate = useNavigate();
+
+  // Load saved email content on component mount
+  useEffect(() => {
+    const savedContent = sessionStorage.getItem('llmEmailContent');
+    if (savedContent) {
+      setEmailContent(savedContent);
+    }
+  }, []);
+
+  // Save email content whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem('llmEmailContent', emailContent);
+  }, [emailContent]);
 
   const analyzeEmail = async () => {
     if (!emailContent.trim()) {
@@ -62,12 +76,9 @@ const LLMUpload: React.FC = () => {
         // Store result in both sessionStorage and context
         sessionStorage.setItem('llmAnalysisResult', JSON.stringify(result));
         setLlmAnalysisResult(result);
-        setNotification({ type: 'success', message: 'Email analyzed successfully! Redirecting to report...' });
         
-        // Navigate to report page after a short delay
-        setTimeout(() => {
-          navigate('/llm-report');
-        }, 1500);
+        // Navigate to report page immediately
+        navigate('/llm-report');
       } else {
         throw new Error(result.error || 'Analysis failed');
       }
@@ -87,12 +98,13 @@ const LLMUpload: React.FC = () => {
   };
 
   return (
-    <Container size="lg">
+    <Container size="lg" pb="6rem">
       <style>
         {`
           .llm-upload-container {
             position: relative;
             min-height: 400px;
+            padding-bottom: 80px;
           }
         `}
       </style>
@@ -197,7 +209,7 @@ const LLMUpload: React.FC = () => {
           </Alert>
         )}
 
-        <Card withBorder>
+        <Card withBorder style={{ height: '600px', display: 'flex', flexDirection: 'column' }}>
           <Card.Section withBorder inheritPadding py="md">
             <Flex align="center" gap="xs">
               <IconFileText size={20} />
@@ -205,29 +217,25 @@ const LLMUpload: React.FC = () => {
             </Flex>
           </Card.Section>
 
-          <Stack gap="md" mt="md">
+          <Stack gap="md" mt="md" style={{ flex: 1, overflow: 'hidden' }}>
             <Textarea
               placeholder="Paste your email content here (headers + body)...&#10;&#10;Example:&#10;From: sender@example.com&#10;To: recipient@example.com&#10;Subject: Test Email&#10;&#10;Email body content..."
               value={emailContent}
               onChange={(event) => setEmailContent(event.currentTarget.value)}
-              minRows={15}
-              maxRows={25}
-              autosize
+              rows={20}
               styles={{
                 input: {
                   fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
                   fontSize: "var(--mantine-font-size-xs)",
                   lineHeight: 1.5,
-                  scrollbarWidth: "none",
-                  msOverflowStyle: "none",
-                  "&::WebkitScrollbar": {
-                    display: "none"
-                  }
+                  height: '500px',
+                  resize: 'none',
+                  overflow: 'auto'
                 },
               }}
             />
             
-            <Group justify="space-between">
+            <Group justify="space-between" wrap="nowrap">
               <Text size="sm" c="dimmed">
                 Characters: {emailContent.length}
               </Text>
@@ -235,30 +243,6 @@ const LLMUpload: React.FC = () => {
                 Lines: {emailContent.split('\n').length}
               </Text>
             </Group>
-          </Stack>
-        </Card>
-
-        <Card withBorder mt="md">
-          <Card.Section withBorder inheritPadding py="md">
-            <Flex align="center" gap="xs">
-              <IconInfoCircle size={20} />
-              <Title order={2} size="h3">Instructions</Title>
-            </Flex>
-          </Card.Section>
-
-          <Stack gap="sm" mt="md">
-            <Text size="sm">
-              • Paste the complete email content including headers and body
-            </Text>
-            <Text size="sm">
-              • The LLM will analyze the content using the configured model and prompt
-            </Text>
-            <Text size="sm">
-              • Results will be available in the LLM Report section
-            </Text>
-            <Text size="sm">
-              • Make sure LLM configuration is properly set up before analyzing
-            </Text>
           </Stack>
         </Card>
       </div>
