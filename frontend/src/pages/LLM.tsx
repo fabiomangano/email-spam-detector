@@ -617,10 +617,10 @@ Analyze the email thoroughly and provide your expert assessment.`;
                   value={config.systemPrompt || ''}
                   onChange={(event) => updateConfig('systemPrompt', event.currentTarget.value)}
                   description="This prompt will be used to instruct the LLM on how to analyze emails for spam detection. Leave empty to use the default comprehensive analysis prompt."
-                  rows={8}
+                  rows={16}
                   autosize
-                  minRows={4}
-                  maxRows={12}
+                  minRows={8}
+                  maxRows={24}
                 />
               </div>
             </Stack>

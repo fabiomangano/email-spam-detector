@@ -12,6 +12,7 @@ import {
   Card,
   List,
   Accordion,
+  ScrollArea,
 } from '@mantine/core';
 import {
   IconShield,
@@ -24,8 +25,18 @@ import {
 
 const About: React.FC = () => {
   return (
-    <Container size="lg" py="xl">
-      <Stack gap="xl">
+    <div style={{ padding: "20px", paddingBottom: "200px", minHeight: "calc(100vh - 60px)" }}>
+      <Container size="lg">
+        <ScrollArea.Autosize 
+          mah="calc(100vh - 280px)"
+          scrollbars="y"
+          styles={{
+            thumb: {
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            },
+          }}
+        >
+          <Stack gap="xl">
         {/* Header */}
         <Box ta="center">
           <Group justify="center" gap="md" mb="md">
@@ -251,8 +262,10 @@ const About: React.FC = () => {
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
-      </Stack>
-    </Container>
+          </Stack>
+        </ScrollArea.Autosize>
+      </Container>
+    </div>
   );
 };
 
