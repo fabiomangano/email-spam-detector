@@ -252,17 +252,22 @@ Please analyze this email for spam/phishing indicators.`;
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
+        // Handle both old and new response formats
+        const isSpam = parsed.is_spam !== undefined 
+          ? Boolean(parsed.is_spam)
+          : parsed.classification === 'SPAM';
+          
         return {
           provider,
           model,
-          is_spam: Boolean(parsed.is_spam),
+          is_spam: isSpam,
           confidence: Math.min(
             100,
             Math.max(0, Number(parsed.confidence) * (Number(parsed.confidence) <= 1 ? 100 : 1) || 0),
           ),
           reasoning: String(parsed.reasoning || 'No reasoning provided'),
-          risk_factors: Array.isArray(parsed.risk_factors)
-            ? parsed.risk_factors
+          risk_factors: Array.isArray(parsed.risk_factors || parsed.risk_indicators)
+            ? (parsed.risk_factors || parsed.risk_indicators)
             : [],
         };
       }

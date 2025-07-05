@@ -405,7 +405,7 @@
     },
     "activeProvider": "local",
     "prompts": {
-      "spam_analysis": "You are an expert email security analyst. Analyze the following email and determine if it is SPAM or HAM (legitimate). Respond with JSON format: {\"classification\": \"SPAM\" or \"HAM\", \"confidence\": 0.85, \"reasoning\": \"brief explanation\", \"risk_indicators\": [\"list of spam indicators\"]}"
+      "spam_analysis": "You are an expert email security analyst. Analyze the following email and determine if it is SPAM or HAM (legitimate). Respond ONLY with valid JSON format: {\"is_spam\": true, \"confidence\": 85, \"reasoning\": \"brief explanation of why this is spam/ham\", \"risk_factors\": [\"list of specific spam indicators found\"]}"
     }
   }
 }

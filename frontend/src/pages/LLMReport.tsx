@@ -217,11 +217,21 @@ const LLMReport: React.FC = () => {
             <IconBrain size={24} />
           </ThemeIcon>
           <div>
-            <Title order={1} size="h2" mb="xs">
-              LLM Analysis Report
-            </Title>
+            <Group gap="sm" mb="xs">
+              <Title order={1} size="h2">
+                LLM Analysis Report
+              </Title>
+              <Badge 
+                color="teal" 
+                variant="light" 
+                size="md"
+                leftSection={<IconRobot size={12} />}
+              >
+                {result.provider?.replace('local-', '').toUpperCase()} • {result.model}
+              </Badge>
+            </Group>
             <Text c="dimmed" size="sm">
-              Advanced spam detection results using {result.provider} ({result.model})
+              Advanced spam detection results powered by artificial intelligence
             </Text>
           </div>
         </Group>
@@ -377,24 +387,43 @@ const LLMReport: React.FC = () => {
         {/* Technical Details Card */}
         <Card withBorder>
           <Card.Section withBorder inheritPadding py="xs">
-            <Text fw={500}>Technical Details</Text>
+            <Group justify="space-between">
+              <Text fw={500}>Technical Details</Text>
+              <Badge color="gray" variant="outline" size="xs">
+                {result.provider?.includes('local') ? 'Local Model' : 'Cloud API'}
+              </Badge>
+            </Group>
           </Card.Section>
 
           <Stack gap="xs" mt="md">
             <Group>
-              <Text size="sm" fw={500} w={80}>Provider:</Text>
-              <Text size="sm">{result.provider || 'Unknown'}</Text>
+              <Text size="sm" fw={500} w={100}>Provider:</Text>
+              <Badge 
+                color={result.provider?.includes('ollama') ? 'orange' : result.provider?.includes('openai') ? 'green' : 'blue'} 
+                variant="light" 
+                size="sm"
+              >
+                {result.provider?.replace('local-', '').toUpperCase() || 'Unknown'}
+              </Badge>
             </Group>
             <Group>
-              <Text size="sm" fw={500} w={80}>Model:</Text>
-              <Text size="sm">{result.model || 'Unknown'}</Text>
+              <Text size="sm" fw={500} w={100}>Model:</Text>
+              <Text size="sm" fw={600} c="dark">
+                {result.model || 'Unknown'}
+              </Text>
             </Group>
             {result.timestamp && (
               <Group>
-                <Text size="sm" fw={500} w={80}>Analyzed:</Text>
+                <Text size="sm" fw={500} w={100}>Analyzed:</Text>
                 <Text size="sm">{new Date(result.timestamp).toLocaleString()}</Text>
               </Group>
             )}
+            <Group>
+              <Text size="sm" fw={500} w={100}>Status:</Text>
+              <Badge color="green" variant="filled" size="xs">
+                Analysis Complete
+              </Badge>
+            </Group>
           </Stack>
         </Card>
       </Stack>
