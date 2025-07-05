@@ -21,7 +21,7 @@ import {
   Textarea,
   ThemeIcon,
 } from '@mantine/core';
-import { IconDeviceFloppy, IconRestore, IconInfoCircle, IconTestPipe, IconBrain } from '@tabler/icons-react';
+import { IconDeviceFloppy, IconRestore, IconInfoCircle, IconTestPipe, IconBrain, IconRefresh } from '@tabler/icons-react';
 
 interface LLMConfig {
   providers: {
@@ -61,17 +61,21 @@ const LLM: React.FC = () => {
 
   const loadConfig = async () => {
     try {
-      const response = await fetch('/api/llm/config');
+      // Add timestamp to prevent caching
+      const timestamp = new Date().getTime();
+      const response = await fetch(`/api/llm/config?t=${timestamp}`, {
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
       if (!response.ok) throw new Error('Failed to load LLM configuration');
       const data = await response.json();
-      // Add activeProvider - default to openai and set default states
-      const activeProvider = 'openai';
-      // Set OpenAI enabled by default, others disabled
-      data.providers.openai.enabled = true;
-      data.providers.anthropic.enabled = false;
-      data.providers.local.enabled = false;
-      setConfig({ ...data, activeProvider });
+      console.log('Loaded LLM config from backend:', data);
+      // Use the configuration as returned from the backend
+      setConfig(data);
     } catch (error) {
+      console.error('Error loading LLM config:', error);
       setNotification({ type: 'error', message: 'Failed to load LLM configuration' });
     } finally {
       setLoading(false);
@@ -83,6 +87,7 @@ const LLM: React.FC = () => {
 
     setSaving(true);
     try {
+      console.log('Saving LLM config:', config);
       const response = await fetch('/api/llm/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -90,12 +95,19 @@ const LLM: React.FC = () => {
       });
       
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
+        const errorText = await response.text();
+        console.error('Save error response:', errorText);
+        throw new Error(errorText);
       }
       
+      const result = await response.json();
+      console.log('Save result:', result);
       setNotification({ type: 'success', message: 'LLM configuration saved successfully' });
+      
+      // Reload config to ensure we have the latest from backend
+      await loadConfig();
     } catch (error) {
+      console.error('Save config error:', error);
       setNotification({ type: 'error', message: 'Failed to save LLM configuration' });
     } finally {
       setSaving(false);
@@ -218,6 +230,29 @@ const LLM: React.FC = () => {
             variant="outline"
             color="gray"
             size="xs"
+            leftSection={<IconRefresh size={14} />}
+            onClick={() => {
+              setLoading(true);
+              loadConfig();
+            }}
+            loading={loading}
+            styles={{
+              root: {
+                borderColor: "#262626",
+                color: "#262626",
+                backgroundColor: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#f9fafb",
+                },
+              },
+            }}
+          >
+            Refresh
+          </Button>
+          <Button
+            variant="outline"
+            color="gray"
+            size="xs"
             leftSection={<IconTestPipe size={14} />}
             onClick={testConnection}
             loading={testing}
@@ -276,26 +311,28 @@ const LLM: React.FC = () => {
 
       {notification && (
         <Alert
-          variant="filled"
+          variant="outline"
           title={notification.type === 'success' ? 'Success' : 'Error'}
           withCloseButton
           onClose={() => setNotification(null)}
           mb="md"
           styles={{
             root: {
-              backgroundColor: notification.type === 'success' ? '#22c55e' : '#ef4444',
+              backgroundColor: notification.type === 'success' ? '#f0fdf4' : '#fef2f2',
               borderColor: notification.type === 'success' ? '#22c55e' : '#ef4444',
+              borderWidth: '1px',
             },
             title: {
-              color: '#ffffff',
+              color: notification.type === 'success' ? '#15803d' : '#dc2626',
+              fontWeight: '600',
             },
             body: {
-              color: '#ffffff',
+              color: notification.type === 'success' ? '#15803d' : '#dc2626',
             },
             closeButton: {
-              color: '#ffffff',
+              color: notification.type === 'success' ? '#15803d' : '#dc2626',
               '&:hover': {
-                backgroundColor: notification.type === 'success' ? '#16a34a' : '#dc2626',
+                backgroundColor: notification.type === 'success' ? '#dcfce7' : '#fee2e2',
               },
             },
           }}

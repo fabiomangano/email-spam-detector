@@ -113,10 +113,23 @@ const LLMReport: React.FC = () => {
         </Flex>
 
         <Alert
-          variant="light"
-          color="blue"
+          variant="outline"
           title="No Results Found"
           icon={<IconInfoCircle size={16} />}
+          styles={{
+            root: {
+              backgroundColor: '#f0f9ff',
+              borderColor: '#0ea5e9',
+              borderWidth: '1px',
+            },
+            title: {
+              color: '#0284c7',
+              fontWeight: '600',
+            },
+            body: {
+              color: '#0284c7',
+            },
+          }}
         >
           <Text>
             No LLM analysis results found. Please analyze an email using the LLM Upload page first.
@@ -160,10 +173,23 @@ const LLMReport: React.FC = () => {
         </Flex>
 
         <Alert
-          variant="filled"
-          color="red"
+          variant="outline"
           title="Analysis Failed"
           icon={<IconAlertTriangle size={16} />}
+          styles={{
+            root: {
+              backgroundColor: '#fef2f2',
+              borderColor: '#ef4444',
+              borderWidth: '1px',
+            },
+            title: {
+              color: '#dc2626',
+              fontWeight: '600',
+            },
+            body: {
+              color: '#dc2626',
+            },
+          }}
         >
           <Text>{result.error || 'Unknown error occurred during analysis'}</Text>
         </Alert>

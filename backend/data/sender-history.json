@@ -533,6 +533,14 @@
       "contentHash": "36c4bd92",
       "hourOfDay": 2,
       "dayOfWeek": "Tuesday"
+    },
+    {
+      "date": "2002-09-05T04:11:50.000Z",
+      "subject": "Re: CD player UI for toddlers",
+      "recipientsCount": 1,
+      "contentHash": "62014a4a",
+      "hourOfDay": 6,
+      "dayOfWeek": "Thursday"
     }
   ],
   "\"eugen leitl\" <eugen@leitl.org>": [
@@ -615,6 +623,14 @@
       "contentHash": "d617264e",
       "hourOfDay": 8,
       "dayOfWeek": "Tuesday"
+    },
+    {
+      "date": "2002-09-05T09:09:52.000Z",
+      "subject": "Re: Adam dont job for no one, see.",
+      "recipientsCount": 1,
+      "contentHash": "340f3ca5",
+      "hourOfDay": 11,
+      "dayOfWeek": "Thursday"
     }
   ],
   "\"adam l. beberg\" <beberg@mithral.com>": [
@@ -673,6 +689,14 @@
       "contentHash": "94555c47",
       "hourOfDay": 17,
       "dayOfWeek": "Wednesday"
+    },
+    {
+      "date": "2002-09-05T00:36:34.000Z",
+      "subject": "Ouch...",
+      "recipientsCount": 1,
+      "contentHash": "7fedce08",
+      "hourOfDay": 2,
+      "dayOfWeek": "Thursday"
     }
   ],
   "\"gary lawrence murphy\" <garym@canada.com>": [
@@ -691,6 +715,22 @@
       "contentHash": "406f340e",
       "hourOfDay": 18,
       "dayOfWeek": "Tuesday"
+    },
+    {
+      "date": "2002-09-04T18:47:45.000Z",
+      "subject": "Re: CD player UI for toddlers",
+      "recipientsCount": 1,
+      "contentHash": "883c5e4a",
+      "hourOfDay": 20,
+      "dayOfWeek": "Wednesday"
+    },
+    {
+      "date": "2002-09-05T02:32:07.000Z",
+      "subject": "Re: Gecko adhesion finally sussed.",
+      "recipientsCount": 1,
+      "contentHash": "ba75bc6a",
+      "hourOfDay": 4,
+      "dayOfWeek": "Thursday"
     }
   ],
   "\"dave long\" <dl@silcom.com>": [
@@ -969,6 +1009,298 @@
       "contentHash": "030e9ed8",
       "hourOfDay": 22,
       "dayOfWeek": "Sunday"
+    },
+    {
+      "date": "2002-09-22T20:02:32.000Z",
+      "subject": "[ILUG] Earn 100.000$ in one year working at home",
+      "recipientsCount": 1,
+      "contentHash": "e2103a29",
+      "hourOfDay": 22,
+      "dayOfWeek": "Sunday"
+    },
+    {
+      "date": "2002-09-22T20:32:08.000Z",
+      "subject": "Earn 100.000$ in one year working at home",
+      "recipientsCount": 1,
+      "contentHash": "030e9ed8",
+      "hourOfDay": 22,
+      "dayOfWeek": "Sunday"
+    }
+  ],
+  "\"tom\" <tomwhore@slack.net>": [
+    {
+      "date": "2002-09-04T16:48:04.000Z",
+      "subject": "Kill Your Gods",
+      "recipientsCount": 1,
+      "contentHash": "fd472531",
+      "hourOfDay": 18,
+      "dayOfWeek": "Wednesday"
+    },
+    {
+      "date": "2002-09-05T05:04:43.000Z",
+      "subject": "Re: CD player UI for toddlers",
+      "recipientsCount": 1,
+      "contentHash": "9d0f4b07",
+      "hourOfDay": 7,
+      "dayOfWeek": "Thursday"
+    }
+  ],
+  "\"sateesh narahari\" <sati_home@yahoo.com>": [
+    {
+      "date": "2002-09-04T16:55:18.000Z",
+      "subject": "Re: Kill Your Gods",
+      "recipientsCount": 2,
+      "contentHash": "6b8e6269",
+      "hourOfDay": 18,
+      "dayOfWeek": "Wednesday"
+    }
+  ],
+  "\"jim whitehead\" <ejw@cse.ucsc.edu>": [
+    {
+      "date": "2002-09-04T18:03:03.000Z",
+      "subject": "CD player UI for toddlers",
+      "recipientsCount": 1,
+      "contentHash": "489ed220",
+      "hourOfDay": 20,
+      "dayOfWeek": "Wednesday"
+    }
+  ],
+  "lucas@gonze.com": [
+    {
+      "date": "2002-09-04T20:27:56.000Z",
+      "subject": "whoa",
+      "recipientsCount": 1,
+      "contentHash": "58ec1d3f",
+      "hourOfDay": 22,
+      "dayOfWeek": "Wednesday"
+    }
+  ],
+  "\"elias sinderson\" <elias@cse.ucsc.edu>": [
+    {
+      "date": "2002-09-04T22:17:40.000Z",
+      "subject": "Re: Gecko adhesion finally sussed.",
+      "recipientsCount": 1,
+      "contentHash": "141f8e04",
+      "hourOfDay": 0,
+      "dayOfWeek": "Thursday"
+    }
+  ],
+  "\"sherry listgarten\" <sherry@timesten.com>": [
+    {
+      "date": "2002-09-05T02:58:36.000Z",
+      "subject": "RE: Java is for kiddies",
+      "recipientsCount": 1,
+      "contentHash": "cba477cc",
+      "hourOfDay": 4,
+      "dayOfWeek": "Thursday"
+    }
+  ],
+  "\"cdale\" <cdale@techmonkeys.net>": [
+    {
+      "date": "2002-09-05T02:59:28.000Z",
+      "subject": "Re: Ouch...",
+      "recipientsCount": 1,
+      "contentHash": "47b0cf4a",
+      "hourOfDay": 4,
+      "dayOfWeek": "Thursday"
+    }
+  ],
+  "\"karl anderson\" <kra@monkey.org>": [
+    {
+      "date": "2002-09-05T07:50:10.000Z",
+      "subject": "Re: Re[2]: Java is for kiddies",
+      "recipientsCount": 1,
+      "contentHash": "9b83fb7b",
+      "hourOfDay": 9,
+      "dayOfWeek": "Thursday"
+    }
+  ],
+  "\"bill kearney\" <wkearney99@hotmail.com>": [
+    {
+      "date": "2002-09-05T13:52:33.000Z",
+      "subject": "Re: CD player UI for toddlers",
+      "recipientsCount": 1,
+      "contentHash": "e06d726c",
+      "hourOfDay": 15,
+      "dayOfWeek": "Thursday"
+    }
+  ],
+  "\"patrice alt\" <silagra888@hotmail.com>": [
+    {
+      "date": "2002-09-22T15:51:31.000Z",
+      "subject": "First Time Generic V*agra under $3 per 50mg",
+      "recipientsCount": 1,
+      "contentHash": "c760d123",
+      "hourOfDay": 17,
+      "dayOfWeek": "Sunday"
+    }
+  ],
+  "\"best mortgage\" <bmortgage@ig.com.br>": [
+    {
+      "date": "2002-09-22T22:24:13.000Z",
+      "subject": "Guaranteed Best Mortgage Rate",
+      "recipientsCount": 1,
+      "contentHash": "d48a4740",
+      "hourOfDay": 0,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "\"tgpy.   allison\" <ojcjohnsons@juno.com>": [
+    {
+      "date": "2002-09-22T22:33:42.000Z",
+      "subject": "[scoop] ....It is not my fault. .- vwiid",
+      "recipientsCount": 1,
+      "contentHash": "cd387509",
+      "hourOfDay": 0,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "renato51927@netscape.net": [
+    {
+      "date": "2002-09-23T04:59:34.000Z",
+      "subject": "You can gain from lowest interest rates in 30 years",
+      "recipientsCount": 1,
+      "contentHash": "0d6f22ce",
+      "hourOfDay": 6,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "robertm@att.net": [
+    {
+      "date": "2002-09-23T00:29:50.000Z",
+      "subject": "Your eBay account is about to expire!",
+      "recipientsCount": 1,
+      "contentHash": "c6c66a9b",
+      "hourOfDay": 2,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "exelle@webinfo.fi": [
+    {
+      "date": "2002-09-23T11:51:49.000Z",
+      "subject": "HOME REPS WANTED-FORTUNE 500 COMP HIRING",
+      "recipientsCount": 1,
+      "contentHash": "6ed10a26",
+      "hourOfDay": 13,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "\"iaic_adv@hellerwhirligigs.com\" <hlbi_adv@hellerwhirligigs.com>": [
+    {
+      "date": "2002-09-23T15:26:16.000Z",
+      "subject": "Garden Ornaments | ppu",
+      "recipientsCount": 1,
+      "contentHash": "95bed2b6",
+      "hourOfDay": 17,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "john@frugaljoe.com": [
+    {
+      "date": "2002-09-23T16:13:19.000Z",
+      "subject": "Save $100's, maybe $1,000's with No Lender's Fees. Click here!",
+      "recipientsCount": 1,
+      "contentHash": "d7747016",
+      "hourOfDay": 18,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "firstever001@44yes.onlineisbest.com": [
+    {
+      "date": "2002-09-23T13:55:53.000Z",
+      "subject": "ADV: Extended Auto Warranties Here iubrq",
+      "recipientsCount": 1,
+      "contentHash": "c34ac7fa",
+      "hourOfDay": 15,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "\"kone bakar\" <k_bakar100@mail.com>": [
+    {
+      "date": "2002-09-23T17:28:45.000Z",
+      "subject": "ANTICAIPTING TO HEARING FROM YOU SOON.",
+      "recipientsCount": 1,
+      "contentHash": "13f6d793",
+      "hourOfDay": 19,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "\"your weight-loss partner\" <greatoffers@sendgreatoffers.com>": [
+    {
+      "date": "2002-09-23T17:00:04.000Z",
+      "subject": "*Do Your Butt, Hips And Thighs Embarrass You?*",
+      "recipientsCount": 1,
+      "contentHash": "438ddc7a",
+      "hourOfDay": 19,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "zzzzrubin@mx03.readyserve21.com": [
+    {
+      "date": "2002-09-24T02:28:43.000Z",
+      "subject": "Mortgage Rates Are Down.                    ptjti",
+      "recipientsCount": 1,
+      "contentHash": "9a64bfb0",
+      "hourOfDay": 4,
+      "dayOfWeek": "Tuesday"
+    },
+    {
+      "date": "2002-09-24T12:08:34.000Z",
+      "subject": "$250,000... as low as $6.50 per month.             edahx",
+      "recipientsCount": 1,
+      "contentHash": "4e876364",
+      "hourOfDay": 14,
+      "dayOfWeek": "Tuesday"
+    }
+  ],
+  "\"looking for property in spain?\" <wwc1@freeuk.com>": [
+    {
+      "date": "2002-09-23T19:16:49.000Z",
+      "subject": "Dont waste your TIME!!! Why?",
+      "recipientsCount": 1,
+      "contentHash": "96c7d243",
+      "hourOfDay": 21,
+      "dayOfWeek": "Monday"
+    }
+  ],
+  "\"iq - flynn associates\" <flynn@insiq.us>": [
+    {
+      "date": "2002-09-23T22:39:17.000Z",
+      "subject": "Are you ready for 10/5/2002?",
+      "recipientsCount": 1,
+      "contentHash": "1aef152e",
+      "hourOfDay": 0,
+      "dayOfWeek": "Tuesday"
+    }
+  ],
+  "dvd@frugaljoe.com": [
+    {
+      "date": "2002-09-24T00:03:08.000Z",
+      "subject": "Join & Get 4 DVDs for 49� ea. (+shipping & processing)! Details Inside...",
+      "recipientsCount": 1,
+      "contentHash": "4efc4559",
+      "hourOfDay": 2,
+      "dayOfWeek": "Tuesday"
+    }
+  ],
+  "home_loans@eudoramail.com": [
+    {
+      "date": "2002-09-24T14:13:20.000Z",
+      "subject": "Lenders WILL COMPETE for your mortgage             IVX",
+      "recipientsCount": 1,
+      "contentHash": "2b820ea2",
+      "hourOfDay": 16,
+      "dayOfWeek": "Tuesday"
+    }
+  ],
+  "letsrope3626o20@abanet.it": [
+    {
+      "date": "2002-09-23T13:32:14.000Z",
+      "subject": "NORTON SYSTEMWORKS 2002 CLEARANCE SALE! 6801wbRq4-940mJbj463-19",
+      "recipientsCount": 1,
+      "contentHash": "6e824583",
+      "hourOfDay": 15,
+      "dayOfWeek": "Monday"
     }
   ]
 }

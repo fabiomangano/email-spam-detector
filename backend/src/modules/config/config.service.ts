@@ -104,33 +104,29 @@ export interface SpamDetectionConfig {
     spam: string[];
   };
   llm?: {
-    enabled: boolean;
-    providers: {
-      openai: {
-        enabled: boolean;
-        apiKey: string;
-        model: string;
-        baseUrl: string;
+    providers?: {
+      openai?: {
+        enabled?: boolean;
+        apiKey?: string;
+        model?: string;
+        temperature?: number;
       };
-      anthropic: {
-        enabled: boolean;
-        apiKey: string;
-        model: string;
-        baseUrl: string;
+      anthropic?: {
+        enabled?: boolean;
+        apiKey?: string;
+        model?: string;
+        temperature?: number;
       };
-      local: {
-        enabled: boolean;
-        model: string;
-        baseUrl: string;
-        provider: string;
+      local?: {
+        enabled?: boolean;
+        model?: string;
+        provider?: string;
+        endpoint?: string;
       };
     };
-    prompts: {
-      spam_analysis: string;
-    };
-    weights: {
-      llm: number;
-      traditional: number;
+    activeProvider?: string;
+    prompts?: {
+      spam_analysis?: string;
     };
   };
 }
@@ -195,6 +191,20 @@ export class ConfigService {
     } catch (error) {
       console.error('Error resetting config:', error);
       throw new Error('Failed to reset configuration to default');
+    }
+  }
+
+  updateConfig(newConfig: SpamDetectionConfig): void {
+    this.saveConfig(newConfig);
+  }
+
+  getDefaultConfig(): SpamDetectionConfig {
+    try {
+      const defaultConfig = fs.readFileSync(this.defaultConfigPath, 'utf8');
+      return JSON.parse(defaultConfig);
+    } catch (error) {
+      console.error('Error loading default config:', error);
+      throw new Error('Failed to load default configuration');
     }
   }
 

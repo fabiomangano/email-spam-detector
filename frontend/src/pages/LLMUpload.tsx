@@ -15,6 +15,7 @@ import {
 } from '@mantine/core';
 import { IconUpload, IconRobot, IconAlertCircle, IconFileText, IconInfoCircle } from '@tabler/icons-react';
 import { useAnalysis } from '../contexts/AnalysisContext';
+import { useNavigate } from 'react-router';
 
 interface LLMAnalysisResult {
   success: boolean;
@@ -34,6 +35,7 @@ const LLMUpload: React.FC = () => {
   const [analyzing, setAnalyzing] = useState(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const { setLlmAnalysisResult } = useAnalysis();
+  const navigate = useNavigate();
 
   const analyzeEmail = async () => {
     if (!emailContent.trim()) {
@@ -60,7 +62,12 @@ const LLMUpload: React.FC = () => {
         // Store result in both sessionStorage and context
         sessionStorage.setItem('llmAnalysisResult', JSON.stringify(result));
         setLlmAnalysisResult(result);
-        setNotification({ type: 'success', message: 'Email analyzed successfully! Check the Report page for results.' });
+        setNotification({ type: 'success', message: 'Email analyzed successfully! Redirecting to report...' });
+        
+        // Navigate to report page after a short delay
+        setTimeout(() => {
+          navigate('/llm-report');
+        }, 1500);
       } else {
         throw new Error(result.error || 'Analysis failed');
       }
@@ -159,7 +166,7 @@ const LLMUpload: React.FC = () => {
 
         {notification && (
           <Alert
-            variant="filled"
+            variant="outline"
             title={notification.type === 'success' ? 'Success' : 'Error'}
             withCloseButton
             onClose={() => setNotification(null)}
@@ -167,19 +174,21 @@ const LLMUpload: React.FC = () => {
             icon={notification.type === 'error' ? <IconAlertCircle size={16} /> : undefined}
             styles={{
               root: {
-                backgroundColor: notification.type === 'success' ? '#22c55e' : '#ef4444',
+                backgroundColor: notification.type === 'success' ? '#f0fdf4' : '#fef2f2',
                 borderColor: notification.type === 'success' ? '#22c55e' : '#ef4444',
+                borderWidth: '1px',
               },
               title: {
-                color: '#ffffff',
+                color: notification.type === 'success' ? '#15803d' : '#dc2626',
+                fontWeight: '600',
               },
               body: {
-                color: '#ffffff',
+                color: notification.type === 'success' ? '#15803d' : '#dc2626',
               },
               closeButton: {
-                color: '#ffffff',
+                color: notification.type === 'success' ? '#15803d' : '#dc2626',
                 '&:hover': {
-                  backgroundColor: notification.type === 'success' ? '#16a34a' : '#dc2626',
+                  backgroundColor: notification.type === 'success' ? '#dcfce7' : '#fee2e2',
                 },
               },
             }}

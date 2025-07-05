@@ -381,5 +381,31 @@
       "consulting service",
       "permission to enter"
     ]
+  },
+  "llm": {
+    "providers": {
+      "openai": {
+        "enabled": false,
+        "model": "gpt-4",
+        "apiKey": "",
+        "temperature": 0.7
+      },
+      "anthropic": {
+        "enabled": false,
+        "model": "claude-3-sonnet-20240229",
+        "apiKey": "",
+        "temperature": 0.7
+      },
+      "local": {
+        "enabled": true,
+        "model": "mistral:latest",
+        "provider": "ollama",
+        "endpoint": "http://localhost:11434"
+      }
+    },
+    "activeProvider": "local",
+    "prompts": {
+      "spam_analysis": "You are an expert email security analyst. Analyze the following email and determine if it is SPAM or HAM (legitimate). Respond with JSON format: {\"classification\": \"SPAM\" or \"HAM\", \"confidence\": 0.85, \"reasoning\": \"brief explanation\", \"risk_indicators\": [\"list of spam indicators\"]}"
+    }
   }
 }
