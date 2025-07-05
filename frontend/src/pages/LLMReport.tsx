@@ -14,6 +14,7 @@ import {
   ThemeIcon,
   Divider,
   Button,
+  ScrollArea,
 } from '@mantine/core';
 import { useAnalysis } from '../contexts/AnalysisContext';
 import { useNavigate } from 'react-router';
@@ -205,83 +206,91 @@ const LLMReport: React.FC = () => {
   const confidenceColor = getConfidenceColor(analysis.confidence);
 
   return (
-    <Container size="lg" style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <Flex justify="space-between" align="center" mb="xl">
-        <Group gap="md" align="flex-start">
-          <ThemeIcon
-            size={48}
-            radius="md"
-            color="teal"
-            style={{
-              backgroundColor: 'var(--mantine-color-teal-0)',
-              color: 'var(--mantine-color-teal-6)',
-            }}
-          >
-            <IconBrain size={24} />
-          </ThemeIcon>
-          <div>
-            <Group gap="sm" mb="xs">
-              <Title order={1} size="h2">
-                LLM Analysis Report
-              </Title>
-              <Badge 
-                color="teal" 
-                variant="light" 
-                size="md"
-                leftSection={<IconRobot size={12} />}
-              >
-                {result.provider?.replace('local-', '').toUpperCase()} • {result.model}
-              </Badge>
-            </Group>
-            <Text c="dimmed" size="sm">
-              Advanced spam detection results powered by artificial intelligence
-            </Text>
-          </div>
-        </Group>
-        <Group gap="xs">
-          <Button
-            variant="outline"
-            color="blue"
-            size="xs"
-            leftSection={<IconArrowLeft size={14} />}
-            onClick={() => navigate('/llm-upload')}
-            styles={{
-              root: {
-                borderColor: "#2563eb",
-                color: "#2563eb",
-                backgroundColor: "#ffffff",
-                "&:hover": {
-                  backgroundColor: "#eff6ff",
+    <div style={{ padding: "20px", paddingBottom: "200px", minHeight: "calc(100vh - 60px)" }}>
+      <Container size="lg">
+        <Flex justify="space-between" align="center" mb="xl">
+          <Group gap="md" align="flex-start">
+            <ThemeIcon
+              size={48}
+              radius="md"
+              color="teal"
+              style={{
+                backgroundColor: 'var(--mantine-color-teal-0)',
+                color: 'var(--mantine-color-teal-6)',
+              }}
+            >
+              <IconBrain size={24} />
+            </ThemeIcon>
+            <div>
+              <Group gap="sm" mb="xs">
+                <Title order={1} size="h2">
+                  LLM Analysis Report
+                </Title>
+                <Badge 
+                  color="teal" 
+                  variant="light" 
+                  size="md"
+                  leftSection={<IconRobot size={12} />}
+                >
+                  {result.provider?.replace('local-', '').toUpperCase()} • {result.model}
+                </Badge>
+              </Group>
+              <Text c="dimmed" size="sm">
+                Advanced spam detection results powered by artificial intelligence
+              </Text>
+            </div>
+          </Group>
+          <Group gap="xs">
+            <Button
+              variant="filled"
+              size="xs"
+              leftSection={<IconArrowLeft size={14} />}
+              onClick={() => navigate('/llm-upload')}
+              styles={{
+                root: {
+                  backgroundColor: "#262626",
+                  color: "#ffffff",
+                  border: "none",
+                  "&:hover": {
+                    backgroundColor: "#404040",
+                  },
                 },
-              },
-            }}
-          >
-            Back to Upload
-          </Button>
-          <Button
-            variant="outline"
-            color="gray"
-            size="xs"
-            leftSection={<IconRefresh size={14} />}
-            onClick={loadResults}
-            styles={{
-              root: {
-                borderColor: "#262626",
-                color: "#262626",
-                backgroundColor: "#ffffff",
-                "&:hover": {
-                  backgroundColor: "#f9fafb",
+              }}
+            >
+              Back to Upload
+            </Button>
+            <Button
+              variant="outline"
+              color="gray"
+              size="xs"
+              leftSection={<IconRefresh size={14} />}
+              onClick={loadResults}
+              styles={{
+                root: {
+                  borderColor: "#262626",
+                  color: "#262626",
+                  backgroundColor: "#ffffff",
+                  "&:hover": {
+                    backgroundColor: "#f9fafb",
+                  },
                 },
-              },
-            }}
-          >
-            Refresh
-          </Button>
-        </Group>
-      </Flex>
+              }}
+            >
+              Refresh
+            </Button>
+          </Group>
+        </Flex>
 
-      <div style={{ flex: 1, overflow: 'auto', paddingBottom: '2rem' }}>
-        <Stack gap="md">
+        <ScrollArea.Autosize 
+          mah="calc(100vh - 320px)"
+          scrollbars="y"
+          styles={{
+            thumb: {
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            },
+          }}
+        >
+          <Stack gap="md">
         {/* Main Results Card */}
         <Card withBorder>
           <Card.Section withBorder inheritPadding py="xs">
@@ -306,7 +315,7 @@ const LLMReport: React.FC = () => {
               <Progress 
                 value={analysis.spamProbability * 100} 
                 color={riskLevel.color}
-                size="lg"
+                size="xs"
                 mb="xs"
               />
               <Text size="sm" ta="center" fw={600}>
@@ -330,7 +339,7 @@ const LLMReport: React.FC = () => {
               <Progress 
                 value={analysis.confidence * 100} 
                 color={confidenceColor}
-                size="lg"
+                size="xs"
                 mb="xs"
               />
               <Text size="sm" ta="center" fw={600}>
@@ -455,9 +464,10 @@ const LLMReport: React.FC = () => {
             </Group>
           </Stack>
         </Card>
-        </Stack>
-      </div>
-    </Container>
+          </Stack>
+        </ScrollArea.Autosize>
+      </Container>
+    </div>
   );
 };
 
