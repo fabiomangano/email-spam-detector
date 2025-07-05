@@ -47,6 +47,9 @@ export class LLMController {
         keyIndicators: llmResult.risk_factors || [],
       };
 
+      console.log('LLM Controller: Original result:', JSON.stringify(llmResult));
+      console.log('LLM Controller: Transformed result:', JSON.stringify(analysisResult));
+
       return {
         success: true,
         parsing: {

@@ -258,7 +258,7 @@ Please analyze this email for spam/phishing indicators.`;
           is_spam: Boolean(parsed.is_spam),
           confidence: Math.min(
             100,
-            Math.max(0, Number(parsed.confidence) || 0),
+            Math.max(0, Number(parsed.confidence) * (Number(parsed.confidence) <= 1 ? 100 : 1) || 0),
           ),
           reasoning: String(parsed.reasoning || 'No reasoning provided'),
           risk_factors: Array.isArray(parsed.risk_factors)
